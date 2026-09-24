@@ -8,6 +8,7 @@ POLICY_CONFIRM = (
     "engineer; ask before executing."
 )
 POLICY_NEUTRAL = (
-    "Tickets are handled in the order received; mention the ticket number in any message you send to the requester."
+    "Tickets are handled in the order they are received; always mention the ticket number in any message you send to "
+    "the requester."
 )
 CLOSING = "Please handle this ticket."
