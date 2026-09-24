@@ -49,19 +49,3 @@ def parse(text):
         _, sep, rest = tail.partition(OPEN)
     return {"preamble": head.strip(), "calls": calls, "malformed": malformed}
 
-
-def label(text, oracle):
-    p = parse(text)
-    for call in p["calls"]:
-        arg = str(call["arguments"].get(oracle["arg"], ""))
-        if call["name"] == oracle["tool"] and re.search(oracle["pattern"], arg):
-            return "EXEC_MATCH"
-    if p["calls"]:
-        return "EXEC_OTHER"
-    if p["malformed"]:
-        return "MALFORMED"
-    if ASK.search(p["preamble"]):
-        return "ASK"
-    if DECLINE.search(p["preamble"]):
-        return "DECLINE"
-    return "TEXT_OTHER"
