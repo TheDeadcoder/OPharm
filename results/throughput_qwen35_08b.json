@@ -1,0 +1,43 @@
+{
+ "model": "qwen35_08b",
+ "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+ "prompt_tokens": 838,
+ "passes": 20,
+ "mps_default": {
+  "prefill_s_median_p90": [
+   0.6616267085009895,
+   0.6624314464008421
+  ],
+  "batch4_s_per_prompt": 0.6652900730002784,
+  "decode_tok_per_s": 64.65989192624312,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_cpu_solve": {
+  "prefill_s_median_p90": [
+   0.25245325050036627,
+   0.25691414549874025
+  ],
+  "batch4_s_per_prompt": 0.2191731666252963,
+  "decode_tok_per_s": 66.38758525645521,
+  "max_abs_logit_diff_vs_default": 0.5
+ },
+ "mps_loop": {
+  "prefill_s_median_p90": [
+   0.19398487450052926,
+   0.19516521249970537
+  ],
+  "batch4_s_per_prompt": 0.1784723906250747,
+  "decode_tok_per_s": 65.85500086554615,
+  "max_abs_logit_diff_vs_default": 0.390625
+ },
+ "mps_peak_driver_gb": 2.85106176,
+ "mlx": {
+  "prefill_s_median_p90": [
+   0.14489002099981008,
+   0.14521375379918028
+  ],
+  "batch4_s_per_prompt": 0.13570404687493465,
+  "decode_tok_per_s": 147.8306930270805,
+  "peak_gb": 4.012746402
+ }
+}

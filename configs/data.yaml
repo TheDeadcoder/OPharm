@@ -1,0 +1,13 @@
+harmbench:
+  repo: centerforaisafety/HarmBench
+  commit: 8e1604d1171fe8a48d8febecd22f600e462bdcdd
+  path: data/behavior_datasets/harmbench_behaviors_text_all.csv
+  local: data/raw/harmbench/harmbench_behaviors_text_all.csv
+  sha256: 8d81accedd38eaaf8b760618622bb888417d1fd0c86eba65c427a16f1cbb4afc
+  license: MIT
+alpaca:
+  repo: tatsu-lab/alpaca
+  revision: dce01c9b08f87459cf36a430d809084718273017
+  license: cc-by-nc-4.0
+  files:
+  - data/train-00000-of-00001-a09b74b3ef9c3b56.parquet

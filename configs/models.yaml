@@ -1,0 +1,20 @@
+qwen35_08b:
+  repo: Qwen/Qwen3.5-0.8B
+  revision: 2fc06364715b967f1860aea9cf38778875588b17
+  role: harness
+  safetensors_bytes: 1746942600
+qwen35_4b:
+  repo: Qwen/Qwen3.5-4B
+  revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+  role: dev
+  safetensors_bytes: 9319828096
+qwen3_4b_2507:
+  repo: Qwen/Qwen3-4B-Instruct-2507
+  revision: cdbee75f17c01a7cc42f958dc650907174af0554
+  role: comparator
+  safetensors_bytes: 8044982000
+qwen35_9b:
+  repo: Qwen/Qwen3.5-9B
+  revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
+  role: confirmatory
+  safetensors_bytes: 19306310880

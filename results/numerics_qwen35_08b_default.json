@@ -1,0 +1,131 @@
+{
+ "model": "qwen35_08b",
+ "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+ "solver": "default",
+ "n": 20,
+ "prompt_tokens": {
+  "min": 831,
+  "max": 845
+ },
+ "median_seconds_prefill_mps": 0.6592994999991788,
+ "median_seconds_scoring_pass": {
+  "cpu_float32": 4.674757083001168,
+  "mps_bfloat16": 0.6719299169999431,
+  "mlx_bfloat16": 0.14623554199897626
+ },
+ "m_reference": [
+  0.8773689270019531,
+  1.0048637390136719,
+  0.9908905029296875,
+  0.8025417327880859,
+  0.6922035217285156,
+  0.5931720733642578,
+  0.666656494140625,
+  0.6385765075683594,
+  1.0711231231689453,
+  1.282745361328125,
+  1.0558662414550781,
+  0.7757511138916016,
+  1.2088069915771484,
+  1.4450931549072266,
+  1.3793773651123047,
+  0.9802989959716797,
+  1.0096931457519531,
+  0.9164505004882812,
+  0.9179744720458984,
+  0.8733959197998047
+ ],
+ "comparisons": {
+  "mps_bfloat16_vs_cpu_float32": {
+   "n": 20,
+   "top1_agree": 20,
+   "max_abs_logit_diff": {
+    "max": 0.395133376121521,
+    "median": 0.3219423294067383
+   },
+   "m_abs_diff_max": 0.2919654846191406,
+   "kl_max": 0.008169836364686489,
+   "greedy_identical_to_mps": 20,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "mlx_bfloat16_vs_cpu_float32": {
+   "n": 20,
+   "top1_agree": 20,
+   "max_abs_logit_diff": {
+    "max": 0.5818796157836914,
+    "median": 0.49514222145080566
+   },
+   "m_abs_diff_max": 0.32362937927246094,
+   "kl_max": 0.011378014460206032,
+   "greedy_identical_to_mps": 20,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cpu_float32_greedy_vs_mps": {
+   "greedy_identical_to_mps": 20,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ }
+}
