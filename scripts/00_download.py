@@ -1,10 +1,12 @@
 import argparse
 import os
+import time
 
 import opharm
 from opharm.paths import CONFIGS
 
 os.environ.setdefault("HF_XET_HIGH_PERFORMANCE", "1")
+os.environ.setdefault("HF_XET_CLIENT_RETRY_MAX_ATTEMPTS", "20")
 
 import yaml
 from huggingface_hub import HfApi, snapshot_download
@@ -40,14 +42,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("keys", nargs="*", default=DEFAULT)
     ap.add_argument("--small", action="store_true")
+    ap.add_argument("--attempts", type=int, default=50)
     args = ap.parse_args()
     pins = pin(HfApi(), args.keys)
     for key in args.keys:
         p = pins[key]
-        try:
-            path = snapshot_download(p["repo"], revision=p["revision"], allow_patterns=SMALL if args.small else None)
-        except (GatedRepoError, RepositoryNotFoundError) as e:
-            print(f"{key}: no access ({type(e).__name__})")
+        for attempt in range(args.attempts):
+            try:
+                path = snapshot_download(p["repo"], revision=p["revision"], allow_patterns=SMALL if args.small else None)
+                break
+            except (GatedRepoError, RepositoryNotFoundError) as e:
+                print(f"{key}: no access ({type(e).__name__})")
+                path = None
+                break
+            except Exception as e:
+                print(f"{key}: attempt {attempt + 1} failed ({type(e).__name__}); retrying", flush=True)
+                time.sleep(20)
+        else:
+            path = None
+        if path is None:
             continue
         print(f"{key}: {'small' if args.small else 'full'} {p['revision'][:12]} {p['safetensors_bytes'] / 1e9:.2f} GB -> {path}")
 

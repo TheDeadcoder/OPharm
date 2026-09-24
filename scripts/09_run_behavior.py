@@ -17,7 +17,7 @@ from opharm.paths import BENCH, ROOT, RUNS
 from opharm.run.cache import forward_capture
 from opharm.run.generate import greedy
 
-DECODE_SETS = {"main", "ladder", "cue", "shortcut"}
+DECODE_SETS = {"main", "narr", "ladder", "cue", "shortcut"}
 
 
 def yes_no_ids(tok):
@@ -43,17 +43,27 @@ def git_state():
     return r.stdout.strip() if r.returncode == 0 else "uncommitted"
 
 
+def done_ids(path):
+    return {json.loads(line)["id"] for line in open(path)} if path.exists() else set()
+
+
+def ids_of(tok, row, thinking):
+    return render(tok, row["system"], row["user"], None if row["set"] == "flat" else TOOLS, thinking=thinking).ids
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model")
     ap.add_argument("--tag", required=True)
     ap.add_argument("--sets", default="main,judge,shortcut")
     ap.add_argument("--split", default="dev", choices=["dev", "heldout", "all"])
-    ap.add_argument("--questions", default="q1,q2")
+    ap.add_argument("--questions", default="q1,q2,q3")
     ap.add_argument("--skeletons", type=int, default=0)
-    ap.add_argument("--max-new", type=int, default=128)
+    ap.add_argument("--max-new", type=int, default=256)
     ap.add_argument("--batch", type=int, default=8)
+    ap.add_argument("--chunk", type=int, default=64)
     ap.add_argument("--no-acts", action="store_true")
+    ap.add_argument("--thinking", action="store_true")
     args = ap.parse_args()
     sets, questions = set(args.sets.split(",")), set(args.questions.split(","))
 
@@ -65,49 +75,84 @@ def main():
         rows = [r for r in rows if r["skeleton"] in keep]
     out = RUNS / args.model / args.tag
     out.mkdir(parents=True, exist_ok=True)
+    order = [r["id"] for r in rows]
+    if (out / "order.json").exists() and json.loads((out / "order.json").read_text()) != order:
+        raise ValueError("run directory holds a different instance order; use a new tag")
+    (out / "order.json").write_text(json.dumps(order))
 
-    tok, model = load_model_and_tok(args.model)
+    tok, model = load_tokenizer(args.model), load_model(args.model)
     opener, yn = tok.convert_tokens_to_ids("<tool_call>"), yes_no_ids(tok)
-    t0 = time.time()
-    ids, results, acts = [], [], None
-    for k, r in enumerate(rows):
-        rr = render(tok, r["system"], r["user"], None if r["set"] == "flat" else TOOLS)
-        m, logits, a = forward_capture(model, rr.ids, [rr.t_inst, rr.t_post], opener)
-        if acts is None and not args.no_acts:
-            acts = np.lib.format.open_memmap(out / "acts.npy", mode="w+", dtype=np.float32, shape=(len(rows), *a.shape))
-        if acts is not None:
-            acts[k] = a.numpy()
-        lp = logits.log_softmax(-1)
-        top = lp.topk(5)
-        res = {"id": r["id"], "set": r["set"], "n_tokens": len(rr.ids), "m": m,
-               "top5": [[tok.decode([i]), round(v, 3)] for v, i in zip(top.values.tolist(), top.indices.tolist())]}
-        if r["set"] == "judge":
-            py, pn = torch.logsumexp(lp[yn["yes"]], 0), torch.logsumexp(lp[yn["no"]], 0)
-            res["judge"], res["yn_mass"] = (py - pn).item(), (py.exp() + pn.exp()).item()
-        results.append(res)
-        ids.append(rr.ids)
-    prefill_s = time.time() - t0
+    acts = None
+    if not args.no_acts:
+        shape = (len(rows), 2, len(model.model.layers) + 1, model.config.hidden_size)
+        mode = "r+" if (out / "acts.npy").exists() else "w+"
+        acts = np.lib.format.open_memmap(out / "acts.npy", mode=mode, dtype=np.float32, shape=shape)
+
+    t0, done = time.time(), done_ids(out / "prefill.jsonl")
+    with open(out / "prefill.jsonl", "a") as f:
+        for k, r in enumerate(rows):
+            if r["id"] in done:
+                continue
+            rr = render(tok, r["system"], r["user"], None if r["set"] == "flat" else TOOLS, thinking=args.thinking)
+            m, logits, a = forward_capture(model, rr.ids, [rr.t_inst, rr.t_post], opener)
+            if acts is not None:
+                acts[k] = a.numpy()
+            lp = logits.log_softmax(-1)
+            top = lp.topk(5)
+            res = {"id": r["id"], "row": k, "n_tokens": len(rr.ids), "m": m,
+                   "top5": [[tok.decode([i]), round(v, 3)] for v, i in zip(top.values.tolist(), top.indices.tolist())]}
+            if r["set"] == "judge":
+                py, pn = torch.logsumexp(lp[yn["yes"]], 0), torch.logsumexp(lp[yn["no"]], 0)
+                res["judge"], res["yn_mass"] = (py - pn).item(), (py.exp() + pn.exp()).item()
+            f.write(json.dumps(res) + "\n")
+            if k % args.chunk == 0:
+                f.flush()
+                if acts is not None:
+                    acts.flush()
     if acts is not None:
         acts.flush()
-    dec = [k for k, r in enumerate(rows) if r["set"] in DECODE_SETS]
+    prefill_s = time.time() - t0
+
     t1 = time.time()
-    texts = greedy(model, tok, [ids[k] for k in dec], args.max_new, args.batch, extra_stops=("</tool_call>",))
-    for k, text in zip(dec, texts):
-        results[k]["text"], results[k]["label"] = text, label(text, rows[k]["oracle"])
-    (out / "results.jsonl").write_text("".join(json.dumps(r) + "\n" for r in results))
+    for name, pick, max_new, batch, stops in (
+        ("decode", lambda r: r["set"] in DECODE_SETS, args.max_new, args.batch, ("</tool_call>",)),
+        ("judge", lambda r: r["set"] == "judge", 4, args.batch * 2, ()),
+    ):
+        done = done_ids(out / f"{name}.jsonl")
+        todo = [r for r in rows if pick(r)]
+        with open(out / f"{name}.jsonl", "a") as f:
+            for s in range(0, len(todo), args.chunk):
+                part = todo[s:s + args.chunk]
+                if all(r["id"] in done for r in part):
+                    continue
+                texts = greedy(model, tok, [ids_of(tok, r, args.thinking) for r in part], max_new, batch, extra_stops=stops)
+                for r, text in zip(part, texts):
+                    if r["id"] in done:
+                        continue
+                    if name == "decode":
+                        rec = {"id": r["id"], "text": text, "label": label(text, r["oracle"])}
+                    else:
+                        word = text.strip().split()[0].strip(".,:!*").lower() if text.strip() else ""
+                        rec = {"id": r["id"], "answer": word if word in ("yes", "no") else "other"}
+                    f.write(json.dumps(rec) + "\n")
+                f.flush()
+
+    merged = {json.loads(line)["id"]: json.loads(line) for line in open(out / "prefill.jsonl")}
+    for name in ("decode", "judge"):
+        if (out / f"{name}.jsonl").exists():
+            for line in open(out / f"{name}.jsonl"):
+                rec = json.loads(line)
+                merged[rec["id"]].update(rec)
+    (out / "results.jsonl").write_text("".join(json.dumps(dict(merged[i], set=r["set"])) + "\n" for i, r in zip(order, rows)))
     manifest = {
         "model": args.model, "revision": pins()[args.model]["revision"], "args": vars(args), "git": git_state(),
         "chat_template_sha256": hashlib.sha256(tok.chat_template.encode()).hexdigest(),
         "benchmark_sha256": json.loads((BENCH / "manifest.json").read_text())["sha256_instances"],
-        "n": len(rows), "n_decoded": len(dec), "acts_shape": None if acts is None else list(acts.shape),
-        "seconds": {"prefill": round(prefill_s, 1), "decode": round(time.time() - t1, 1)},
+        "n": len(rows), "acts_shape": None if acts is None else list(acts.shape),
+        "seconds_this_session": {"prefill": round(prefill_s, 1), "decode": round(time.time() - t1, 1)},
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
-    print(json.dumps(manifest["seconds"]), "n", len(rows), "decoded", len(dec))
-
-
-def load_model_and_tok(key):
-    return load_tokenizer(key), load_model(key)
+    print(json.dumps(manifest["seconds_this_session"]), "n", len(rows))
 
 
 if __name__ == "__main__":

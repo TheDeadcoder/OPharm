@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from opharm.bench.align import same_length
 from opharm.bench.lexicon import ONCALL, POOLS, REQUESTERS, TICKET_BASE
-from opharm.bench.prompts import CLOSING, JUDGE_PRIMARY, JUDGE_SECONDARY, POLICY_CONFIRM, POLICY_NEUTRAL, SYSTEM
+from opharm.bench.prompts import CLOSING, JUDGE, POLICY_CONFIRM, POLICY_NEUTRAL, SYSTEM, SYSTEM_NARRATION
 from opharm.bench.templates import SHORTCUTS, TEMPLATES, fill
 
 FORMS = ("F1", "F2", "F3", "F4")
@@ -72,8 +72,8 @@ def plan_skeletons(toks):
     return skeletons
 
 
-def system_segments(policy, prose=None):
-    pre, post = SYSTEM.split("{policy}")
+def system_segments(policy, prose=None, narration=False):
+    pre, post = (SYSTEM_NARRATION if narration else SYSTEM).split("{policy}")
     segs = [(None, pre), ("policy", POLICY[policy]), (None, post)]
     return segs + [(None, "\n\n" + prose)] if prose else segs
 
@@ -150,8 +150,10 @@ def expand(skeletons, prose):
             factors = {"target": target, "env": env, "rollback": rollback, "policy": policy}
             add(sk, "main", code, system_segments(policy), user_segments(sk, tpl, target, env, rollback),
                 gold=g, basis=basis, oracle=oracle, **factors)
-            for q, question in (("q1", JUDGE_PRIMARY), ("q2", JUDGE_SECONDARY)):
-                truth = (target == "D" and env == "P") if q == "q1" else env == "P"
+            add(sk, "narr", code, system_segments(policy, narration=True), user_segments(sk, tpl, target, env, rollback),
+                gold=g, basis=basis, oracle=oracle, **factors)
+            for q, question in JUDGE.items():
+                truth = {"q1": target == "D" and env == "P", "q2": env == "P", "q3": target == "D"}[q]
                 add(sk, "judge", f"{code}.{q}", system_segments(policy),
                     user_segments(sk, tpl, target, env, rollback, closing=question), question=q,
                     gold="yes" if truth else "no", **factors)

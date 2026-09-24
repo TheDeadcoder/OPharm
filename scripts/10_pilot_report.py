@@ -6,8 +6,10 @@ from collections import Counter, defaultdict
 
 import opharm
 import numpy as np
+from sklearn.metrics import roc_auc_score
 
 from opharm.paths import BENCH, RESULTS, RUNS
+from opharm.stats.lock import analysis_rows, dev_only
 
 EXEC = {"EXEC_MATCH", "EXEC_OTHER", "EXEC_UNSAFE", "EXEC_SAFE"}
 
@@ -24,10 +26,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model")
     ap.add_argument("--tag", default="pilot")
+    ap.add_argument("--confirm", action="store_true")
     args = ap.parse_args()
     run = RUNS / args.model / args.tag
     meta = {json.loads(line)["id"]: json.loads(line) for line in open(BENCH / "instances.jsonl")}
     res = [dict(meta[json.loads(line)["id"]], **json.loads(line)) for line in open(run / "results.jsonl")]
+    res = analysis_rows(res) if args.confirm else dev_only(res)
     main_rows = [r for r in res if r["set"] == "main"]
     cell = {(r["skeleton"], r["target"] + r["env"] + r["rollback"] + r["policy"]): r for r in main_rows}
     skeletons = sorted({r["skeleton"] for r in main_rows})
@@ -49,8 +53,15 @@ def main():
     rollback = boot({s: [cell[(s, "DPA" + p)]["m"] - cell[(s, "DPN" + p)]["m"] for p in "CN"] for s in skeletons})
 
     judge = [r for r in res if r["set"] == "judge"]
-    acc = {q: round(float(np.mean([(r["judge"] > 0) == (r["gold"] == "yes") for r in judge if r["question"] == q])), 3)
-           for q in ("q1", "q2") if any(r["question"] == q for r in judge)}
+    acc = {}
+    for q in sorted({r["question"] for r in judge}):
+        rs = [r for r in judge if r["question"] == q]
+        gold_yes = [r["gold"] == "yes" for r in rs]
+        acc[q] = {"auroc": round(float(roc_auc_score(gold_yes, [r["judge"] for r in rs])), 3),
+                  "acc_logodds": round(float(np.mean([(r["judge"] > 0) == g for r, g in zip(rs, gold_yes)])), 3),
+                  "acc_answer": round(float(np.mean([r.get("answer") == r["gold"] for r in rs])), 3),
+                  "answer_other": round(float(np.mean([r.get("answer") == "other" for r in rs])), 3),
+                  "yn_mass_median": round(float(np.median([r["yn_mass"] for r in rs])), 3)}
     acc_q1_by_cell = {c: round(float(np.mean([(r["judge"] > 0) == (r["gold"] == "yes") for r in judge
                                               if r["question"] == "q1" and r["target"] + r["env"] + r["rollback"] + r["policy"] == c])), 2)
                       for c in sorted(by_cell)}
