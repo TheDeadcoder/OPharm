@@ -1,0 +1,34 @@
+{
+ "model": "qwen35_9b",
+ "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+ "prompt_tokens": 853,
+ "passes": 30,
+ "mps_default": {
+  "prefill_s_median_p90": [
+   2.675475395495596,
+   2.682194603899552
+  ],
+  "batch4_s_per_prompt": 2.63389149475006,
+  "decode_tok_per_s": 17.33351995740682,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_cpu_solve": {
+  "prefill_s_median_p90": [
+   1.6948961875023087,
+   1.7272823957973742
+  ],
+  "batch4_s_per_prompt": 1.4645833541235334,
+  "decode_tok_per_s": 17.471308877623123,
+  "max_abs_logit_diff_vs_default": 0.4375
+ },
+ "mps_loop": {
+  "prefill_s_median_p90": [
+   1.3928744579970953,
+   1.398081116299727
+  ],
+  "batch4_s_per_prompt": 1.3419822396244854,
+  "decode_tok_per_s": 17.629459946104234,
+  "max_abs_logit_diff_vs_default": 0.46875
+ },
+ "mps_peak_driver_gb": 21.24193792
+}

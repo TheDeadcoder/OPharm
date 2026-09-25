@@ -23,6 +23,7 @@
   "H1",
   "H2",
   "H3",
+  "H4",
   "H5"
  ],
  "alpha": 0.05,
@@ -50,7 +51,7 @@
      0.41637260659977243
     ]
    ],
-   "p_holm": 0.00039996000399960006,
+   "p_holm": 0.0004999500049995,
    "reject_null": true
   },
   "H2": {
@@ -62,7 +63,7 @@
    "n_skeletons": 216,
    "test": "equivalence within +/-0.2 (TOST)",
    "p": 9.999000099990002e-05,
-   "p_holm": 0.00039996000399960006,
+   "p_holm": 0.0004999500049995,
    "reject_null": true
   },
   "H3": {
@@ -83,10 +84,26 @@
    "position": "t_post",
    "layer": 25,
    "n_test": 864,
-   "p_holm": 0.00039996000399960006,
+   "p_holm": 0.0004999500049995,
    "reject_null": true
   },
-  "H4": null,
+  "H4": {
+   "estimate": 1.454318548503675,
+   "ci95": [
+    1.3233073351676004,
+    1.587671058638054
+   ],
+   "n_skeletons": 57,
+   "test": "Delta_m(r_ref) - Delta_m(r_blast) < 0",
+   "p": 1.0,
+   "delta_m_r_ref": -10.992009003957113,
+   "delta_m_r_blast": -12.438365618387857,
+   "delta_m_random_ref": -3.0341081500053404,
+   "delta_m_random_blast": -2.7015086968739825,
+   "n_random_per_direction": 8,
+   "p_holm": 1.0,
+   "reject_null": false
+  },
   "H5": {
    "estimate": 0.06666145473718643,
    "ci95": [
@@ -96,7 +113,7 @@
    "n_skeletons": 157,
    "test": "Delta_ref > 0",
    "p": 9.999000099990002e-05,
-   "p_holm": 0.00039996000399960006,
+   "p_holm": 0.0004999500049995,
    "reject_null": true
   }
  },

@@ -1,0 +1,52 @@
+{
+ "model": "qwen35_9b",
+ "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+ "solver": "loop",
+ "n": 5,
+ "prompt_tokens": {
+  "min": 852,
+  "max": 853
+ },
+ "median_seconds_prefill_mps": 1.3771406040032161,
+ "median_seconds_scoring_pass": {
+  "cpu_bfloat16": 41.426551062002545,
+  "mps_bfloat16": 1.450406040996313
+ },
+ "m_reference": [
+  -3.7197341918945312,
+  2.9440040588378906,
+  5.238834381103516,
+  -2.5508193969726562,
+  -3.1042118072509766
+ ],
+ "comparisons": {
+  "mps_bfloat16_vs_cpu_bfloat16": {
+   "n": 5,
+   "top1_agree": 5,
+   "max_abs_logit_diff": {
+    "max": 0.65625,
+    "median": 0.625
+   },
+   "m_abs_diff_max": 0.2307605743408203,
+   "kl_max": 0.001434442587196827,
+   "greedy_identical_to_mps": 5,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cpu_bfloat16_greedy_vs_mps": {
+   "greedy_identical_to_mps": 5,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ }
+}
