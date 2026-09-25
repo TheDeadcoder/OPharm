@@ -93,3 +93,17 @@ def ablate(model, direction, positions=None):
     pre = [("pre", m, fn) for m in resid_modules(model)]
     post = [("post", mixer(l), fn) for l in layers(model)] + [("post", l.mlp, fn) for l in layers(model)]
     return pre + post
+
+
+def swap_along(model, point, direction, values, positions=None):
+    unit = direction.float() / direction.float().norm()
+
+    def fn(h):
+        h = h.clone()
+        idx = _idx(positions)
+        u = unit.to(h.device)
+        sub = h[:, idx].float()
+        h[:, idx] = (sub + (values.to(h.device)[None] - sub @ u).unsqueeze(-1) * u).to(h.dtype)
+        return h
+
+    return [("pre", resid_modules(model)[point], fn)]

@@ -84,7 +84,7 @@ def h3(rows, acts, point, confirm, n):
 
 
 def h4(model, tag, confirm, st, n):
-    path = RUNS / model / tag / f"causal_c3_{model}_{tag}{'_confirm' if confirm else ''}.jsonl"
+    path = RUNS / model / tag / f"causal_c3_{model}_{tag}{'_confirm_h4' if confirm else ''}.jsonl"
     if not path.exists():
         return None
     recs = [r for r in map(json.loads, open(path)) if r["coef"] == st["steer_coef"] and r["cell"] in ("DPAN", "DPNN")]

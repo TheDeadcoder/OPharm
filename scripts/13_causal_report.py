@@ -8,8 +8,8 @@ import numpy as np
 from opharm.paths import RESULTS, RUNS
 
 
-def load(model, tag, test, confirm):
-    path = RUNS / model / tag / f"causal_{test}_{model}_{tag}{'_confirm' if confirm else ''}.jsonl"
+def load(model, tag, test, confirm, suffix=""):
+    path = RUNS / model / tag / f"causal_{test}_{model}_{tag}{'_confirm' if confirm else ''}{'_' + suffix if suffix else ''}.jsonl"
     return [json.loads(line) for line in open(path)] if path.exists() else []
 
 
@@ -17,7 +17,7 @@ def patch_summary(recs, pos):
     groups = defaultdict(list)
     for r in recs:
         t, s = r["target"].rsplit(".", 1)[1][pos], r["source"].rsplit(".", 1)[1][pos]
-        groups[(r["layer"], f"{t}<-{s}")].append(r)
+        groups[(r["layer"], f"{t}<-{s}" + (f"|{r['direction']}" if "direction" in r else ""))].append(r)
     frac = lambda moved, gap: moved / gap if abs(gap) > 1e-6 else None
     out = {}
     for (layer, d), rs in sorted(groups.items()):
@@ -61,11 +61,12 @@ def main():
     ap.add_argument("--confirm", action="store_true")
     args = ap.parse_args()
     out = {}
-    for test, fn in (("c1", lambda r: patch_summary(r, 1)), ("c4", lambda r: patch_summary(r, 3)), ("c3", steer_summary),
-                     ("c2", ablate_summary)):
-        recs = load(args.model, args.tag, test, args.confirm)
+    env = lambda r: patch_summary(r, 1)
+    for test, suffix, fn in (("c1", "", env), ("c4", "", lambda r: patch_summary(r, 3)), ("c3", "", steer_summary),
+                             ("c2", "", ablate_summary), ("c6", "", env), ("c6", "post", env), ("c7", "", env)):
+        recs = load(args.model, args.tag, test, args.confirm, suffix)
         if recs:
-            out[test] = fn(recs)
+            out[test + ("_" + suffix if suffix else "")] = fn(recs)
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"causal_{args.model}_{args.tag}{'_confirm' if args.confirm else ''}.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(out, indent=1))

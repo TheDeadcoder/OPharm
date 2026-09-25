@@ -67,12 +67,14 @@ def sample_pairs(ctx, n, seed, first, second, pos):
     return cands[:n]
 
 
-def patch_panel(ctx, pairs, span, layers):
+def patch_panel(ctx, pairs, span, layers, complement=False):
     out = []
     for a, b in pairs:
         for tgt, src in ((a, b), (b, a)):
             rt, rs = ctx.render(tgt), ctx.render(src)
             positions = [i for s, e in rt.spans[span] for i in range(s, e)]
+            if complement:
+                positions = [i for i in range(len(rt.ids)) if i not in set(positions)]
             m0, p0 = ctx.run(rt.ids, at=[rt.t_inst, rt.t_post])
             ms, ps = ctx.run(rs.ids, at=[rs.t_inst, rs.t_post])
             vals = ctx.capture_span(rs.ids, layers, positions)
@@ -80,6 +82,30 @@ def patch_panel(ctx, pairs, span, layers):
                 m, p = ctx.run(rt.ids, [hooks.patch(ctx.model, layer, positions, vals[layer])], at=[rt.t_inst, rt.t_post])
                 out.append({"target": tgt["id"], "source": src["id"], "layer": layer, "m_clean": m0, "m_source": ms, "m_patched": m,
                             "probe": {k: {"clean": p0[k], "source": ps[k], "patched": p[k]} for k in p0}})
+    return out
+
+
+def swap_panel(ctx, pairs, layers, names):
+    dirs = {"r_blast": {l: torch.tensor(ctx.r_blast["t_inst"][l]) for l in layers},
+            "r_blast_post": {l: torch.tensor(ctx.r_blast["t_post"][l]) for l in layers}}
+    dirs["random"] = {l: random_like(dirs["r_blast"][l], 3000 + l) for l in layers}
+    dirs = {k: dirs[k] for k in names}
+    out = []
+    for a, b in pairs:
+        for tgt, src in ((a, b), (b, a)):
+            rt, rs = ctx.render(tgt), ctx.render(src)
+            m0, p0 = ctx.run(rt.ids, at=[rt.t_inst, rt.t_post])
+            ms, ps = ctx.run(rs.ids, at=[rs.t_inst, rs.t_post])
+            span = {i for s, e in rt.spans["env"] for i in range(s, e)}
+            keep = [i for i in range(len(rt.ids)) if i not in span]
+            vals = ctx.capture_span(rs.ids, layers, keep)
+            for name, d in dirs.items():
+                for layer in layers:
+                    u = d[layer] / d[layer].norm()
+                    m, p = ctx.run(rt.ids, [hooks.swap_along(ctx.model, layer, u, vals[layer] @ u, keep)], at=[rt.t_inst, rt.t_post])
+                    out.append({"target": tgt["id"], "source": src["id"], "layer": layer, "direction": name, "m_clean": m0,
+                                "m_source": ms, "m_patched": m,
+                                "probe": {k: {"clean": p0[k], "source": ps[k], "patched": p[k]} for k in p0}})
     return out
 
 
@@ -127,7 +153,7 @@ def ablate_panel(ctx, rows, seeds):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("test", choices=["c1", "c2", "c3", "c4"])
+    ap.add_argument("test", choices=["c1", "c2", "c3", "c4", "c6", "c7"])
     ap.add_argument("model")
     ap.add_argument("--tag", default="grid")
     ap.add_argument("--n", type=int, default=60)
@@ -135,7 +161,9 @@ def main():
     ap.add_argument("--layers", default="")
     ap.add_argument("--coefs", default="0.5,1,2")
     ap.add_argument("--groups", default="DP,DS,BP")
+    ap.add_argument("--dirs", default="r_blast,random")
     ap.add_argument("--confirm", action="store_true")
+    ap.add_argument("--suffix", default="")
     args = ap.parse_args()
     t0 = time.time()
     ctx = Ctx(args.model, args.tag, args.confirm)
@@ -143,6 +171,10 @@ def main():
     layers = [int(v) for v in args.layers.split(",")] if args.layers else sorted({round(1 + i * (n_layers - 3) / 7) for i in range(8)})
     if args.test == "c1":
         out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers)
+    elif args.test == "c7":
+        out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers, complement=True)
+    elif args.test == "c6":
+        out = swap_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), layers, args.dirs.split(","))
     elif args.test == "c4":
         out = patch_panel(ctx, sample_pairs(ctx, args.n, 1, "C", "N", 3), "policy", layers)
     elif args.test == "c3":
@@ -155,7 +187,7 @@ def main():
     else:
         rows = [r for r in ctx.main if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
         out = ablate_panel(ctx, rows[: args.n], args.seeds)
-    name = f"causal_{args.test}_{args.model}_{args.tag}{'_confirm' if args.confirm else ''}"
+    name = f"causal_{args.test}_{args.model}_{args.tag}{'_confirm' if args.confirm else ''}{'_' + args.suffix if args.suffix else ''}"
     (RUNS / args.model / args.tag / f"{name}.jsonl").write_text("".join(json.dumps(o) + "\n" for o in out))
     print(json.dumps({"test": args.test, "records": len(out), "layers": layers, "blast": ctx.blast, "L_steer": ctx.l_steer,
                       "seconds": round(time.time() - t0, 1)}))
