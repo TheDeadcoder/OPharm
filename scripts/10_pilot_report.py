@@ -8,18 +8,18 @@ import opharm
 import numpy as np
 from sklearn.metrics import roc_auc_score
 
+from opharm.analysis import eval_split
 from opharm.paths import BENCH, RESULTS, RUNS
+from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows, dev_only
 
 EXEC = {"EXEC_MATCH", "EXEC_OTHER", "EXEC_UNSAFE", "EXEC_SAFE"}
 
 
-def boot(values_by_skeleton, n=2000, seed=0):
-    keys = list(values_by_skeleton)
-    rng = np.random.default_rng(seed)
-    stats = [np.mean([v for k in rng.choice(keys, len(keys)) for v in values_by_skeleton[k]]) for _ in range(n)]
-    point = np.mean([v for vs in values_by_skeleton.values() for v in vs])
-    return round(float(point), 3), [round(float(x), 3) for x in np.percentile(stats, [2.5, 97.5])]
+def boot(values_by_skeleton):
+    keys = sorted(values_by_skeleton)
+    est = cluster_ci([np.mean(values_by_skeleton[k]) for k in keys], [k.split(".")[0] for k in keys])
+    return round(est[0], 3), [round(est[1], 3), round(est[2], 3)]
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
     run = RUNS / args.model / args.tag
     meta = {json.loads(line)["id"]: json.loads(line) for line in open(BENCH / "instances.jsonl")}
     res = [dict(meta[json.loads(line)["id"]], **json.loads(line)) for line in open(run / "results.jsonl")]
-    res = analysis_rows(res) if args.confirm else dev_only(res)
+    res = [r for r in (analysis_rows(res) if args.confirm else dev_only(res)) if r["split"] == eval_split(args.confirm)]
     main_rows = [r for r in res if r["set"] == "main"]
     cell = {(r["skeleton"], r["target"] + r["env"] + r["rollback"] + r["policy"]): r for r in main_rows}
     skeletons = sorted({r["skeleton"] for r in main_rows})
@@ -74,6 +74,22 @@ def main():
     paired = [cell[(s, "DS" + rb + "C")]["label"] == "EXEC_MATCH" and cell[(s, "DP" + rb + "C")]["label"] not in EXEC
               for s in skeletons for rb in "AN"]
     shortcut = [r for r in res if r["set"] == "shortcut"]
+    ladder, cue = defaultdict(dict), defaultdict(dict)
+    for r in res:
+        if r["set"] == "ladder":
+            ladder[r["skeleton"]][r["rung"]] = r
+        if r["set"] == "cue":
+            cue[r["skeleton"]][r["cue"]] = r
+    vocabulary = {}
+    if ladder and cue:
+        vocabulary = {
+            "ladder_neutral_minus_none": boot({s: [v["neutral"]["m"] - cell[(s, "DPNN")]["m"]] for s, v in ladder.items()}),
+            "ladder_harm_minus_neutral": boot({s: [v["harm"]["m"] - v["neutral"]["m"]] for s, v in ladder.items()}),
+            "cue_harm_minus_none": boot({s: [v["harm"]["m"] - cell[(s, "BPNN")]["m"]] for s, v in cue.items()}),
+            "cue_slang_minus_none": boot({s: [v["slang"]["m"] - cell[(s, "BPNN")]["m"]] for s, v in cue.items()}),
+            "labels": {**{f"ladder_{g}": dict(Counter(v[g]["label"] for v in ladder.values())) for g in ("neutral", "harm")},
+                       **{f"cue_{g}": dict(Counter(v[g]["label"] for v in cue.values())) for g in ("harm", "slang")}},
+        }
 
     report = {
         "model": args.model, "n_skeletons": len(skeletons), "n_main": len(main_rows),
@@ -91,22 +107,25 @@ def main():
             "exec_with_text_preamble": round(len(preamble) / max(1, sum(eventual_tool)), 3),
             "labels": dict(Counter(r["label"] for r in decoded)),
         },
-        "shortcut_labels": dict(Counter(r["label"] for r in shortcut)),
+        "shortcut_labels": dict(Counter(r["label"] for r in shortcut)), "vocabulary": vocabulary,
         "cells": table, "judge_q1_accuracy_by_cell": acc_q1_by_cell,
     }
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"{args.tag}_{args.model}.json").write_text(json.dumps(report, indent=1))
+    (RESULTS / f"{args.tag}_{args.model}{'_confirm' if args.confirm else ''}.json").write_text(json.dumps(report, indent=1))
     print(json.dumps({k: v for k, v in report.items() if k not in ("cells", "judge_q1_accuracy_by_cell")}, indent=1))
     print("cells (code: target env rollback policy):")
     for c, v in table.items():
         print(f"  {c} {v}")
 
+    audit = run / "audit_sample.csv"
+    if args.confirm or audit.exists():
+        return
     rng = random.Random(0)
     pool = defaultdict(list)
     for r in decoded:
         pool[r["label"]].append(r)
     sample = [r for lab in sorted(pool) for r in rng.sample(pool[lab], min(len(pool[lab]), max(10, 100 * len(pool[lab]) // len(decoded))))][:100]
-    with open(run / "audit_sample.csv", "w", newline="") as f:
+    with open(audit, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["id", "cell", "auto_label", "your_label", "text"])
         for r in sample:

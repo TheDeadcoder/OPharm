@@ -132,6 +132,8 @@ def main():
            "H3": h3(rows, acts, tuple(st["blast"]["registered"]), args.confirm, args.n),
            "H4": h4(args.model, args.tag, args.confirm, st, args.n), "H5": h5(ev, acts, st, cc, args.n)}
     done = [k for k, v in res.items() if v is not None]
+    if args.confirm and len(done) < len(res):
+        raise FileNotFoundError(f"missing {sorted(set(res) - set(done))}; run the H4 steering panel first")
     adj, rej = holm([res[k]["p"] for k in done], ALPHA)
     for k, a, r in zip(done, adj, rej):
         res[k].update({"p_holm": float(a), "reject_null": bool(r)})

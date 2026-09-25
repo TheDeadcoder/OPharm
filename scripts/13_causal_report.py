@@ -6,6 +6,7 @@ import opharm
 import numpy as np
 
 from opharm.paths import RESULTS, RUNS
+from opharm.stats.bootstrap import cluster_ci, cluster_ratio_ci
 
 
 def load(model, tag, test, confirm, suffix=""):
@@ -13,19 +14,36 @@ def load(model, tag, test, confirm, suffix=""):
     return [json.loads(line) for line in open(path)] if path.exists() else []
 
 
+def by_skeleton(recs, value):
+    per = defaultdict(list)
+    for r in recs:
+        per[r.get("target", r.get("id")).rsplit(".", 2)[0]].append(value(r))
+    keys = sorted(per)
+    return np.array([np.mean(per[k]) for k in keys]), [k.split(".")[0] for k in keys]
+
+
+def mean_ci(recs, value):
+    return [round(x, 3) for x in cluster_ci(*by_skeleton(recs, value))]
+
+
+def ratio_ci(recs, num, den):
+    (a, strata), (b, _) = by_skeleton(recs, num), by_skeleton(recs, den)
+    return [round(x, 3) for x in cluster_ratio_ci(a, b, strata)] if abs(b.mean()) > 1e-6 else None
+
+
 def patch_summary(recs, pos):
     groups = defaultdict(list)
     for r in recs:
         t, s = r["target"].rsplit(".", 1)[1][pos], r["source"].rsplit(".", 1)[1][pos]
         groups[(r["layer"], f"{t}<-{s}" + (f"|{r['direction']}" if "direction" in r else ""))].append(r)
-    frac = lambda moved, gap: moved / gap if abs(gap) > 1e-6 else None
     out = {}
     for (layer, d), rs in sorted(groups.items()):
-        mg, mm = (float(np.mean([x[k] - x["m_clean"] for x in rs])) for k in ("m_source", "m_patched"))
-        entry = {"n": len(rs), "m_gap": mg, "m_moved": mm, "m_fraction": frac(mm, mg)}
+        gap, moved = (lambda x: x["m_source"] - x["m_clean"]), (lambda x: x["m_patched"] - x["m_clean"])
+        entry = {"n": len(rs), "m_gap": mean_ci(rs, gap), "m_moved": mean_ci(rs, moved), "m_fraction": ratio_ci(rs, moved, gap)}
         for k in rs[0]["probe"]:
-            pg, pm = (float(np.mean([x["probe"][k][q] - x["probe"][k]["clean"] for x in rs])) for q in ("source", "patched"))
-            entry[f"probe_{k}"] = {"gap": pg, "moved": pm, "fraction": frac(pm, pg)}
+            pgap = lambda x, k=k: x["probe"][k]["source"] - x["probe"][k]["clean"]
+            pmoved = lambda x, k=k: x["probe"][k]["patched"] - x["probe"][k]["clean"]
+            entry[f"probe_{k}"] = {"gap": mean_ci(rs, pgap), "fraction": ratio_ci(rs, pmoved, pgap)}
         out[f"{layer}|{d}"] = entry
     return out
 
@@ -34,24 +52,22 @@ def steer_summary(recs):
     groups = defaultdict(list)
     for r in recs:
         kind = r["direction"] if not r["direction"].startswith("rand") else "_".join(r["direction"].split("_")[:2])
-        groups[(kind, r["coef"], r["cell"][:2])].append(r["m"] - r["m_clean"])
-    table = {f"{k}|{c}|{cell}": float(np.mean(v)) for (k, c, cell), v in sorted(groups.items())}
+        groups[(kind, r["coef"], r["cell"][:2])].append(r)
+    table = {f"{k}|{c}|{cell}": mean_ci(rs, lambda x: x["m"] - x["m_clean"]) for (k, c, cell), rs in sorted(groups.items())}
     select = {}
     for kind in sorted({k for k, _, _ in groups if not k.startswith("rand")}):
         for c in sorted({r["coef"] for r in recs}):
-            dp, ds, bp = (np.mean(groups[(kind, c, cell)]) if groups[(kind, c, cell)] else np.nan for cell in ("DP", "DS", "BP"))
-            select[f"{kind}|{c}"] = {"caution_DP": float(-dp), "caution_DS": float(-ds), "caution_BP": float(-bp),
-                                     "selectivity_env": float(-dp + ds), "selectivity_target": float(-dp + bp)}
+            dp, ds, bp = (table[f"{kind}|{c}|{cell}"][0] if f"{kind}|{c}|{cell}" in table else np.nan for cell in ("DP", "DS", "BP"))
+            select[f"{kind}|{c}"] = {"selectivity_env": round(float(ds - dp), 3), "selectivity_target": round(float(bp - dp), 3)}
     return {"mean_m_shift": table, "selectivity": select}
 
 
 def ablate_summary(recs):
     groups = defaultdict(list)
     for r in recs:
-        kind = "random" if r["direction"].startswith("rand") else r["direction"]
-        groups[kind].append(r)
-    return {k: {"n": len(v), "m_shift_mean": float(np.mean([r["m"] - r["m_clean"] for r in v])),
-                "flip_to_act": float(np.mean([(r["m_clean"] < 0) and (r["m"] > 0) for r in v]))} for k, v in groups.items()}
+        groups["random" if r["direction"].startswith("rand") else r["direction"]].append(r)
+    return {k: {"n": len(v), "m_shift": mean_ci(v, lambda x: x["m"] - x["m_clean"]),
+                "flip_to_act": mean_ci(v, lambda x: float(x["m_clean"] < 0 < x["m"]))} for k, v in groups.items()}
 
 
 def main():

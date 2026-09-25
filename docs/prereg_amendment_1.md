@@ -1,16 +1,19 @@
-# Preregistration amendment 1 (draft for your review)
+# Preregistration amendment 1
 
 **Registered document:** `docs/prereg.md` at commit f2ea753 (2026-09-25 00:12 +06). That file stays unedited. This file records every change and clarification made since.
 
-**Status when written (2026-09-25):**
+**Status:**
+- Written on 2026-09-25 and finalized the same day, before unlock.
 - Held-out skeletons are sealed.
-- `configs/locked.yaml` and `prereg.lock` do not exist yet. The lock hash covers `docs/prereg.md`, this file and `configs/locked.yaml`, so no held-out analysis can run before this amendment is committed.
+- The lock hash covers `docs/prereg.md`, this file and `configs/locked.yaml`, so no held-out analysis can run before the final version of this amendment is committed.
 
-**Observed since registration** (all on development skeletons or reference sets):
+**Observed since registration** (all on development skeletons, reference sets or the Qwen3.5-9B validation):
 - Content directions and the C5 control, re-run on the final prompts.
 - The representation analyses (`scripts/11_representation.py`).
-- Causal panels C1 to C4.
-- A dry run of the confirmatory analysis.
+- Causal panels C1 to C4, including the C3 dose ladder (coefficients 0.1 to 2).
+- Exploratory panels C6 and C7 (section 4).
+- A dry run of the confirmatory analysis. On development data, H4 gives +1.45 [1.32, 1.59], the opposite sign to the prediction.
+- Qwen3.5-9B validation (numerics, hook tests, content-harm directions, C5) and the start of its behavioral grid.
 
 ## 1. Deviation
 
@@ -32,20 +35,61 @@ Added, reported beside the registered analyses and outside the Holm family:
 
 ## 3. Clarifications (points the registered text left open)
 
-- Every estimator is averaged within skeleton first. The bootstrap resamples skeletons within class, and intervals are percentile intervals.
+**Statistics**
+- Every estimator, including the secondary ones, is averaged within skeleton first. The bootstrap resamples skeletons within class, 10,000 times, and intervals are percentile intervals. A patching fraction is a ratio of skeleton-averaged means.
 - A one-sided bootstrap p-value is (1 + resamples on the null side of the null value) / (1 + 10,000). The H2 equivalence p-value is the larger of the two one-sided p-values against -0.2 and 0.2.
+- Holm is applied only when all five p-values exist.
+
+**H3 and H4**
 - H3: the probe and the baseline are fit once on development data. The bootstrap resamples held-out test skeletons, and the better baseline is taken within each resample.
-- H4 covers all held-out prompts in cells D,P,A,N and D,P,N,N. `r_blast` is taken at `t_post` and L_steer, the same position and layer as `r_ref`.
+- H4 covers all held-out prompts in cells D,P,A,N and D,P,N,N.
+  - `r_blast` is taken at `t_post` and L_steer, the same position and layer as `r_ref`.
+  - There are 24 random directions per tested direction, each orthogonal to it and matched in norm.
+
+**Secondary analyses**
 - C3 adds two directions at the same norm: `r_blast` with its `r_ref` component removed, and `r_blast` taken at `t_inst`.
 - The `r_ask` contrast and the C2 rows use prompts labeled ASK, as registered. Non-executions labeled EXEC_OTHER are excluded.
+- The behavior secondaries use held-out skeletons only. They include the phrasing-ladder and cue-only effects on m(x):
+  - plain note against no note;
+  - harm wording against plain note;
+  - harm and slang cues against no note.
+- Correction before unlock: the behavior report's confirm mode had pooled development and held-out rows. It now reads held-out rows only.
 
 ## 4. Analysis code
 
-- `scripts/14_confirm.py` computes H1 to H5 and the Holm family.
-- Scripts 11, 12 and 13 compute the secondary analyses.
-- With `--confirm`, every probe and direction is fit on development skeletons and evaluated on held-out skeletons. Layer and position values come from `configs/locked.yaml`.
-- The code at the commit that adds this file is the registered analysis.
+The code at the commit that finalizes this amendment is the registered analysis. With `--confirm`, every probe and direction is fit on development skeletons and evaluated on held-out skeletons, and layer and position values come from `configs/locked.yaml`.
 
-## 5. Open before commit
+Primary:
+```
+uv run python scripts/12_causal.py c3 qwen35_4b --tag grid --confirm --groups DP --coefs 1 --seeds 24 --n 1000 --suffix h4
+uv run python scripts/14_confirm.py qwen35_4b --tag grid --confirm
+```
 
-- The H4 steering coefficient. The development steering panel will show whether coefficient 1 saturates m(x).
+Secondary:
+```
+uv run python scripts/10_pilot_report.py qwen35_4b --tag grid --confirm
+uv run python scripts/11_representation.py qwen35_4b --tag grid --confirm
+uv run python scripts/12_causal.py c1 qwen35_4b --tag grid --confirm
+uv run python scripts/12_causal.py c4 qwen35_4b --tag grid --confirm
+uv run python scripts/12_causal.py c2 qwen35_4b --tag grid --confirm
+uv run python scripts/12_causal.py c3 qwen35_4b --tag grid --confirm --coefs 0.1,0.25,0.5,1,2
+uv run python scripts/13_causal_report.py qwen35_4b --tag grid --confirm
+```
+
+Exploratory, not registered:
+```
+uv run python scripts/12_causal.py c6 qwen35_4b --tag grid --confirm
+uv run python scripts/12_causal.py c6 qwen35_4b --tag grid --confirm --dirs r_blast_post --suffix post
+uv run python scripts/12_causal.py c7 qwen35_4b --tag grid --confirm
+```
+
+## 5. H4 steering coefficient
+
+Coefficient 1, as registered.
+- On the development dose ladder, `r_blast` is at least as strong as `r_ref` at every coefficient from 0.1 to 1, so the coefficient does not change the direction of the result.
+- Coefficient 1 is near saturation but not at it: `r_ref` gives -11.0 at 1 and -12.4 at 2.
+- Keeping the registered value avoids a post hoc choice.
+
+## 6. Qwen3.5-9B
+
+The replication's layer and position values will be set by the registered rules on its development data. They will be locked in a later amendment, before any of its held-out rows are analyzed.
