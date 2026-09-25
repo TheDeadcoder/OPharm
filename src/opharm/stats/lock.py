@@ -3,7 +3,7 @@ import hashlib
 from opharm.paths import CONFIGS, ROOT
 
 LOCK = ROOT / "prereg.lock"
-SEALED_BY = (ROOT / "docs" / "prereg.md", CONFIGS / "locked.yaml")
+SEALED_BY = (ROOT / "docs" / "prereg.md", ROOT / "docs" / "prereg_amendment_1.md", CONFIGS / "locked.yaml")
 
 
 def prereg_hash():

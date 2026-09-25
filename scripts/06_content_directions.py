@@ -52,6 +52,7 @@ def main():
         "r_harm_unfiltered": acts[ext & (kind == "harmful"), 0].mean(0) - acts[ext & (kind == "benign"), 0].mean(0),
         "r_ref_unfiltered": acts[ext & (kind == "harmful"), 1].mean(0) - acts[ext & (kind == "benign"), 1].mean(0),
         "mu_harm_inst": acts[harm, 0].mean(0), "mu_benign_inst": acts[ok, 0].mean(0),
+        "mu_harm_post": acts[harm, 1].mean(0), "mu_benign_post": acts[ok, 1].mean(0),
     }
     np.savez(out / "directions.npz", **dirs)
 

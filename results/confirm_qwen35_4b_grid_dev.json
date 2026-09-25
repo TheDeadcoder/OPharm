@@ -1,0 +1,134 @@
+{
+ "model": "qwen35_4b",
+ "tag": "grid",
+ "eval_split": "dev",
+ "settings": {
+  "L_harm": 16,
+  "L_ref": 16,
+  "L_steer": 18,
+  "P_blast": "t_inst",
+  "L_blast": 23,
+  "L_blast_registered": 25,
+  "steer_coef": 1.0
+ },
+ "bootstrap_resamples": 2000,
+ "family": [
+  "H1",
+  "H2",
+  "H3",
+  "H4",
+  "H5"
+ ],
+ "alpha": 0.05,
+ "hypotheses": {
+  "H1": {
+   "estimate": 4.8656835467727095,
+   "ci95": [
+    4.753085834008676,
+    4.982446480128501
+   ],
+   "n_skeletons": 216,
+   "test": "Delta_policy - Delta_blast > 0",
+   "p": 0.0004997501249375312,
+   "delta_policy": [
+    5.2345239100632845,
+    [
+     5.138653173490806,
+     5.333661535713407
+    ]
+   ],
+   "delta_blast": [
+    0.3688403632905748,
+    [
+     0.3232208055478555,
+     0.4150217320080155
+    ]
+   ],
+   "p_holm": 0.002498750624687656,
+   "reject_null": true
+  },
+  "H2": {
+   "estimate": 0.02370634488761425,
+   "ci95": [
+    0.021172293741256,
+    0.02616354548372328
+   ],
+   "n_skeletons": 216,
+   "test": "equivalence within +/-0.2 (TOST)",
+   "p": 0.0004997501249375312,
+   "p_holm": 0.002498750624687656,
+   "reject_null": true
+  },
+  "H3": {
+   "estimate": 0.2796424897119342,
+   "ci95": [
+    0.23326112932956095,
+    0.3273986732681756
+   ],
+   "n_skeletons": 54,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 0.0004997501249375312,
+   "probe_auroc": 0.7958461934156379,
+   "ngram_auroc": {
+    "naive_bayes": 0.5162037037037037,
+    "logistic": 0.5054655349794239
+   },
+   "C": 0.1,
+   "position": "t_inst",
+   "layer": 23,
+   "n_test": 864,
+   "p_holm": 0.002498750624687656,
+   "reject_null": true
+  },
+  "H4": {
+   "estimate": 0.3802604675292969,
+   "ci95": [
+    0.3802604675292969,
+    0.3802604675292969
+   ],
+   "n_skeletons": 1,
+   "test": "Delta_m(r_ref) - Delta_m(r_blast) < 0",
+   "p": 1.0,
+   "delta_m_r_ref": -10.613903045654297,
+   "delta_m_r_blast": -10.994163513183594,
+   "delta_m_random_ref": 1.1974544525146484,
+   "delta_m_random_blast": -1.0037975311279297,
+   "n_random_per_direction": 1,
+   "p_holm": 1.0,
+   "reject_null": false
+  },
+  "H5": {
+   "estimate": 0.06666145473718643,
+   "ci95": [
+    0.06278927568346263,
+    0.07044019661843777
+   ],
+   "n_skeletons": 157,
+   "test": "Delta_ref > 0",
+   "p": 0.0004997501249375312,
+   "p_holm": 0.002498750624687656,
+   "reject_null": true
+  }
+ },
+ "secondary": {
+  "H3_registered_rule": {
+   "estimate": 0.1655896347736625,
+   "ci95": [
+    0.1271732199502742,
+    0.20961867176783258
+   ],
+   "n_skeletons": 54,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 0.0004997501249375312,
+   "probe_auroc": 0.6817933384773662,
+   "ngram_auroc": {
+    "naive_bayes": 0.5162037037037037,
+    "logistic": 0.5054655349794239
+   },
+   "C": 1.0,
+   "position": "t_post",
+   "layer": 25,
+   "n_test": 864
+  }
+ }
+}

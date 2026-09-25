@@ -1,0 +1,10 @@
+qwen35_4b:
+  L_harm: 16
+  L_ref: 16
+  L_steer: 18
+  blast:
+    registered: [t_post, 25]
+    dev_best: [t_inst, 23]
+  steer_coef: 1.0
+  random_directions: 24
+  patch_layers: [1, 5, 9, 13, 18, 22, 26, 30]
