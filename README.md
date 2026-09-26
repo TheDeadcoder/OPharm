@@ -52,13 +52,12 @@ The model either calls a tool or replies in text. A deterministic oracle labels 
   - shortcut framing, flattened tools and narration.
 - 29,608 instances. All 10,240 minimal pairs are token-aligned.
 
-**Model.** Qwen3.5-4B in non-thinking mode, with greedy decoding and bf16 weights. It is a hybrid of Gated DeltaNet and attention layers, with 32 layers in total.
+**Models.** Qwen3.5-4B and Qwen3.5-9B, in non-thinking mode, with greedy decoding and bf16 weights. Both are hybrids of Gated DeltaNet and attention layers, with 32 layers.
 
 ## Methods
 
 **Decision measure.**
 - m(x) is the log-odds that the first generated token opens a tool call.
-- The first token agrees with the final action on 96.2% of prompts.
 
 **Positions.**
 - `t_inst`: the closing period of the user turn.
@@ -72,7 +71,7 @@ The model either calls a tool or replies in text. A deterministic oracle labels 
 - `r_blast` is the mean over production prompts minus the mean over staging prompts.
 
 **Probes.**
-- L2 logistic regression on standardized residuals.
+- L2 logistic regression on standardized residuals, trained on development data only.
 - Trained on 4 action classes in 2 surface forms; tested on the other 4 classes in the other 2 forms.
 - Baseline: naive Bayes and logistic regression on 1-to-3-gram counts of the ticket.
 
@@ -85,71 +84,83 @@ The model either calls a tool or replies in text. A deterministic oracle labels 
 | C6 | Swap only the coordinate along one direction, at positions whose tokens the twins share |
 | C4 | Patch the policy span between confirmation-rule and neutral-rule twins |
 | C2 | Remove a direction at every layer and position |
-| C3 | Add a direction at layer 18 at every position; doses are multiples of the norm of `r_ref` |
+| C3 | Add a direction at every position of one layer; doses are multiples of the norm of `r_ref` |
 
-Random directions serve as controls for C2, C3 and C6. For C2 and C3 they are orthogonal to the tested direction and matched in norm. In the positive control, adding `r_ref` at layer 18 makes the model refuse 100% of benign requests; random directions give 0%. Removing it lowers refusal of harmful requests from 81% to 70%, against about 80% with random directions.
+- **Random controls.** Random directions are the controls for C2, C3 and C6. For C2 and C3 they are orthogonal to the tested direction and matched in norm.
+- **Positive control, adding `r_ref`.** It makes the model refuse 100% of benign requests (4B at layer 18, 9B at layer 23). Random directions give at most 2%.
+- **Positive control, removing `r_ref`.**
+  - 4B: refusal of harmful requests falls from 81% to 70%, against about 80% with random directions.
+  - 9B: it falls from 91% to 0%, against about 90% with random directions.
 
-**Statistics.** Estimates are averaged within skeleton first. 95% intervals come from a cluster bootstrap over skeletons, stratified by action class, with 10,000 resamples.
+**Statistics.** Estimates are averaged within skeleton first. 95% intervals come from a cluster bootstrap over skeletons, with 10,000 resamples, stratified by template family (nested within action class).
 
 ## Findings
 
-All results are on the 216 development skeletons.
+Results cover the 216 development skeletons for both models, and the 104 held-out skeletons for the 4B.
 
 ### Summary
 
-- The model recognizes production.
-- It represents production linearly, beyond lexical cues, and carries it to the decision token.
-- The direction that encodes production can suppress action as strongly as the content-harm refusal direction.
-- But the natural production signal is small:
-  - it moves the action by 0.4 logits, against 5.2 for an explicit confirmation rule;
-  - it moves the harmfulness direction by 2% of the content-harm gap.
-- Harm vocabulary moves the action about as much as a true statement of the consequence.
+- **Recognition.** Both models recognize production when asked (AUROC 0.94 for the 4B, 0.99 for the 9B).
+- **Representation.** Both represent production linearly, beyond lexical cues.
+- **Wiring (4B).** Production reaches the decision token. The direction that encodes it can suppress action as strongly as the content-harm refusal direction.
+- **Magnitude.** The natural production signal is small:
+  - it moves the action by 0.4 logits on the 4B and 0.06 on the 9B, against 5 to 6 logits for an explicit confirmation rule;
+  - it moves the harmfulness direction by 1 to 3% of the content-harm gap.
+- **The 9B and the rule.** The 9B follows the confirmation rule more strongly than the 4B, but much of its added caution also falls on staging.
+- **Vocabulary.** Harm wording moves the action about as much as a true statement of the consequence.
+- **Replication.** The 4B's held-out skeletons reproduce its development results.
 
 ### 1. Behavior
 
-| Destructive action on production | Neutral rule | Confirmation rule |
-|---|---|---|
-| Executed as requested | 99.3% | 85.9% (94.4% with rollback, 77.3% without) |
+| | 4B development | 4B held-out | 9B development |
+|---|---|---|---|
+| Destructive production executed, neutral rule | 99.3% | 98.1% | 100% |
+| Destructive production executed, confirmation rule | 85.9% | 84.1% | 56.7% |
+| Asks on destructive staging, confirmation rule (rollback; none) | 1.4%; 9.7% | 1.0%; 8.7% | 22.7%; 40.7% |
+| Effect on m(x): confirmation policy | 5.24 [5.14, 5.33] | 5.05 [4.92, 5.18] | 6.12 [6.01, 6.23] |
+| Effect on m(x): rollback | 0.98 [0.92, 1.03] | 0.95 [0.87, 1.02] | 0.41 [0.36, 0.45] |
+| Effect on m(x): target, destructive against benign | 0.43 [0.38, 0.49] | 0.40 [0.33, 0.47] | 0.43 [0.38, 0.48] |
+| Effect on m(x): production against staging, neutral rule | 0.37 [0.32, 0.42] | 0.38 [0.32, 0.44] | 0.06 [0.03, 0.10] |
+| Effect on m(x): production against staging, confirmation rule | 0.43 [0.39, 0.47] | 0.41 [0.35, 0.47] | 0.38 [0.33, 0.42] |
+| Over-caution, where acting is correct | 2.4% | 2.3% | 12.5% |
+| Paired accuracy on production and staging twins, confirmation rule | 7.6% | 8.7% | 14.4% |
+| Shortcut framing, unsafe path taken | 10.2% | 12.5% | 4.6% |
+| Judging whether the request targets production (AUROC) | 0.94 | 0.94 | 0.99 |
+| First token agrees with the final action | 96.2% | 96.0% | 84.5% |
 
-| Effect on m(x), logits | Estimate |
-|---|---|
-| Confirmation policy | 5.24 [5.14, 5.33] |
-| Rollback | 0.98 [0.92, 1.03] |
-| Target, destructive against benign | 0.43 [0.38, 0.49] |
-| Blast radius, production against staging | 0.37 [0.32, 0.42] (neutral rule); 0.43 [0.39, 0.47] (confirmation rule) |
-
-- **Recognition without caution:** asked whether a request targets a production system, the model answers with AUROC 0.94 (0.91 to 1.00 by form). Yet under the confirmation rule, it asks before a destructive production action only 7 to 21% of the time, depending on form. On staging the rate is 2 to 10%.
-- **Other behavior:**
-  - over-caution, where acting is correct: 2.4%;
-  - paired accuracy on production and staging twins under the confirmation rule: 7.6%;
-  - shortcut framing, where the destructive command is only an available shortcut in a benign task: unsafe path taken 10.2% of the time.
+- Both models recognize production far better than they act on it.
+- On the 9B, 10.7% of executions begin with text, so m(x) tracks its behavior less closely than on the 4B.
 
 ### 2. Seen
 
-- **Production shift:** production moves destructive requests by 0.024 [0.021, 0.026] content-harm gaps along `r_harm`, and by 0.015 [0.013, 0.017] along `r_ref`.
-- **Absolute position:** all four target-by-environment cells sit at 0.34 to 0.39 on `r_harm`, benign staging included. The absolute position reflects the task type, not the danger.
+| | 4B development | 4B held-out | 9B development |
+|---|---|---|---|
+| Production shift on `r_harm` (content-harm gaps) | 0.024 [0.021, 0.026] | 0.026 [0.022, 0.030] | 0.011 [0.007, 0.014] |
+| Production shift on `r_ref` | 0.015 [0.013, 0.017] | 0.015 [0.013, 0.017] | 0.016 [0.014, 0.018] |
+| Position of the four target-by-environment cells on `r_harm` | 0.34 to 0.39 | 0.34 to 0.40 | 0.15 to 0.18 |
+
+Benign staging requests sit as high as destructive production ones, so the absolute position reflects the task type, not the danger.
 
 ### 3. Represented
 
-Blast-radius probe, tested on unseen classes in unseen surface forms:
+Blast-radius probe, tested on unseen classes in unseen surface forms (AUROC):
 
-| Position, layer | How the point was chosen | Probe AUROC | n-gram baseline |
+| Probe point | 4B development | 4B held-out | 9B development |
 |---|---|---|---|
-| `t_post`, 25 | Best leave-one-form-out score within the training forms | 0.682 | 0.516 |
-| `t_inst`, 23 | Best score on this test partition (optimistic) | 0.796 | 0.516 |
+| `t_post`, layer chosen by leave-one-form-out score | 0.682 (layer 25) | 0.668 | 0.697 (layer 31) |
+| `t_inst`, layer chosen by best development score (optimistic on development) | 0.796 (layer 23) | 0.775 | 0.821 (layer 24) |
+| n-gram baseline | 0.516 | 0.511 | 0.516 |
 
-- **Transfer:** unseen classes cost almost nothing (0.95 to 0.99 on the training forms). Unseen surface forms are the difficulty. The account-name form transfers worst (0.56 to 0.67), and it is also the weakest form for judgment (AUROC 0.91).
-- **Other factors:** the target factor and the conjunction (destructive and production) are not decodable beyond words.
-  - Target: n-gram baseline 0.85, probe 0.62 to 0.64.
-  - Conjunction: n-gram baseline 0.88, probe 0.66 to 0.69.
-- **Masking:** with the environment span masked, prompts read as staging.
-- **Judgment and action:** a production direction taken from the judgment prompts separates production from staging in action prompts, with AUROC up to 0.90.
+- **Transfer (4B development):** unseen classes cost almost nothing (0.95 to 0.99 on the training forms). Unseen surface forms are the difficulty. The account-name form transfers worst (0.56 to 0.67), and it is also the weakest form for judgment (AUROC 0.91).
+- **Other factors:** the target factor and the conjunction (destructive and production) are not decodable beyond words on either model.
+  - Target: n-gram baseline 0.83 to 0.85, probe 0.61 to 0.68.
+  - Conjunction: n-gram baseline 0.84 to 0.88, probe 0.64 to 0.73.
+- **Masking:** with the environment span masked, prompts read closer to staging than to production.
 - **Geometry:**
-  - At `t_post`, `r_blast` has cosine 0.49 to 0.52 with `r_ref` at layers 23 to 25. Its norm is only about 5% of the norm of `r_ref`.
-  - The direction separating asks from executions has cosine 0.60 to 0.62 with `r_ref`.
-  - The tool-schema direction (native JSON tools against the same tools written as prose) is nearly orthogonal to `r_ref` (cosine -0.03 to -0.11).
+  - At `t_post`, `r_blast` has cosine 0.47 to 0.52 with `r_ref` at layers 23 to 25 on the 4B, and 0.33 to 0.35 on the 9B. On the 4B its norm is only about 5% of the norm of `r_ref`.
+  - The direction separating asks from executions has cosine 0.59 to 0.62 with `r_ref` on the 4B, and 0.33 to 0.44 on the 9B.
 
-### 4. Wired
+### 4. Wired (4B development)
 
 The patching tests use 60 production and staging pairs, patched in both directions at 8 layers. Production's natural effect on m(x) in these pairs is 0.44 [0.33, 0.55] logits.
 
@@ -172,9 +183,9 @@ The patching tests use 60 production and staging pairs, patched in both directio
 
 Removing `r_blast` overshoots. m(x) goes from -1.09 to +1.43, past the staging twins (-0.45). The direction behaves like a general caution axis, and production moves prompts only slightly along it.
 
-- **C3, steering:** this test uses 60 prompts per group under the neutral rule, and 8 random directions per tested direction. Change in m(x) on destructive production prompts (starting near +6.4):
+- **C3, steering at layer 18:** 60 prompts per group under the neutral rule, and 8 random directions per tested direction. Change in m(x) on destructive production prompts (starting near +6.4):
 
-| Direction added at layer 18 | 0.1 | 0.25 | 0.5 | 1 | 2 |
+| Direction added | 0.1 | 0.25 | 0.5 | 1 | 2 |
 |---|---|---|---|---|---|
 | `r_ref` | +0.14 | -0.51 | -3.84 | -10.99 | -12.37 |
 | `r_blast` (`t_post`), same norm as `r_ref` | -0.49 | -1.68 | -4.81 | -12.45 | -13.69 |
@@ -189,18 +200,23 @@ Removing `r_blast` overshoots. m(x) goes from -1.09 to +1.43, past the staging t
 
 ### 5. Vocabulary
 
-These results use destructive production actions without rollback, under the neutral rule.
+Destructive production without rollback under the neutral rule, and the same notes on benign targets. Change in m(x), in logits:
 
-- **Plain consequence note:** a note stating the consequence plainly ("this permanently deletes ..., it cannot be restored") lowers m(x) by 0.96 [0.85, 1.08].
-- **Harm vocabulary:** the same information in harm vocabulary lowers m(x) a further 0.49 [0.40, 0.58]. It also moves the position on `r_ref` up by 0.067 [0.063, 0.070] gaps.
-- **Cue-only controls:** on benign targets, harm wording alone lowers m(x) by 0.97 [0.84, 1.10], as much as a true consequence note. Slang ("just nuke ...") lowers it by 0.37 [0.27, 0.48].
-- **Execution:** stays at 94 to 100% throughout. All of these effects are small next to the 5.2-logit policy effect.
+| | 4B development | 4B held-out | 9B development |
+|---|---|---|---|
+| Plain consequence note ("this permanently deletes ..., it cannot be restored") | -0.96 [-1.08, -0.85] | -0.93 [-1.08, -0.77] | -0.84 [-0.91, -0.77] |
+| The same information in harm vocabulary, beyond the plain note | -0.49 [-0.58, -0.40] | -0.40 [-0.52, -0.29] | -0.14 [-0.18, -0.10] |
+| Harm wording on a benign target | -0.97 [-1.09, -0.84] | -0.84 [-1.00, -0.68] | -0.89 [-0.95, -0.83] |
+| Slang ("just nuke ...") on a benign target | -0.37 [-0.48, -0.26] | -0.37 [-0.52, -0.22] | -0.79 [-0.88, -0.71] |
+
+- On development data, harm vocabulary also moves the position on `r_ref` up by 0.067 [0.063, 0.070] gaps on the 4B, and by 0.021 [0.018, 0.024] on the 9B.
+- Execution stays at 94 to 100% throughout. The 9B executes every ladder and cue prompt.
 
 ## Repository
 
 ```
 configs/          pinned model and data revisions; locked analysis values
-docs/             benchmark specification, preregistration, project report
+docs/             benchmark specification, preregistration
 src/opharm/
   bench/          templates, lexicons, generator, token alignment, oracle
   refsets/        content-harm reference set and refusal classifier
@@ -212,7 +228,7 @@ src/opharm/
   models.py       model loading
 scripts/          numbered pipeline, below
 tests/            unit tests
-results/          one JSON summary per experiment
+results/          one JSON summary per experiment; figures in results/figures
 ```
 
 | Scripts | Step |
@@ -224,5 +240,6 @@ results/          one JSON summary per experiment
 | `11` | representation: seen, probes, geometry |
 | `12`, `13` | causal tests and their report |
 | `14` | hypothesis tests with Holm correction |
+| `15` | figures |
 
 Setup: `uv sync`, then put a Hugging Face read token in `.env` as `HF_READ=...`. Generated data, run outputs, caches and model weights stay inside the folder and are not tracked.
