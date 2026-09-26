@@ -108,7 +108,7 @@ Results cover the 216 development skeletons for both models, and the 104 held-ou
   - it moves the harmfulness direction by 1 to 3% of the content-harm gap.
 - **The 9B and the rule.** The 9B follows the confirmation rule more strongly than the 4B, but much of its added caution also falls on staging.
 - **Vocabulary.** Harm wording moves the action about as much as a true statement of the consequence.
-- **Replication.** The 4B's held-out skeletons reproduce its development results.
+- **Replication.** The 4B's held-out skeletons reproduce its development results, including the causal tests.
 - **Preregistered tests.** Four of the five hold on held-out skeletons. The fifth (H4) fails in the opposite direction: the blast-radius direction is at least as strong a handle on the action as the refusal direction.
 
 ### Preregistered tests (Qwen3.5-4B, held-out skeletons)
@@ -178,43 +178,57 @@ Blast-radius probe, tested on unseen classes in unseen surface forms (AUROC):
   - At `t_post`, `r_blast` has cosine 0.47 to 0.52 with `r_ref` at layers 23 to 25 on the 4B, and 0.33 to 0.35 on the 9B. On the 4B its norm is only about 5% of the norm of `r_ref`.
   - The direction separating asks from executions has cosine 0.59 to 0.62 with `r_ref` on the 4B, and 0.33 to 0.44 on the 9B.
 
-### 4. Wired (4B development)
+### 4. Wired (4B)
 
-The patching tests use 60 production and staging pairs, patched in both directions at 8 layers. Production's natural effect on m(x) in these pairs is 0.44 [0.33, 0.55] logits.
+Each cell shows development; held-out.
 
-- **C1, environment span:** patching the span carries the whole effect at layer 1, about 40% at layer 9 and 7% at layer 18. The information leaves the span by mid-depth.
-- **C7, the rest of the prompt:** patching every other position carries the remainder. Together with C1 it accounts for about 100% of the effect at every layer.
-- **C6, one coordinate:** a swap along a single direction, at the positions whose tokens the twins share.
-  - Along the `t_inst` production direction:
-    - at layer 22 it carries all of the `t_inst` probe's signal, and none of the effect on the action (0%, interval -5 to 4%);
-    - at layer 18 it carries 63% of the probe's signal and 10% of the action effect.
-  - Along the `t_post` production direction: it carries 22 to 33% of the effect on the action at layer 18, and 58% at layer 30.
-- **C4, policy span:** the policy's 5.44-logit effect also leaves its span by layer 18.
-- **C2, ablation:** removing a direction in the 55 production prompts where the model asks under the confirmation rule.
+**Patching.** 60 production and staging pairs, patched in both directions at 8 layers.
+- **Natural effect:** production's effect on m(x) in these pairs is 0.44 [0.33, 0.55]; 0.40 [0.30, 0.51] logits.
+- **The five rows below:**
+  - C1 patches the environment span.
+  - C7 patches every other position.
+  - C6 swaps only the coordinate along one production direction, at the positions whose tokens the twins share.
+
+Share of the production effect carried when staging activations are patched into the production prompt:
+
+| Intervention | Layer 1 | Layer 9 | Layer 18 | Layer 22 | Layer 30 |
+|---|---|---|---|---|---|
+| C1, environment span | 93%; 101% | 41%; 38% | 7%; 4% | 4%; 3% | 1%; 0% |
+| C7, all other positions | -5%; 1% | 60%; 62% | 94%; 91% | 97%; 97% | 98%; 96% |
+| C6, `t_post` production coordinate | 6%; 6% | 3%; 6% | 33%; 31% | 28%; 29% | 58%; 50% |
+| C6, `t_inst` production coordinate | 1%; 2% | 6%; 4% | 10%; 14% | -1%; 1% | -5%; -2% |
+| C6, `t_inst` coordinate: share of the `t_inst` probe's signal | 0%; 0% | 4%; 3% | 64%; 55% | 100%; 84% | 0%; 0% |
+
+- **C1 and C7:** the environment information leaves its span by mid-depth. From then on it travels through the rest of the prompt.
+- **C6 `t_post`:** the coordinate at the decision token carries up to about half of the effect on the action.
+- **C6 `t_inst`:** the coordinate the `t_inst` probe reads carries almost none of it, even where it carries most of the probe's signal.
+- **C4, policy span:** the policy's effect on m(x) (5.44; 5.14 logits) is carried by its span at layer 1 and has left the span by layer 18.
+
+**C2, ablation.** A direction is removed from the production prompts where the model asks under the confirmation rule (development 55 prompts; held-out 29).
 
 | Direction removed | Asks flipped to execution |
 |---|---|
-| `r_blast` at `t_inst`, layer 23 | 97% [93, 100] |
-| `r_ref` | 91% [83, 98] |
-| `r_blast` at `t_post`, layer 25 | 70% [58, 82] |
-| 8 random directions | 2% [1, 3] |
+| `r_blast` at `t_inst`, layer 23 | 97% [93, 100]; 100% [100, 100] |
+| `r_ref` | 91% [83, 98]; 92% [82, 100] |
+| `r_blast` at `t_post`, layer 25 | 70% [58, 82]; 84% [72, 96] |
+| 8 random directions | 2% [1, 3]; 2% [0, 3] |
 
-Removing `r_blast` overshoots. m(x) goes from -1.09 to +1.43, past the staging twins (-0.45). The direction behaves like a general caution axis, and production moves prompts only slightly along it.
+On development skeletons, removing `r_blast` overshoots: m(x) goes from -1.09 to +1.43, past the staging twins (-0.45). The direction behaves like a general caution axis, and production moves prompts only slightly along it.
 
-- **C3, steering at layer 18:** 60 prompts per group under the neutral rule, and 8 random directions per tested direction. Change in m(x) on destructive production prompts (starting near +6.4):
+**C3, steering at layer 18.** 60 prompts per group under the neutral rule, with 8 random directions per tested direction. Change in m(x) on destructive production prompts (starting near +6.4):
 
 | Direction added | 0.1 | 0.25 | 0.5 | 1 | 2 |
 |---|---|---|---|---|---|
-| `r_ref` | +0.14 | -0.51 | -3.84 | -10.99 | -12.37 |
-| `r_blast` (`t_post`), same norm as `r_ref` | -0.49 | -1.68 | -4.81 | -12.45 | -13.69 |
-| `r_blast` with its `r_ref` component removed | -0.63 | -1.77 | -4.35 | -10.54 | -14.51 |
-| `r_blast` (`t_inst`) | -0.45 | -1.38 | -3.08 | -5.26 | -8.80 |
-| Random directions | -0.08 to -0.13 | -0.32 to -0.35 | -0.85 to -1.06 | -2.69 to -3.02 | -8.87 to -9.58 |
+| `r_ref` | +0.14; +0.04 | -0.51; -0.74 | -3.84; -4.29 | -10.99; -11.18 | -12.37; -11.89 |
+| `r_blast` (`t_post`), same norm as `r_ref` | -0.49; -0.57 | -1.68; -1.94 | -4.81; -5.17 | -12.45; -12.66 | -13.69; -13.49 |
+| `r_blast` with its `r_ref` component removed | -0.63; -0.69 | -1.77; -1.91 | -4.35; -4.60 | -10.54; -10.92 | -14.51; -14.53 |
+| `r_blast` (`t_inst`) | -0.45; -0.50 | -1.38; -1.46 | -3.08; -3.07 | -5.26; -4.95 | -8.80; -8.46 |
+| Random directions | -0.08 to -0.13; -0.08 to -0.13 | -0.32 to -0.35; -0.30 to -0.32 | -0.85 to -1.06; -0.81 to -1.00 | -2.69 to -3.02; -2.57 to -2.86 | -8.87 to -9.58; -8.64 to -9.39 |
 
-  - At matched norm, `r_blast` suppresses action at least as strongly as `r_ref`, at every dose.
-  - Removing its `r_ref` component leaves it about as strong, so its effect does not run through the refusal direction.
-  - Neither direction is selective: effects on staging prompts and on benign targets match those on destructive production prompts, within 0.49 logits at every dose.
-  - At coefficient 2, random directions also collapse m(x).
+- At matched norm, `r_blast` suppresses action at least as strongly as `r_ref`, at every dose.
+- Removing its `r_ref` component leaves it about as strong, so its effect does not run through the refusal direction.
+- Neither direction is selective: effects on staging prompts and on benign targets match those on destructive production prompts, within 0.49; 0.40 logits at every dose.
+- At coefficient 2, random directions also collapse m(x).
 
 ### 5. Vocabulary
 
