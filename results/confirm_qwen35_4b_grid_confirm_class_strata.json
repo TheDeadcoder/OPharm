@@ -1,0 +1,152 @@
+{
+ "model": "qwen35_4b",
+ "tag": "grid",
+ "eval_split": "heldout",
+ "settings": {
+  "L_harm": 16,
+  "L_ref": 16,
+  "L_steer": 18,
+  "blast": {
+   "registered": [
+    "t_post",
+    25
+   ],
+   "dev_best": [
+    "t_inst",
+    23
+   ]
+  },
+  "steer_coef": 1.0,
+  "random_directions": 24,
+  "patch_layers": [
+   1,
+   5,
+   9,
+   13,
+   18,
+   22,
+   26,
+   30
+  ]
+ },
+ "bootstrap_resamples": 10000,
+ "family": [
+  "H1",
+  "H2",
+  "H3",
+  "H4",
+  "H5"
+ ],
+ "alpha": 0.05,
+ "hypotheses": {
+  "H1": {
+   "estimate": 4.67035016646752,
+   "ci95": [
+    4.5131044325920255,
+    4.822347009181977
+   ],
+   "n_skeletons": 104,
+   "test": "Delta_policy - Delta_blast > 0",
+   "p": 9.999000099990002e-05,
+   "delta_policy": [
+    5.051621959759639,
+    [
+     4.92160152403208,
+     5.183852332371932
+    ]
+   ],
+   "delta_blast": [
+    0.38127179329211897,
+    [
+     0.3185513235055484,
+     0.4438334338940107
+    ]
+   ],
+   "p_holm": 0.0004999500049995,
+   "reject_null": true
+  },
+  "H2": {
+   "estimate": 0.025554360821843147,
+   "ci95": [
+    0.021513062249869108,
+    0.029467584891244767
+   ],
+   "n_skeletons": 104,
+   "test": "equivalence within +/-0.2 (TOST)",
+   "p": 9.999000099990002e-05,
+   "p_holm": 0.0004999500049995,
+   "reject_null": true
+  },
+  "H3": {
+   "estimate": 0.15634245562130178,
+   "ci95": [
+    0.10167749167899415,
+    0.21112703402366859
+   ],
+   "n_skeletons": 26,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 9.999000099990002e-05,
+   "probe_auroc": 0.6676220414201184,
+   "ngram_auroc": {
+    "naive_bayes": 0.5048076923076923,
+    "logistic": 0.5112795857988166
+   },
+   "C": 1.0,
+   "position": "t_post",
+   "layer": 25,
+   "n_test": 416,
+   "p_holm": 0.0004999500049995,
+   "reject_null": true
+  },
+  "H4": {
+   "estimate": 1.4177325322077825,
+   "ci95": [
+    1.2858055295852515,
+    1.5489662782504008
+   ],
+   "n_skeletons": 104,
+   "test": "Delta_m(r_ref) - Delta_m(r_blast) < 0",
+   "p": 1.0,
+   "delta_m_r_ref": -11.256124597329359,
+   "delta_m_r_blast": -12.673857129537142,
+   "delta_m_random_ref": -2.2706315349309873,
+   "delta_m_random_blast": -2.1712441069957538,
+   "n_random_per_direction": 24,
+   "p_holm": 1.0,
+   "reject_null": false
+  },
+  "H5": {
+   "estimate": 0.0647146999835968,
+   "ci95": [
+    0.06034606704488397,
+    0.06902968809008599
+   ],
+   "n_skeletons": 75,
+   "test": "Delta_ref > 0",
+   "p": 9.999000099990002e-05,
+   "p_holm": 0.0004999500049995,
+   "reject_null": true
+  }
+ },
+ "secondary": {
+  "H3_dev_best": {
+   "estimate": 0.26322115384615385,
+   "ci95": [
+    0.18592767659023685,
+    0.330044609837278
+   ],
+   "n_skeletons": 26,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 9.999000099990002e-05,
+   "probe_auroc": 0.7745007396449705,
+   "ngram_auroc": {
+    "naive_bayes": 0.5048076923076923,
+    "logistic": 0.5112795857988166
+   },
+   "C": 0.1,
+   "position": "t_inst",
+   "layer": 23,
+   "n_test": 416
+  }
+ }
+}
