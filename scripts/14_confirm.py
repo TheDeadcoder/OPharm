@@ -13,10 +13,11 @@ from opharm.paths import RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_draws, holm, p_beyond
 
 MARGIN, ALPHA = 0.2, 0.05
+STRATA = {}
 
 
 def cls_of(skeleton):
-    return skeleton.split(".")[0]
+    return STRATA.get(skeleton, skeleton.split(".")[0])
 
 
 def paired(rows, value, pairs):
@@ -122,8 +123,11 @@ def main():
     ap.add_argument("--tag", default="grid")
     ap.add_argument("--n", type=int, default=10000)
     ap.add_argument("--confirm", action="store_true")
+    ap.add_argument("--strata", default="family", choices=["family", "class"])
     args = ap.parse_args()
     rows, acts = load_rows(args.model, args.tag, args.confirm)
+    if args.strata == "class":
+        STRATA.update({r["skeleton"]: r["cls"] for r in rows})
     st = settings(args.model, args.tag, args.confirm)
     split = eval_split(args.confirm)
     ev = [r for r in rows if r["split"] == split]
@@ -141,7 +145,8 @@ def main():
            "family": done, "alpha": ALPHA, "hypotheses": res,
            "secondary": {"H3_dev_best": h3(rows, acts, tuple(st["blast"]["dev_best"]), args.confirm, args.n)}}
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"confirm_{args.model}_{args.tag}{'_confirm' if args.confirm else '_dev'}.json").write_text(json.dumps(out, indent=1))
+    name = f"confirm_{args.model}_{args.tag}{'_confirm' if args.confirm else '_dev'}{'_class_strata' if args.strata == 'class' else ''}"
+    (RESULTS / f"{name}.json").write_text(json.dumps(out, indent=1))
     print(json.dumps({k: (None if v is None else {q: v[q] for q in ("estimate", "ci95", "p", "p_holm", "reject_null")})
                       for k, v in res.items()}, indent=1))
 
