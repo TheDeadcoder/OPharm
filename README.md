@@ -109,6 +109,24 @@ Results cover the 216 development skeletons for both models, and the 104 held-ou
 - **The 9B and the rule.** The 9B follows the confirmation rule more strongly than the 4B, but much of its added caution also falls on staging.
 - **Vocabulary.** Harm wording moves the action about as much as a true statement of the consequence.
 - **Replication.** The 4B's held-out skeletons reproduce its development results.
+- **Preregistered tests.** Four of the five hold on held-out skeletons. The fifth (H4) fails in the opposite direction: the blast-radius direction is at least as strong a handle on the action as the refusal direction.
+
+### Preregistered tests (Qwen3.5-4B, held-out skeletons)
+
+The five tests were fixed before the held-out skeletons were analyzed and form one Holm family at alpha 0.05.
+
+| Hypothesis | Estimate [95% interval] | Holm-adjusted p | Outcome |
+|---|---|---|---|
+| H1. The confirmation policy moves the action more than blast radius does | 4.67 [4.51, 4.82] logits (policy 5.05, blast radius 0.38) | < 0.001 | supported |
+| H2. The harmfulness direction does not register blast radius (equivalence within ±0.2 gaps) | 0.026 [0.022, 0.030] gaps | < 0.001 | supported |
+| H3. Blast radius is decodable beyond lexical cues (probe AUROC minus n-gram AUROC) | +0.156 [0.101, 0.213] (probe 0.668, n-gram 0.511) | < 0.001 | supported |
+| H4. At matched norm, the refusal direction is a stronger handle on the action than the blast-radius direction | +1.42 [1.29, 1.55] logits, the opposite sign | 1.0 | not supported |
+| H5. Harm vocabulary engages the refusal direction beyond neutral wording | 0.065 [0.060, 0.069] gaps | < 0.001 | supported |
+
+In the H4 panel, each direction is added at layer 18 to all 208 held-out destructive production prompts under the neutral rule. The effects on m(x):
+- `r_blast` lowers it by 12.67 logits;
+- `r_ref` lowers it by 11.26;
+- random directions of the same norm lower it by 2.2 (24 per tested direction).
 
 ### 1. Behavior
 
