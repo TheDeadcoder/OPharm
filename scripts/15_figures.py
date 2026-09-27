@@ -78,14 +78,15 @@ def representation(rep, name):
         scan = rep["represented"]["scan"][p]
         ax.plot([d["layer"] for d in scan], [d["test_auroc"] for d in scan], color=color, label=f"probe at {p}")
     ax.axhline(max(rep["represented"]["ngram_env"].values()), color=COLORS["rand"], ls="--", label="n-gram baseline")
+    hybrid = "gdn" in types
     for i, t in enumerate(types):
-        if t == "attention":
+        if hybrid and t == "attention":
             ax.axvline(i, color="grey", lw=0.4, alpha=0.5)
     for key, marker in (("registered", "o"), ("dev_best", "s")):
         pt = rep["represented"]["points"][key]
         ax.plot(pt["layer"], pt["test_auroc"], marker, color="black", ms=6, label=f"{key.replace('_', ' ')} point")
     ax.set_ylim(0.4, 1.0)
-    ax.set_xlabel("Layer (grey lines: attention layers)")
+    ax.set_xlabel("Layer (grey lines: attention layers)" if hybrid else "Layer")
     ax.set_ylabel("AUROC, unseen classes and forms")
     ax.set_title("Represented: blast-radius probe", fontsize=10)
     ax.legend(fontsize=7, loc="lower right")
