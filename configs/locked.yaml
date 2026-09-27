@@ -8,3 +8,23 @@ qwen35_4b:
   steer_coef: 1.0
   random_directions: 24
   patch_layers: [1, 5, 9, 13, 18, 22, 26, 30]
+qwen35_9b:
+  L_harm: 14
+  L_ref: 14
+  L_steer: 23
+  blast:
+    registered: [t_post, 31]
+    dev_best: [t_inst, 24]
+  steer_coef: 1.0
+  random_directions: 24
+  patch_layers: [1, 5, 9, 13, 18, 22, 26, 30]
+qwen3_4b_2507:
+  L_harm: 28
+  L_ref: 19
+  L_steer: 26
+  blast:
+    registered: [t_post, 21]
+    dev_best: [t_inst, 11]
+  steer_coef: 1.0
+  random_directions: 24
+  patch_layers: [1, 6, 10, 15, 20, 25, 29, 34]
