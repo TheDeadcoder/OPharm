@@ -1,3 +1,4 @@
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,6 +16,13 @@ def pins():
 def snapshot_dir(key):
     p = pins()[key]
     return Path(os.environ["HF_HUB_CACHE"]) / f"models--{p['repo'].replace('/', '--')}" / "snapshots" / p["revision"]
+
+
+def weights_complete(key):
+    d = snapshot_dir(key)
+    idx = d / "model.safetensors.index.json"
+    files = set(json.loads(idx.read_text())["weight_map"].values()) if idx.exists() else {"model.safetensors"}
+    return all((d / f).exists() for f in files)
 
 
 def load_tokenizer(key, local_files_only=True):
