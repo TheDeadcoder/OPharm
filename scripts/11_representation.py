@@ -132,7 +132,7 @@ def main():
     out["geometry"] = geometry
     cfg = json.loads((snapshot_dir(args.model) / "config.json").read_text())
     types = cfg.get("text_config", cfg).get("layer_types") or ["full_attention"] * (n_points - 1)
-    out["point_block_type"] = ["attention" if t == "full_attention" else "gdn" for t in types] + ["final"]
+    out["point_block_type"] = [{"full_attention": "attention", "sliding_attention": "sliding"}.get(t, "gdn") for t in types] + ["final"]
     out["seconds"] = round(time.time() - t0, 1)
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"representation_{args.model}_{args.tag}{'_confirm' if args.confirm else ''}.json").write_text(json.dumps(out, indent=1))

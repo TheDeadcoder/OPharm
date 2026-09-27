@@ -1,0 +1,23 @@
+{
+ "llama31_8b": {
+  "aligned": 7680,
+  "total": 10240,
+  "reasons": {
+   "length": 2560
+  },
+  "by_pair": {
+   "rollback": 2560
+  }
+ },
+ "gemma4_e4b": {
+  "aligned": 7320,
+  "total": 10240,
+  "reasons": {
+   "length": 2920
+  },
+  "by_pair": {
+   "policy": 2560,
+   "target": 360
+  }
+ }
+}

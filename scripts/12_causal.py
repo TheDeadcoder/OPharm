@@ -15,7 +15,7 @@ from opharm.interp.directions import unit, unmatched
 from opharm.interp.probes import fit_probe
 from opharm.models import load_model
 from opharm.paths import RUNS
-from opharm.run.decision import action_logodds
+from opharm.run.decision import action_logodds, opener_ids
 
 
 class Ctx:
@@ -24,10 +24,11 @@ class Ctx:
         self.main = [r for r in rows if r["set"] == "main" and r["split"] == eval_split(confirm)]
         self.by_code = {(r["skeleton"], code(r)): r for r in self.main}
         self.tok, self.model = load_tokenizer(model_key), load_model(model_key)
-        self.opener = self.tok.convert_tokens_to_ids("<tool_call>")
+        self.opener = opener_ids(self.tok)
         st = settings(model_key, tag, confirm)
         self.blast, self.l_steer = {k: tuple(v) for k, v in st["blast"].items()}, st["L_steer"]
         dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
+        self.dev_main = dev_main
         x = np.asarray(self.acts[[r["row"] for r in dev_main]])
         env = np.array([r["env"] == "P" for r in dev_main])
         skel = np.array([r["skeleton"] for r in dev_main])
@@ -109,6 +110,32 @@ def swap_panel(ctx, pairs, layers, names):
     return out
 
 
+def gain_panel(ctx, rows, layers, gains, seeds):
+    staging = np.array([r["row"] for r in ctx.dev_main if r["env"] == "S" and r["policy"] == "N"])
+    points = [("t_post", layer) for layer in layers]
+    if ctx.blast["dev_best"][0] == "t_inst":
+        points.append(("t_inst", ctx.blast["dev_best"][1]))
+    specs = []
+    for p_name, layer in points:
+        u = torch.tensor(unit(ctx.r_blast[p_name][layer]), dtype=torch.float32)
+        dirs = {"r_blast": u, **{f"rand_{s}": random_like(u, 4000 + 100 * layer + s) for s in range(seeds)}}
+        proj = np.asarray(ctx.acts[staging, POS[p_name], layer], dtype=np.float32)
+        for name, v in dirs.items():
+            v = v / v.norm()
+            specs.append((p_name, layer, name, v, float((proj @ v.numpy()).mean())))
+    out = []
+    for r in rows:
+        rr = ctx.render(r)
+        m0, _ = ctx.run(rr.ids)
+        for p_name, layer, name, v, center in specs:
+            pos = [rr.t_post if p_name == "t_post" else rr.t_inst]
+            for g in gains:
+                m, _ = ctx.run(rr.ids, [hooks.gain(ctx.model, layer, v, center, g, pos)])
+                out.append({"id": r["id"], "cell": code(r), "position": p_name, "layer": layer, "direction": name,
+                            "gain": g, "m_clean": m0, "m": m})
+    return out
+
+
 def random_like(v, seed):
     g = torch.Generator().manual_seed(seed)
     r = torch.randn(v.shape, generator=g)
@@ -153,7 +180,7 @@ def ablate_panel(ctx, rows, seeds):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("test", choices=["c1", "c2", "c3", "c4", "c6", "c7"])
+    ap.add_argument("test", choices=["c1", "c2", "c3", "c4", "c6", "c7", "c8"])
     ap.add_argument("model")
     ap.add_argument("--tag", default="grid")
     ap.add_argument("--n", type=int, default=60)
@@ -162,6 +189,7 @@ def main():
     ap.add_argument("--coefs", default="0.5,1,2")
     ap.add_argument("--groups", default="DP,DS,BP")
     ap.add_argument("--dirs", default="r_blast,random")
+    ap.add_argument("--gains", default="3,10,30")
     ap.add_argument("--confirm", action="store_true")
     ap.add_argument("--suffix", default="")
     args = ap.parse_args()
@@ -171,6 +199,14 @@ def main():
     layers = [int(v) for v in args.layers.split(",")] if args.layers else sorted({round(1 + i * (n_layers - 3) / 7) for i in range(8)})
     if args.test == "c1":
         out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers)
+    elif args.test == "c8":
+        rng = random.Random(3)
+        rows = []
+        for g in ("DP", "DS", "BP", "BS"):
+            cand = [r for r in ctx.main if code(r) in {g + "AN", g + "NN"}]
+            rows += rng.sample(cand, min(args.n, len(cand)))
+        late = [int(v) for v in args.layers.split(",")] if args.layers else sorted({round(f * n_layers) for f in (0.7, 0.82, 0.94)})
+        out = gain_panel(ctx, rows, late, [float(g) for g in args.gains.split(",")], args.seeds)
     elif args.test == "c7":
         out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers, complement=True)
     elif args.test == "c6":
