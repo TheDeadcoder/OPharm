@@ -1,5 +1,7 @@
 import hashlib
 
+import yaml
+
 from opharm.paths import CONFIGS, ROOT
 
 LOCK = ROOT / "prereg.lock"
@@ -22,7 +24,15 @@ def dev_only(rows):
     return [r for r in rows if r["split"] == "dev"]
 
 
-def analysis_rows(rows):
-    if any(r["split"] == "heldout" for r in rows) and not unlocked():
-        raise PermissionError("held-out rows are sealed until prereg.lock matches docs/prereg.md and configs/locked.yaml")
+def locked_models():
+    path = CONFIGS / "locked.yaml"
+    return set(yaml.safe_load(path.read_text()) or {}) if path.exists() else set()
+
+
+def analysis_rows(rows, model=None):
+    if any(r["split"] == "heldout" for r in rows):
+        if not unlocked():
+            raise PermissionError("held-out rows are sealed until prereg.lock matches the registered documents")
+        if model is not None and model not in locked_models():
+            raise PermissionError(f"held-out rows of {model} are sealed until its values are in configs/locked.yaml")
     return rows

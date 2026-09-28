@@ -26,7 +26,7 @@ def load_rows(model, tag, confirm):
     run = RUNS / model / tag
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     rows = [dict(meta[r["id"]], **{**r, "row": k}) for k, r in enumerate(map(json.loads, open(run / "results.jsonl")))]
-    return (analysis_rows(rows) if confirm else dev_only(rows)), np.load(run / "acts.npy", mmap_mode="r")
+    return (analysis_rows(rows, model) if confirm else dev_only(rows)), np.load(run / "acts.npy", mmap_mode="r")
 
 
 def blast_partition(rows, confirm):
