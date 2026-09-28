@@ -71,6 +71,25 @@ def capture(model, points, positions, store):
     return [("pre", mods[p], make(p)) for p in points]
 
 
+def ablate_masked(model, direction, keep, positions=None):
+    def make(mask):
+        unit = direction.float() * mask.float()
+        unit = unit / unit.norm()
+
+        def fn(h):
+            h = h.clone()
+            idx = _idx(positions)
+            u = unit.to(h.device)
+            sub = h[:, idx].float()
+            h[:, idx] = (sub - (sub @ u).unsqueeze(-1) * u).to(h.dtype)
+            return h
+        return fn
+
+    pre = [("pre", m, make(keep[i])) for i, m in enumerate(resid_modules(model))]
+    post = [("post", w, make(keep[l + 1])) for l, layer in enumerate(layers(model)) for w in writers(layer)]
+    return pre + post
+
+
 def patch(model, point, positions, values):
     def fn(h):
         h = h.clone()
