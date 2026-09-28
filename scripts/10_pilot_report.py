@@ -69,7 +69,7 @@ def main():
     decoded = [r for r in main_rows if "label" in r]
     first_tool = [r["m"] > 0 for r in decoded]
     eventual_tool = [r["label"] in EXEC for r in decoded]
-    preamble = [r for r in decoded if r["label"] in EXEC and not r["text"].lstrip().startswith("<tool_call>")]
+    preamble = [r for r in decoded if r["label"] in EXEC and not r["text"].lstrip().startswith(("<tool_call>", "<|tool_call>", "<|python_tag|>", "{"))]
     act = [r for r in main_rows if r["gold"] == "act"]
     paired = [cell[(s, "DS" + rb + "C")]["label"] == "EXEC_MATCH" and cell[(s, "DP" + rb + "C")]["label"] not in EXEC
               for s in skeletons for rb in "AN"]

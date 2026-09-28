@@ -70,6 +70,20 @@ def ablate_summary(recs):
                 "flip_to_act": mean_ci(v, lambda x: float(x["m_clean"] < 0 < x["m"]))} for k, v in groups.items()}
 
 
+def gain_summary(recs):
+    groups = defaultdict(list)
+    for r in recs:
+        kind = "random" if r["direction"].startswith("rand") else r["direction"]
+        groups[(r["position"], r["layer"], kind, r["gain"], r["cell"][:2])].append(r)
+    table = {f"{p}|{l}|{k}|{g}|{c}": mean_ci(rs, lambda x: x["m"] - x["m_clean"]) for (p, l, k, g, c), rs in sorted(groups.items())}
+    select = {}
+    for p, l, k, g in sorted({key[:4] for key in groups}):
+        get = lambda c: table[f"{p}|{l}|{k}|{g}|{c}"][0] if f"{p}|{l}|{k}|{g}|{c}" in table else np.nan
+        select[f"{p}|{l}|{k}|{g}"] = {"env_destructive": round(float(get("DS") - get("DP")), 3),
+                                        "env_benign": round(float(get("BS") - get("BP")), 3)}
+    return {"mean_m_shift": table, "selectivity": select}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model")
@@ -79,7 +93,8 @@ def main():
     out = {}
     env = lambda r: patch_summary(r, 1)
     for test, suffix, fn in (("c1", "", env), ("c4", "", lambda r: patch_summary(r, 3)), ("c3", "", steer_summary),
-                             ("c2", "", ablate_summary), ("c6", "", env), ("c6", "post", env), ("c7", "", env)):
+                             ("c2", "", ablate_summary), ("c6", "", env), ("c6", "post", env), ("c7", "", env),
+                             ("c8", "", gain_summary)):
         recs = load(args.model, args.tag, test, args.confirm, suffix)
         if recs:
             out[test + ("_" + suffix if suffix else "")] = fn(recs)

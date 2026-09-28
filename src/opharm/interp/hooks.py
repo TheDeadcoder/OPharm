@@ -3,16 +3,27 @@ from contextlib import contextmanager
 import torch
 
 
+def decoder(model):
+    return getattr(model.model, "language_model", model.model)
+
+
 def layers(model):
-    return model.model.layers
+    return decoder(model).layers
 
 
 def resid_modules(model):
-    return list(layers(model)) + [model.model.norm]
+    return list(layers(model)) + [decoder(model).norm]
 
 
 def mixer(layer):
     return layer.linear_attn if hasattr(layer, "linear_attn") else layer.self_attn
+
+
+def writers(layer):
+    if hasattr(layer, "pre_feedforward_layernorm") and hasattr(layer, "post_feedforward_layernorm"):
+        mods = [layer.post_attention_layernorm, layer.post_feedforward_layernorm]
+        return mods + ([layer.post_per_layer_input_norm] if hasattr(layer, "post_per_layer_input_norm") else [])
+    return [mixer(layer), layer.mlp]
 
 
 def _idx(positions):
@@ -91,7 +102,7 @@ def ablate(model, direction, positions=None):
         return h
 
     pre = [("pre", m, fn) for m in resid_modules(model)]
-    post = [("post", mixer(l), fn) for l in layers(model)] + [("post", l.mlp, fn) for l in layers(model)]
+    post = [("post", w, fn) for l in layers(model) for w in writers(l)]
     return pre + post
 
 
@@ -104,6 +115,20 @@ def swap_along(model, point, direction, values, positions=None):
         u = unit.to(h.device)
         sub = h[:, idx].float()
         h[:, idx] = (sub + (values.to(h.device)[None] - sub @ u).unsqueeze(-1) * u).to(h.dtype)
+        return h
+
+    return [("pre", resid_modules(model)[point], fn)]
+
+
+def gain(model, point, direction, center, g, positions=None):
+    unit = direction.float() / direction.float().norm()
+
+    def fn(h):
+        h = h.clone()
+        idx = _idx(positions)
+        u = unit.to(h.device)
+        sub = h[:, idx].float()
+        h[:, idx] = (sub + (g - 1) * ((sub @ u) - center).unsqueeze(-1) * u).to(h.dtype)
         return h
 
     return [("pre", resid_modules(model)[point], fn)]

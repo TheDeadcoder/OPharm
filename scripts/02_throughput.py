@@ -5,6 +5,7 @@ import time
 from contextlib import contextmanager
 
 import opharm
+from opharm.run.generate import pad_id
 import numpy as np
 import torch
 import transformers.models.qwen3_5.modeling_qwen3_5 as qm
@@ -106,7 +107,7 @@ def main():
     tok = load_tokenizer(args.model)
     prompts = [render(tok, s, u, TOOLS).ids for s, u in smoke_prompts()]
     report = {"model": args.model, "revision": pins()[args.model]["revision"], "prompt_tokens": len(prompts[0]),
-              "passes": args.passes, **torch_modes(args.model, prompts, args.passes, tok.convert_tokens_to_ids("<|im_end|>"))}
+              "passes": args.passes, **torch_modes(args.model, prompts, args.passes, pad_id(tok))}
     if not args.skip_mlx:
         report["mlx"] = mlx_mode(args.model, prompts, args.passes)
     RESULTS.mkdir(exist_ok=True)

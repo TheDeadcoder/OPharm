@@ -12,7 +12,8 @@ from opharm.bench.tools import TOOLS
 from opharm.chat import load_tokenizer, pins, render, snapshot_dir
 from opharm.models import load_model
 from opharm.paths import RESULTS
-from opharm.run.decision import action_logodds
+from opharm.run.decision import action_logodds, opener_ids
+from opharm.run.generate import end_ids, pad_id
 
 GEN = 32
 
@@ -30,7 +31,7 @@ def mps_generate(key, prompts, stop, solver):
         for ids in prompts:
             x = torch.tensor([ids], device=model.device)
             g = model.generate(x, attention_mask=torch.ones_like(x), max_new_tokens=GEN, do_sample=False,
-                               eos_token_id=stop, pad_token_id=stop)
+                               eos_token_id=stop[0], pad_token_id=stop[1])
             conts.append(g[0, len(ids):].tolist())
             t = time.perf_counter()
             model(input_ids=x, use_cache=False, logits_to_keep=1).logits.float().cpu()
@@ -104,7 +105,7 @@ def main():
     args = ap.parse_args()
 
     tok = load_tokenizer(args.model)
-    opener, stop = tok.convert_tokens_to_ids("<tool_call>"), tok.convert_tokens_to_ids("<|im_end|>")
+    opener, stop = opener_ids(tok), (sorted(end_ids(tok)), pad_id(tok))
     prompts = [render(tok, s, u, TOOLS).ids for s, u in smoke_prompts()[:args.n]]
     conts, mps_secs = mps_generate(args.model, prompts, stop, args.solver)
     mps_scores = torch_scores(args.model, "mps", torch.bfloat16, prompts, conts, args.solver)
