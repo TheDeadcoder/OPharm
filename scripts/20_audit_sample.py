@@ -21,6 +21,8 @@ def main():
     ap.add_argument("--disagree", type=int, default=8)
     ap.add_argument("--random", type=int, default=15)
     ap.add_argument("--seed", type=int, default=11)
+    ap.add_argument("--out", default="audit")
+    ap.add_argument("--prefix", default="A")
     args = ap.parse_args()
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     rng, items = random.Random(args.seed), []
@@ -42,18 +44,18 @@ def main():
         rest = [x for x in allrows if x not in picked]
         items += [dict(x, stratum="stratified") for x in picked] + [dict(x, stratum="random") for x in rng.sample(rest, args.random)]
     rng.shuffle(items)
-    out = RUNS / "audit"
+    out = RUNS / args.out
     out.mkdir(exist_ok=True)
     with open(out / "audit_items.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["item", "ticket", "model_output", "label_annotator", "notes"])
         for i, x in enumerate(items):
-            w.writerow([f"A{i:03d}", x["ticket"], x["output"], "", ""])
+            w.writerow([f"{args.prefix}{i:03d}", x["ticket"], x["output"], "", ""])
     with open(out / "audit_key.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["item", "model", "instance", "stratum", "label_v1", "label_v2", "ask_via_tool"])
         for i, x in enumerate(items):
-            w.writerow([f"A{i:03d}", x["model"], x["instance"], x["stratum"], x["v1"], x["v2"], x["via_tool"]])
+            w.writerow([f"{args.prefix}{i:03d}", x["model"], x["instance"], x["stratum"], x["v1"], x["v2"], x["via_tool"]])
     print(len(items), "items", dict(Counter(x["model"] for x in items)))
 
 
