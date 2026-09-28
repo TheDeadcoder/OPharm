@@ -64,6 +64,10 @@ def load(model, tag, meta, split, label=False):
     return analysis_rows(out, model)
 
 
+def load_tags(model, tags, meta, split, label=False):
+    return [r for t in tags if (RUNS / model / t / "results.jsonl").exists() for r in load(model, t, meta, split, label)]
+
+
 def judgment(rows):
     res = {}
     for q in sorted({r["question"] for r in rows}):
@@ -101,6 +105,21 @@ def paired(judge_rows, action, q):
                     entry[name] = ci(vals, skels)
             out[f"{c}{p}"] = entry
     return out
+
+
+def tools_contrast(tool_free, with_tools):
+    w = {(key(r), r["question"]): r for r in with_tools}
+    rows = [{"skeleton": r["skeleton"], "q": r["question"], "w": w[(key(r), r["question"])], "n": r}
+            for r in tool_free if (key(r), r["question"]) in w]
+    res = {}
+    for q in sorted({r["q"] for r in rows}):
+        sub = [r for r in rows if r["q"] == q]
+        res[q] = {"n": len(sub),
+                  "non_answer_tools": rate(sub, lambda r: r["w"]["answer"] == "other"),
+                  "non_answer_tool_free": rate(sub, lambda r: r["n"]["answer"] == "other"),
+                  "correct_difference": rate(sub, lambda r: float(r["n"]["answer"] == r["n"]["gold"]) - float(r["w"]["answer"] == r["w"]["gold"])),
+                  "answer_changed": rate(sub, lambda r: r["n"]["answer"] != r["w"]["answer"])}
+    return res
 
 
 def self_check(judge_rows, action):
@@ -182,20 +201,25 @@ def main():
     for split in args.splits.split(","):
         main_rows = [r for r in load(args.model, "grid", meta, split, label=True) if r["set"] == "main"]
         res = {"direct_selectivity": selectivity(main_rows)}
-        if (RUNS / args.model / "judge13" / "results.jsonl").exists():
-            judge = load(args.model, "judge13", meta, split) + [r for r in load(args.model, "grid", meta, split) if r["set"] == "judge"]
+        judge = load_tags(args.model, ("judge13",), meta, split) + [r for r in load(args.model, "grid", meta, split) if r["set"] == "judge"]
+        if judge:
             res["judgment"] = judgment(judge)
-            res["paired_q1"] = paired(judge, main_rows, "q1")
-            res["paired_q2"] = paired(judge, main_rows, "q2")
-            res["paired_q3"] = paired(judge, main_rows, "q3")
-            res["self_check_from_q1"] = self_check(judge, main_rows)
+            for q in sorted({r["question"] for r in judge}):
+                res[f"paired_{q}"] = paired(judge, main_rows, q)
+            if any(r["question"] == "q1" for r in judge):
+                res["self_check_from_q1"] = self_check(judge, main_rows)
+        free = load_tags(args.model, ("judge_nt_pilot", "judge_nt"), meta, split)
+        if free:
+            res["judgment_tool_free"] = judgment(free)
+            res["paired_tool_free"] = {q: paired(free, main_rows, q) for q in sorted({r["question"] for r in free})}
+            res["self_check_from_tool_free_q1"] = self_check(free, main_rows)
+            res["tool_free_vs_tools"] = tools_contrast(free, judge)
         if (RUNS / args.model / "narr" / "results.jsonl").exists():
             narr = load(args.model, "narr", meta, split, label=True)
             res["narration"] = {"contrast": contrast(main_rows, narr, "narration"), "selectivity_narration": selectivity(narr)}
-        if (RUNS / args.model / "think" / "results.jsonl").exists():
-            think = load(args.model, "think", meta, split, label=True)
-            if think:
-                res["thinking"] = thinking(think, main_rows, args.model)
+        think = load_tags(args.model, ("think", "think_rest"), meta, split, label=True)
+        if think:
+            res["thinking"] = thinking(think, main_rows, args.model)
         out["splits"][split] = res
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"secondary_{args.model}.json").write_text(json.dumps(out, indent=1))
