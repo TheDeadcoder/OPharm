@@ -28,3 +28,13 @@ qwen3_4b_2507:
   steer_coef: 1.0
   random_directions: 24
   patch_layers: [1, 6, 10, 15, 20, 25, 29, 34]
+gemma4_e4b:
+  L_harm: 24
+  L_ref: 25
+  L_steer: 30
+  blast:
+    registered: [t_post, 5]
+    dev_best: [t_post, 23]
+  steer_coef: 1.0
+  random_directions: 24
+  patch_layers: [1, 7, 12, 18, 23, 29, 34, 40]
