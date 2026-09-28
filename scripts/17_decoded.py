@@ -75,7 +75,7 @@ def panel(dev_main, n_skeletons, seed):
     return {s for skels in by_cls.values() for s in rng.sample(sorted(skels), min(per_cls, len(skels)))}
 
 
-def c2(run, rows, st, n_random):
+def c2(run, rows, st, n_random, limit=0):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
     env = np.array([r["env"] == "P" for r in dev_main])
@@ -85,6 +85,7 @@ def c2(run, rows, st, n_random):
     base = dirs["r_blast_registered"]
     dirs.update({f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(n_random)})
     asks = [r for r in dev_main if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
+    asks = asks[:limit] if limit else asks
     out = []
     for r in asks:
         out.append(run.record(r, "clean"))
@@ -93,7 +94,7 @@ def c2(run, rows, st, n_random):
     return out
 
 
-def gain(run, rows, layer, gains, n_skeletons, seed):
+def gain(run, rows, layer, gains, n_skeletons, seed, limit=0):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     keep = panel(dev_main, n_skeletons, seed)
     fit = [r for r in dev_main if r["skeleton"] not in keep]
@@ -104,6 +105,7 @@ def gain(run, rows, layer, gains, n_skeletons, seed):
     center = {p: float(proj[np.array([r["env"] == "S" and r["policy"] == p for r in fit])].mean()) for p in "CN"}
     w = random_unit(u, 7000 + layer)
     test = sorted([r for r in dev_main if r["skeleton"] in keep], key=lambda r: r["id"])
+    test = test[:limit] if limit else test
     amp = {r["id"]: float(np.asarray(run.acts[r["row"], POS["t_post"], layer], dtype=np.float32) @ u.numpy()) - center[r["policy"]]
            for r in test}
     rng, shuffled, mean_amp = random.Random(seed), {}, {}
@@ -133,7 +135,7 @@ def gain(run, rows, layer, gains, n_skeletons, seed):
                  "fit_skeletons": len({r["skeleton"] for r in fit}), "mean_amplitude": mean_amp}
 
 
-def steer(run, rows, st, coefs, n_random, n, seed):
+def steer(run, rows, st, coefs, n_random, n, seed, limit=0):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     x = np.asarray(run.acts[[r["row"] for r in dev_main], POS["t_post"], st["L_steer"]], dtype=np.float32)
     env = np.array([r["env"] == "P" for r in dev_main])
@@ -144,7 +146,7 @@ def steer(run, rows, st, coefs, n_random, n, seed):
     out = []
     for grp in ("DP", "DS", "BP"):
         cand = [r for r in dev_main if code(r) in {grp + "AN", grp + "NN"}]
-        for r in rng.sample(cand, min(n, len(cand))):
+        for r in rng.sample(cand, min(limit or n, n, len(cand))):
             out.append(run.record(r, "clean"))
             for name, v in dirs.items():
                 for cf in coefs:
@@ -165,6 +167,8 @@ def main():
     ap.add_argument("--n", type=int, default=20)
     ap.add_argument("--max-new", type=int, default=256)
     ap.add_argument("--seed", type=int, default=5)
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--suffix", default="")
     args = ap.parse_args()
     t0 = time.time()
     rows, acts = load_rows(args.model, args.tag, False)
@@ -173,17 +177,17 @@ def main():
     st = settings(args.model, args.tag, False)
     meta = {"model": args.model, "mode": args.mode, "args": vars(args)}
     if args.mode == "c2":
-        out = c2(run, rows, st, args.random)
+        out = c2(run, rows, st, args.random, args.limit)
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))
-        out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed)
+        out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed, args.limit)
         meta.update(info)
     else:
-        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed)
-    dest = RUNS / args.model / args.tag / f"decoded_{args.mode}.jsonl"
+        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed, args.limit)
+    dest = RUNS / args.model / args.tag / f"decoded_{args.mode}{args.suffix}.jsonl"
     dest.write_text("".join(json.dumps(o) + "\n" for o in out))
     meta.update(records=len(out), seconds=round(time.time() - t0, 1))
-    (RUNS / args.model / args.tag / f"decoded_{args.mode}_meta.json").write_text(json.dumps(meta, indent=1))
+    (RUNS / args.model / args.tag / f"decoded_{args.mode}{args.suffix}_meta.json").write_text(json.dumps(meta, indent=1))
     print(json.dumps({k: meta[k] for k in ("mode", "records", "seconds")}))
 
 
