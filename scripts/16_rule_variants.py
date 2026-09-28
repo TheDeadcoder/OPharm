@@ -6,6 +6,7 @@ from collections import defaultdict
 import opharm
 import numpy as np
 
+from opharm.bench.evaluate import evaluate
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 
@@ -88,7 +89,14 @@ def rates(rows, rule):
     return summary
 
 
-def report(model):
+def relabel(rows, model):
+    for r in rows:
+        if "text" in r:
+            r["label"] = evaluate(r["text"], r, model)["label"]
+    return rows
+
+
+def report(model, v2=False):
     grid_meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     out = {"model": model, "conditions": {}, "sets": {}}
     skels = set()
@@ -98,17 +106,20 @@ def report(model):
             continue
         meta = {m["id"]: m for m in map(json.loads, open(path))}
         res = [dict(meta[r["id"]], **r) for r in map(json.loads, open(res_path))]
+        res = relabel(res, model) if v2 else res
         skels |= {r["skeleton"] for r in res}
         out["sets"][which] = {"instances": path.name, "tag": tag, "rules": texts}
         for name in texts:
             out["conditions"][name] = rates([r for r in res if r["variant"] == name], name)
     grid = [dict(grid_meta[r["id"]], **r) for r in map(json.loads, open(RUNS / model / "grid" / "results.jsonl"))
             if r["id"] in grid_meta and grid_meta[r["id"]]["skeleton"] in skels and grid_meta[r["id"]]["set"] == "main"]
+    grid = relabel(grid, model) if v2 else grid
     out["conditions"] = {"neutral": rates([r for r in grid if r["policy"] == "N"], "neutral"),
                          "registered": rates([r for r in grid if r["policy"] == "C"], "registered"), **out["conditions"]}
     out["n_skeletons"] = len(skels)
+    out["labels"] = "evaluator v2" if v2 else "runner labels (v1)"
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"rules_{model}.json").write_text(json.dumps(out, indent=1))
+    (RESULTS / f"rules_{model}{'_v2' if v2 else ''}.json").write_text(json.dumps(out, indent=1))
     for name, s in out["conditions"].items():
         print(f"{name:21s}", " ".join(f"{c}: exec {s[c + '_executed'][0]:.2f} ask {s[c + '_asks'][0]:.2f}" for c in CELLS),
               "| env sel", s["ask_env_selectivity_destructive"][0], "| asks where required", s.get("asks_where_required", [None])[0])
@@ -120,11 +131,12 @@ def main():
     ap.add_argument("model", nargs="?")
     ap.add_argument("--set", default="minimal", choices=list(SETS))
     ap.add_argument("--skeletons", type=int, default=108)
+    ap.add_argument("--v2", action="store_true")
     args = ap.parse_args()
     if args.mode == "derive":
         derive(args.skeletons, args.set)
     else:
-        report(args.model)
+        report(args.model, args.v2)
 
 
 if __name__ == "__main__":
