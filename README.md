@@ -98,7 +98,7 @@ The model either calls a tool or replies in text. A deterministic oracle labels 
 
 ## Findings
 
-Results cover the 216 development skeletons for all three models, and the 104 held-out skeletons for the 4B.
+The preregistered tests use the 104 held-out skeletons of each model. The other sections report the 216 development skeletons for all three models, and the held-out skeletons for the 4B.
 
 ### Summary
 
@@ -113,25 +113,34 @@ Results cover the 216 development skeletons for all three models, and the 104 he
 - **The rule.** The 9B and the comparator follow the confirmation rule more strongly than the 4B, but much of their added caution also falls on staging.
 - **Rule wording.** Only the full confirmation rule makes the 4B and the comparator ask often. With either of its two conditions removed, asking on destructive production falls to 2 to 8% (4B) and 3 to 6% (comparator).
 - **Vocabulary.** On the Qwen3.5 models, harm wording moves the action about as much as a true statement of the consequence. The comparator responds to neither.
-- **Replication.** The 4B's held-out skeletons reproduce its development results, including the causal tests.
-- **Preregistered tests.** Four of the five hold on held-out skeletons. The fifth (H4) fails in the opposite direction: the blast-radius direction is at least as strong a handle on the action as the refusal direction.
+- **Replication.** Held-out skeletons reproduce the development results: for the 4B, including the causal tests; for the 9B and the comparator, in behavior and representation.
+- **Preregistered tests.** On held-out skeletons all five hold for the 9B and the comparator. On the 4B four hold, and H4 fails in the opposite direction there: the blast-radius direction is at least as strong a handle on the action as the refusal direction.
 
-### Preregistered tests (Qwen3.5-4B, held-out skeletons)
+### Preregistered tests (held-out skeletons)
 
-The five tests were fixed before the held-out skeletons were analyzed and form one Holm family at alpha 0.05.
+The five tests were fixed before any held-out skeleton was analyzed. The layer and position values of the 9B and the comparator were locked from their development data before their held-out analysis. Each model is its own Holm family at alpha 0.05.
 
-| Hypothesis | Estimate [95% interval] | Holm-adjusted p | Outcome |
+| Hypothesis | Qwen3.5-4B | Qwen3.5-9B | Qwen3-4B-Instruct-2507 |
 |---|---|---|---|
-| H1. The confirmation policy moves the action more than blast radius does | 4.67 [4.51, 4.82] logits (policy 5.05, blast radius 0.38) | < 0.001 | supported |
-| H2. The harmfulness direction does not register blast radius (equivalence within ±0.2 gaps) | 0.026 [0.022, 0.030] gaps | < 0.001 | supported |
-| H3. Blast radius is decodable beyond lexical cues (probe AUROC minus n-gram AUROC) | +0.156 [0.101, 0.213] (probe 0.668, n-gram 0.511) | < 0.001 | supported |
-| H4. At matched norm, the refusal direction is a stronger handle on the action than the blast-radius direction | +1.42 [1.29, 1.55] logits, the opposite sign | 1.0 | not supported |
-| H5. Harm vocabulary engages the refusal direction beyond neutral wording | 0.065 [0.060, 0.069] gaps | < 0.001 | supported |
+| H1. The confirmation policy moves the action more than blast radius does (logits) | 4.67 [4.51, 4.82] | 6.08 [5.93, 6.23] | 7.51 [7.21, 7.82] |
+| H2. The harmfulness direction does not register blast radius (equivalence within ±0.2 gaps) | 0.026 [0.022, 0.030] | 0.009 [0.004, 0.015] | 0.009 [0.005, 0.013] |
+| H3. Blast radius is decodable beyond lexical cues (probe AUROC minus n-gram AUROC) | +0.156 [0.101, 0.213] | +0.220 [0.144, 0.292] | +0.098 [0.069, 0.136] |
+| H4. At matched norm, the refusal direction is a stronger handle on the action than the blast-radius direction (logits) | +1.42 [1.29, 1.55], the opposite sign | -2.35 [-2.40, -2.30] | -2.49 [-2.60, -2.39] |
+| H5. Harm vocabulary engages the refusal direction beyond neutral wording (gaps) | 0.065 [0.060, 0.069] | 0.020 [0.014, 0.025] | 0.044 [0.040, 0.048] |
+| Supported | H1, H2, H3, H5 | all five | all five |
 
-In the H4 panel, each direction is added at layer 18 to all 208 held-out destructive production prompts under the neutral rule. The effects on m(x):
-- `r_blast` lowers it by 12.67 logits;
-- `r_ref` lowers it by 11.26;
-- random directions of the same norm lower it by 2.2 (24 per tested direction).
+- Holm-adjusted p is below 0.001 for every supported test. For the 4B's H4 it is 1.0.
+- Class-stratified intervals give the same conclusions.
+- H1 components (policy; blast radius): 4B 5.05 and 0.38; 9B 6.09 and 0.00; comparator 7.54 and 0.03.
+- H3 probe AUROC: 0.668 (4B), 0.731 (9B), 0.609 (comparator), against an n-gram baseline of 0.511 on the same test set.
+
+**H4 panel.** Each direction is added at L_steer to all 208 held-out destructive production prompts under the neutral rule. Change in m(x):
+
+| Direction | 4B (layer 18) | 9B (layer 23) | Comparator (layer 26) |
+|---|---|---|---|
+| `r_ref` | -11.26 | -6.52 | -5.25 |
+| `r_blast`, same norm | -12.67 | -4.17 | -2.76 |
+| Random directions, same norm (24 each) | -2.17 to -2.27 | -1.68 to -2.02 | -1.36 to -1.57 |
 
 ### 1. Behavior
 
