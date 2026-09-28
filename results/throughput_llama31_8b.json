@@ -1,0 +1,34 @@
+{
+ "model": "llama31_8b",
+ "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+ "prompt_tokens": 931,
+ "passes": 30,
+ "mps_default": {
+  "prefill_s_median_p90": [
+   1.281328916498751,
+   1.2825346874975367
+  ],
+  "batch4_s_per_prompt": 1.2389159791237034,
+  "decode_tok_per_s": 19.61335939153731,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_cpu_solve": {
+  "prefill_s_median_p90": [
+   1.2812128750010743,
+   1.2831565000014962
+  ],
+  "batch4_s_per_prompt": 1.239310369874147,
+  "decode_tok_per_s": 19.541009424646703,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_loop": {
+  "prefill_s_median_p90": [
+   1.280379604002519,
+   1.2822877078011516
+  ],
+  "batch4_s_per_prompt": 1.2311680469993007,
+  "decode_tok_per_s": 19.841426820820928,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_peak_driver_gb": 17.187504128
+}

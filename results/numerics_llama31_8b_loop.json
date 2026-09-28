@@ -1,0 +1,52 @@
+{
+ "model": "llama31_8b",
+ "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+ "solver": "loop",
+ "n": 5,
+ "prompt_tokens": {
+  "min": 930,
+  "max": 931
+ },
+ "median_seconds_prefill_mps": 1.2754662290026317,
+ "median_seconds_scoring_pass": {
+  "cpu_bfloat16": 42.405752708000364,
+  "mps_bfloat16": 1.3546923545072787
+ },
+ "m_reference": [
+  2.703126907348633,
+  3.5649986267089844,
+  3.701854705810547,
+  3.056703567504883,
+  2.84521484375
+ ],
+ "comparisons": {
+  "mps_bfloat16_vs_cpu_bfloat16": {
+   "n": 5,
+   "top1_agree": 5,
+   "max_abs_logit_diff": {
+    "max": 0.90625,
+    "median": 0.44140625
+   },
+   "m_abs_diff_max": 0.16525554656982422,
+   "kl_max": 0.0040582106448709965,
+   "greedy_identical_to_mps": 5,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "cpu_bfloat16_greedy_vs_mps": {
+   "greedy_identical_to_mps": 5,
+   "greedy_first_divergence": [
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ }
+}
