@@ -12,10 +12,12 @@ import torch
 from opharm.bench.oracle import label
 from opharm.bench.tools import TOOLS
 from opharm.chat import load_tokenizer, pins, render
+from opharm.interp import hooks
 from opharm.models import load_model
 from opharm.paths import BENCH, ROOT, RUNS
 from opharm.run.cache import forward_capture
-from opharm.run.generate import greedy
+from opharm.run.decision import opener_ids
+from opharm.run.generate import CLOSERS, greedy
 
 DECODE_SETS = {"main", "narr", "ladder", "cue", "shortcut"}
 
@@ -64,10 +66,11 @@ def main():
     ap.add_argument("--chunk", type=int, default=64)
     ap.add_argument("--no-acts", action="store_true")
     ap.add_argument("--thinking", action="store_true")
+    ap.add_argument("--instances", default=str(BENCH / "instances.jsonl"))
     args = ap.parse_args()
     sets, questions = set(args.sets.split(",")), set(args.questions.split(","))
 
-    rows = [json.loads(line) for line in open(BENCH / "instances.jsonl")]
+    rows = [json.loads(line) for line in open(args.instances)]
     rows = [r for r in rows if r["set"] in sets and (args.split == "all" or r["split"] == args.split)
             and (r["set"] != "judge" or r["question"] in questions)]
     if args.skeletons:
@@ -81,10 +84,10 @@ def main():
     (out / "order.json").write_text(json.dumps(order))
 
     tok, model = load_tokenizer(args.model), load_model(args.model)
-    opener, yn = tok.convert_tokens_to_ids("<tool_call>"), yes_no_ids(tok)
+    opener, yn = opener_ids(tok), yes_no_ids(tok)
     acts = None
     if not args.no_acts:
-        shape = (len(rows), 2, len(model.model.layers) + 1, model.config.hidden_size)
+        shape = (len(rows), 2, len(hooks.layers(model)) + 1, getattr(model.config, "text_config", model.config).hidden_size)
         mode = "r+" if (out / "acts.npy").exists() else "w+"
         acts = np.lib.format.open_memmap(out / "acts.npy", mode=mode, dtype=np.float32, shape=shape)
 
@@ -115,7 +118,7 @@ def main():
 
     t1 = time.time()
     for name, pick, max_new, batch, stops in (
-        ("decode", lambda r: r["set"] in DECODE_SETS, args.max_new, args.batch, ("</tool_call>",)),
+        ("decode", lambda r: r["set"] in DECODE_SETS, args.max_new, args.batch, CLOSERS),
         ("judge", lambda r: r["set"] == "judge", 4, args.batch * 2, ()),
     ):
         done = done_ids(out / f"{name}.jsonl")
@@ -148,6 +151,7 @@ def main():
         "model": args.model, "revision": pins()[args.model]["revision"], "args": vars(args), "git": git_state(),
         "chat_template_sha256": hashlib.sha256(tok.chat_template.encode()).hexdigest(),
         "benchmark_sha256": json.loads((BENCH / "manifest.json").read_text())["sha256_instances"],
+        "instances_sha256": hashlib.sha256(open(args.instances, "rb").read()).hexdigest(),
         "n": len(rows), "acts_shape": None if acts is None else list(acts.shape),
         "seconds_this_session": {"prefill": round(prefill_s, 1), "decode": round(time.time() - t1, 1)},
     }

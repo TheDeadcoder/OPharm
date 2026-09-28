@@ -1,0 +1,34 @@
+{
+ "model": "gemma4_e4b",
+ "revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+ "prompt_tokens": 581,
+ "passes": 30,
+ "mps_default": {
+  "prefill_s_median_p90": [
+   0.561971999501111,
+   0.5634683749987743
+  ],
+  "batch4_s_per_prompt": 0.5344162602505094,
+  "decode_tok_per_s": 20.941608617916188,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_cpu_solve": {
+  "prefill_s_median_p90": [
+   0.561640833497222,
+   0.5638027795022935
+  ],
+  "batch4_s_per_prompt": 0.535127000126522,
+  "decode_tok_per_s": 23.477702552099057,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_loop": {
+  "prefill_s_median_p90": [
+   0.563819416493061,
+   0.5654520255950046
+  ],
+  "batch4_s_per_prompt": 0.5354208542485139,
+  "decode_tok_per_s": 23.648433884581845,
+  "max_abs_logit_diff_vs_default": 0.0
+ },
+ "mps_peak_driver_gb": 17.224073216
+}

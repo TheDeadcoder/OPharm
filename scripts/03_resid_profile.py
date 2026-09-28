@@ -20,7 +20,8 @@ def main():
     tok = load_tokenizer(args.model)
     model = load_model(args.model)
     mods = hooks.resid_modules(model)
-    attn = [i for i, t in enumerate(model.config.layer_types) if t == "full_attention"]
+    types = getattr(getattr(model.config, "text_config", model.config), "layer_types", None) or ["full_attention"] * len(hooks.layers(model))
+    attn = [i for i, t in enumerate(types) if t == "full_attention"]
     stats = {k: [[] for _ in mods] for k in ("median_norm", "sink_norm", "inst_norm", "post_norm", "inst_max", "post_max")}
     top_dims = {"inst": [[] for _ in mods], "post": [[] for _ in mods]}
 
@@ -47,7 +48,8 @@ def main():
 
     table = []
     for p in range(len(mods)):
-        row = {"point": p, "block_in": "attention" if p in attn else ("final" if p == len(mods) - 1 else "gdn")}
+        kind = {"full_attention": "attention", "sliding_attention": "sliding"}
+        row = {"point": p, "block_in": "final" if p == len(mods) - 1 else kind.get(types[p], "gdn")}
         row.update({k: float(np.median(v[p])) for k, v in stats.items()})
         row.update({f"{k}_top_dim": max(set(v[p]), key=v[p].count) for k, v in top_dims.items()})
         table.append(row)

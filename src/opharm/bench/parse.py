@@ -34,18 +34,64 @@ def _call(body):
     return {"name": obj["name"], "arguments": obj.get("arguments", obj.get("parameters", {}))}
 
 
-def parse(text):
-    head, sep, rest = text.partition(OPEN)
+GEMMA_OPEN, GEMMA_CLOSE, GEMMA_QUOTE = "<|tool_call>", "<tool_call|>", '<|"|>'
+PYTHON_TAG = "<|python_tag|>"
+_GEMMA_CALL = re.compile(r"^\s*call:([\w.-]+)\s*(\{.*\})\s*$", re.S)
+_BARE_KEY = re.compile(r"([{,]\s*)([A-Za-z_][\w-]*)\s*:")
+
+
+def _gemma_call(body):
+    m = _GEMMA_CALL.match(body)
+    if not m:
+        raise ValueError("not a call")
+    parts = m.group(2).split(GEMMA_QUOTE)
+    if len(parts) % 2 == 0:
+        raise ValueError("unbalanced quotes")
+    js = "".join(json.dumps(part) if i % 2 else _BARE_KEY.sub(r'\1"\2":', part) for i, part in enumerate(parts))
+    return {"name": m.group(1), "arguments": json.loads(js)}
+
+
+def _tagged(text, open_tag, close_tag, call):
+    head, sep, rest = text.partition(open_tag)
     calls, malformed = [], False
     while sep:
-        body, closed, tail = rest.partition(CLOSE)
+        body, closed, tail = rest.partition(close_tag)
         if not closed:
             malformed = True
             break
         try:
-            calls.append(_call(body))
+            calls.append(call(body))
         except (ValueError, KeyError, TypeError):
             malformed = True
-        _, sep, rest = tail.partition(OPEN)
+        _, sep, rest = tail.partition(open_tag)
     return {"preamble": head.strip(), "calls": calls, "malformed": malformed}
+
+
+def _json_calls(text):
+    body = text.replace(PYTHON_TAG, "")
+    i = body.find("{")
+    head, calls, malformed, dec = body[:i].strip(), [], False, json.JSONDecoder()
+    while i >= 0:
+        try:
+            obj, end = dec.raw_decode(body, i)
+        except ValueError:
+            malformed = True
+            break
+        if isinstance(obj, dict) and "name" in obj:
+            calls.append({"name": obj["name"], "arguments": obj.get("parameters", obj.get("arguments", {}))})
+        else:
+            malformed = True
+        i = body.find("{", end)
+    return {"preamble": head, "calls": calls, "malformed": malformed}
+
+
+def parse(text):
+    if OPEN in text:
+        return _tagged(text, OPEN, CLOSE, _call)
+    if GEMMA_OPEN in text:
+        return _tagged(text, GEMMA_OPEN, GEMMA_CLOSE, _gemma_call)
+    bare = text.replace(PYTHON_TAG, "").lstrip()
+    if PYTHON_TAG in text or bare.startswith("{") or '{"name"' in text:
+        return _json_calls(text)
+    return {"preamble": text.strip(), "calls": [], "malformed": False}
 

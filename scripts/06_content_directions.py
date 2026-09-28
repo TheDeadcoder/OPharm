@@ -12,6 +12,7 @@ from opharm.models import load_model
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.refsets.refusal import is_refusal
 from opharm.run.cache import forward_capture
+from opharm.run.decision import opener_ids
 from opharm.run.generate import greedy
 
 
@@ -28,7 +29,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     tok = load_tokenizer(args.model)
     model = load_model(args.model)
-    opener = tok.convert_tokens_to_ids("<tool_call>")
+    opener = opener_ids(tok)
     items = [json.loads(line) for line in open(BENCH / "refsets" / "content.jsonl")]
     rendered = [render(tok, [(None, it["system"])], [(None, it["user"])], TOOLS) for it in items]
 
