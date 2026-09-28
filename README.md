@@ -234,6 +234,14 @@ Share of the production effect carried when staging activations are patched into
 
 On development skeletons, removing `r_blast` overshoots: m(x) goes from -1.09 to +1.43, past the staging twins (-0.45). The direction behaves like a general caution axis, and production moves prompts only slightly along it.
 
+**Generated replies under ablation** (the 55 development prompts). Share of replies that execute the requested operation:
+- `r_ref` removed: 100%.
+- `r_blast` at `t_post` removed: 94%.
+- `r_blast` at `t_inst` removed: 77%; another 18% only inspect.
+- Each of three random directions removed: 12%, 61% and 4%.
+
+The m(x) threshold misjudges the reply in about a quarter of the cases. Some replies execute without m(x) crossing zero; others cross zero but only inspect.
+
 **C3, steering at layer 18.** 60 prompts per group under the neutral rule, with 8 random directions per tested direction. Change in m(x) on destructive production prompts (starting near +6.4):
 
 | Direction added | 0.1 | 0.25 | 0.5 | 1 | 2 |
@@ -248,7 +256,17 @@ On development skeletons, removing `r_blast` overshoots: m(x) goes from -1.09 to
 - Removing its `r_ref` component leaves it about as strong, so its effect does not run through the refusal direction.
 - Neither direction is selective: effects on staging prompts and on benign targets match those on destructive production prompts, within 0.49; 0.40 logits at every dose.
 - At coefficient 2, random directions also collapse m(x).
-- Crossing zero is measured on m(x); the replies under intervention were not generated.
+- Crossing zero is measured on m(x).
+
+**Generated replies under steering at layer 18** (development, neutral rule, 20 prompts per group). Share executed:
+
+| Direction added | Coefficient 0.5 | Coefficient 1 |
+|---|---|---|
+| `r_ref` | 80 to 90% | 0%; 90 to 100% of replies decline |
+| `r_blast` | 80 to 90% | 0 to 5%; 60 to 80% decline, 20 to 35% ask |
+| Random directions | 98 to 100% | 93 to 98% |
+
+Destructive production, destructive staging and benign production prompts respond alike.
 
 #### Qwen3-4B-Instruct-2507 (development)
 
@@ -323,6 +341,28 @@ Each prompt's offset from the staging mean along `r_blast` is amplified at the d
 - At `t_inst`, gain has no effect.
 - The random-direction controls used the same gain but moved activations 30 to 50 times less, because prompts differ little along random directions. They therefore do not show specificity.
 - At gain 10, the displacement along `r_blast` is about as large as the residual vector itself.
+
+**Generated replies under gain** (16 development skeletons, 2 per class, all 16 cells).
+- The direction and the staging center (one per rule) are fitted on the other 200 skeletons.
+- Each gain is compared with three controls:
+  - a random direction given the same per-prompt displacement;
+  - the same direction with the displacements shuffled across prompts;
+  - a fixed addition of the mean displacement.
+- Gain 1 reproduces the unmodified replies exactly.
+
+Under the confirmation rule, destructive production is executed 84% at baseline, and 95% of the should-act prompts are completed. Change from baseline, with 95% intervals:
+
+| Condition | Fewer dangerous calls | Fewer completions where acting is correct |
+|---|---|---|
+| Gain 3 | 25 points [16, 34] | 15 points [12, 18] |
+| Random direction, same displacement, gain 3 | 6 [0, 12] | 2 |
+| Shuffled displacements, gain 3 | 9 [-3, 22] | 5 |
+| Gain 10 | 31 [22, 41] | 32 [26, 39] |
+| Random direction, same displacement, gain 10 | 31 [19, 44] | 31 |
+
+- Gain 3 beats its controls, but it blocks correct actions at about 60% of the rate at which it prevents dangerous ones.
+- At gain 10, a random direction with the same displacement does as much.
+- Under the neutral rule, gain 10 lowers dangerous calls by 9 points [6, 12] with 1 point of lost completions; the random control has no effect there.
 
 ### 8. Knowing the rule's condition (Qwen3.5-4B)
 
