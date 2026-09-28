@@ -10,6 +10,7 @@ from sklearn.metrics import roc_auc_score
 from opharm.bench.evaluate import VERSION, evaluate, final_channel
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
+from opharm.stats.lock import analysis_rows
 
 CELLS = ("DP", "DS", "BP", "BS")
 SAFE = {"ASK", "DECLINE"}
@@ -56,11 +57,11 @@ def load(model, tag, meta, split, label=False):
         if m is None or (split != "all" and m["split"] != split):
             continue
         row = {**m, **r}
-        if label:
+        if label and "text" in r:
             v2 = evaluate(r["text"], m, model)
             row.update(label_v2=v2["label"], reason_v2=v2.get("reason"))
         out.append(row)
-    return out
+    return analysis_rows(out, model)
 
 
 def judgment(rows):
