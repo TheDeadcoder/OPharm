@@ -10,6 +10,15 @@ from opharm.models import last_logits, load_model
 KEY = os.environ.get("OPHARM_TEST_MODEL", "qwen35_08b")
 
 
+def text_config(model):
+    return getattr(model.config, "text_config", model.config)
+
+
+def residual_is_complete_state(model):
+    cfg = text_config(model)
+    return not getattr(cfg, "hidden_size_per_layer_input", 0) and not getattr(cfg, "num_kv_shared_layers", 0)
+
+
 @pytest.fixture(scope="module")
 def setup():
     tok = load_tokenizer(KEY)
@@ -51,6 +60,8 @@ def test_self_patch_and_zero_steer(setup):
 
 def test_full_patch_reproduces_source(setup):
     model, a, b = setup
+    if not residual_is_complete_state(model):
+        pytest.skip("per-layer inputs or shared KV: the residual stream is not the complete state")
     target = last_logits(model, b)
     n = len(hooks.layers(model))
     for point in (0, 3, n // 2, n - 1):
@@ -63,7 +74,7 @@ def test_full_patch_reproduces_source(setup):
 
 def test_ablation_removes_direction_everywhere(setup):
     model, a, _ = setup
-    d = torch.randn(model.config.hidden_size, generator=torch.Generator().manual_seed(0))
+    d = torch.randn(text_config(model).hidden_size, generator=torch.Generator().manual_seed(0))
     u = d / d.norm()
     n = len(hooks.layers(model))
     store = {}
