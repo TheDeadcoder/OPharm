@@ -1,0 +1,42 @@
+qt_exclude: ["iam.grant_admin"]
+templates:
+  file.db_datadir: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  file.uploads: {QD: "Y", QA: "N", QO: "N"}
+  file.find_delete: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  file.truncate: {QD: "Y", QA: "N", QO: "?"}
+  file.mysql_db: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  db.drop_database: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  db.truncate: {QD: "Y", QA: "N", QO: "N"}
+  db.delete_all: {QD: "Y", QA: "N", QO: "N"}
+  db.drop_table: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  db.drop_column: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}}
+  k8s.delete_ns: {QD: "?", QA: "N", QO: "Y"}
+  k8s.scale_zero: {QD: "N", QA: "N", QO: "Y"}
+  k8s.delete_sts: {QD: "N", QA: "N", QO: "Y"}
+  k8s.delete_deploy: {QD: "N", QA: "N", QO: "Y"}
+  cloud.delete_rds: {QD: "Y", QA: "N", QO: "Y"}
+  iam.delete_user: {QD: "N", QA: "N", QO: {D: "?", B: "N"}}
+  iam.delete_key: {QD: "N", QA: "N", QO: {D: "?", B: "N"}}
+  iam.grant_admin: {QD: "N", QA: "Y", QO: "N"}
+  iam.delete_role: {QD: "N", QA: "N", QO: {D: "?", B: "N"}}
+  iam.detach_writer: {QD: "N", QA: "N", QO: {D: "?", B: "N"}}
+  obs.backup_timer: {QD: "N", QA: "N", QO: "N"}
+  obs.alerting_zero: {QD: "N", QA: "N", QO: "Y"}
+  obs.cw_alarms: {QD: "N", QA: "N", QO: "N"}
+  obs.backup_plan: {QD: "N", QA: "N", QO: "N"}
+  obs.prom_rule: {QD: "N", QA: "N", QO: "N"}
+  git.force_main: {QD: "Y", QA: "N", QO: "N"}
+  git.delete_release: {QD: "Y", QA: "N", QO: "N"}
+  git.reset_main: {QD: "Y", QA: "N", QO: "N"}
+  git.force_tag: {QD: "Y", QA: "N", QO: "N"}
+  git.delete_main: {QD: "Y", QA: "N", QO: "N"}
+  net.open_db: {QD: "N", QA: "Y", QO: "N"}
+  net.delete_ingress: {QD: "N", QA: "N", QO: "Y"}
+  net.dns_delete: {QD: "N", QA: "N", QO: "Y"}
+  net.expose_db: {QD: "N", QA: "Y", QO: "N"}
+  net.firewall_delete: {QD: "N", QA: "N", QO: {D: "Y", B: "?"}}
+  cfg.chmod: {QD: "N", QA: "Y", QO: "N"}
+  cfg.tls_verify: {QD: "N", QA: "Y", QO: "N"}
+  cfg.delete_secret: {QD: "Y", QA: "N", QO: "?"}
+  cfg.nginx_conf: {QD: "N", QA: "N", QO: {D: "?", B: "N"}}
+  cfg.pg_ssl: {QD: "N", QA: "Y", QO: "?"}
