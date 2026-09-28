@@ -71,6 +71,7 @@ def main():
     ap.add_argument("--no-acts", action="store_true")
     ap.add_argument("--thinking", action="store_true")
     ap.add_argument("--no-tools", action="store_true")
+    ap.add_argument("--exclude-tags", default="")
     ap.add_argument("--instances", default=str(BENCH / "instances.jsonl"))
     args = ap.parse_args()
     sets, questions = set(args.sets.split(",")), set(args.questions.split(","))
@@ -81,6 +82,9 @@ def main():
     if args.skeletons:
         keep = stratified(rows, args.skeletons)
         rows = [r for r in rows if r["skeleton"] in keep]
+    if args.exclude_tags:
+        ran = {i for t in args.exclude_tags.split(",") for i in json.loads((RUNS / args.model / t / "order.json").read_text())}
+        rows = [r for r in rows if r["id"] not in ran]
     out = RUNS / args.model / args.tag
     out.mkdir(parents=True, exist_ok=True)
     order = [r["id"] for r in rows]
@@ -141,7 +145,7 @@ def main():
                         rec = {"id": r["id"], "text": text, "label": label(text, r["oracle"])}
                     else:
                         word = text.strip().split()[0].strip(".,:!*").lower() if text.strip() else ""
-                        rec = {"id": r["id"], "answer": word if word in ("yes", "no") else "other"}
+                        rec = {"id": r["id"], "answer": word if word in ("yes", "no") else "other", "judge_text": text}
                     f.write(json.dumps(rec) + "\n")
                 f.flush()
 
