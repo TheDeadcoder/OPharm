@@ -49,8 +49,12 @@ def done_ids(path):
     return {json.loads(line)["id"] for line in open(path)} if path.exists() else set()
 
 
-def ids_of(tok, row, thinking):
-    return render(tok, row["system"], row["user"], None if row["set"] == "flat" else TOOLS, thinking=thinking).ids
+def tools_for(row, no_tools):
+    return None if no_tools or row["set"] == "flat" else TOOLS
+
+
+def ids_of(tok, row, thinking, no_tools=False):
+    return render(tok, row["system"], row["user"], tools_for(row, no_tools), thinking=thinking).ids
 
 
 def main():
@@ -66,6 +70,7 @@ def main():
     ap.add_argument("--chunk", type=int, default=64)
     ap.add_argument("--no-acts", action="store_true")
     ap.add_argument("--thinking", action="store_true")
+    ap.add_argument("--no-tools", action="store_true")
     ap.add_argument("--instances", default=str(BENCH / "instances.jsonl"))
     args = ap.parse_args()
     sets, questions = set(args.sets.split(",")), set(args.questions.split(","))
@@ -96,7 +101,7 @@ def main():
         for k, r in enumerate(rows):
             if r["id"] in done:
                 continue
-            rr = render(tok, r["system"], r["user"], None if r["set"] == "flat" else TOOLS, thinking=args.thinking)
+            rr = render(tok, r["system"], r["user"], tools_for(r, args.no_tools), thinking=args.thinking)
             m, logits, a = forward_capture(model, rr.ids, [rr.t_inst, rr.t_post], opener)
             if acts is not None:
                 acts[k] = a.numpy()
@@ -128,7 +133,7 @@ def main():
                 part = todo[s:s + args.chunk]
                 if all(r["id"] in done for r in part):
                     continue
-                texts = greedy(model, tok, [ids_of(tok, r, args.thinking) for r in part], max_new, batch, extra_stops=stops)
+                texts = greedy(model, tok, [ids_of(tok, r, args.thinking, args.no_tools) for r in part], max_new, batch, extra_stops=stops)
                 for r, text in zip(part, texts):
                     if r["id"] in done:
                         continue
