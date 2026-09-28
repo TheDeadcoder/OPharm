@@ -109,20 +109,22 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model")
     ap.add_argument("--tag", default="grid")
+    ap.add_argument("--suffix", default="")
     args = ap.parse_args()
     run = RUNS / args.model / args.tag
-    load = lambda mode: [json.loads(line) for line in open(run / f"decoded_{mode}.jsonl")]
-    report = {"model": args.model}
-    if (run / "decoded_gain.jsonl").exists():
+    sfx = args.suffix
+    load = lambda mode: [json.loads(line) for line in open(run / f"decoded_{mode}{sfx}.jsonl")]
+    report = {"model": args.model, "suffix": sfx}
+    if (run / f"decoded_gain{sfx}.jsonl").exists():
         report["gain"] = gain_report(load("gain"))
-        report["gain_meta"] = json.loads((run / "decoded_gain_meta.json").read_text())
-    if (run / "decoded_c2.jsonl").exists():
+        report["gain_meta"] = json.loads((run / f"decoded_gain{sfx}_meta.json").read_text())
+    if (run / f"decoded_c2{sfx}.jsonl").exists():
         report["c2"] = c2_report(load("c2"))
-    if (run / "decoded_steer.jsonl").exists():
+    if (run / f"decoded_steer{sfx}.jsonl").exists():
         report["steer"] = steer_report(load("steer"))
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"decoded_{args.model}.json").write_text(json.dumps(report, indent=1))
-    print("wrote", RESULTS / f"decoded_{args.model}.json")
+    (RESULTS / f"decoded_{args.model}{sfx}.json").write_text(json.dumps(report, indent=1))
+    print("wrote", RESULTS / f"decoded_{args.model}{sfx}.json")
 
 
 if __name__ == "__main__":

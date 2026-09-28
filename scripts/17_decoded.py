@@ -13,7 +13,7 @@ from opharm.bench.evaluate import evaluate
 from opharm.bench.tools import TOOLS
 from opharm.chat import load_tokenizer, render
 from opharm.interp import hooks
-from opharm.interp.directions import unit, unmatched
+from opharm.interp.directions import outlier_keep, unit, unmatched
 from opharm.models import load_model
 from opharm.paths import RUNS
 from opharm.run.decision import _special, action_logodds, opener_ids
@@ -75,8 +75,9 @@ def panel(dev_main, n_skeletons, seed):
     return {s for skels in by_cls.values() for s in rng.sample(sorted(skels), min(per_cls, len(skels)))}
 
 
-def c2(run, rows, st, n_random, limit=0):
+def c2(run, rows, st, n_random, limit=0, split="dev", masked=False):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
+    pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
     env = np.array([r["env"] == "P" for r in dev_main])
     skel = np.array([r["skeleton"] for r in dev_main])
@@ -84,13 +85,14 @@ def c2(run, rows, st, n_random, limit=0):
     dirs["r_ref"] = torch.tensor(np.load(RUNS / run.key / "refsets" / "directions.npz")["r_ref"][st["L_steer"]])
     base = dirs["r_blast_registered"]
     dirs.update({f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(n_random)})
-    asks = [r for r in dev_main if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
+    asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
     asks = asks[:limit] if limit else asks
+    keep = [torch.tensor(k) for k in outlier_keep(run.key)] if masked else None
     out = []
     for r in asks:
         out.append(run.record(r, "clean"))
         for name, v in dirs.items():
-            out.append(run.record(r, name, [hooks.ablate(run.model, v)]))
+            out.append(run.record(r, name, [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]))
     return out
 
 
@@ -135,8 +137,9 @@ def gain(run, rows, layer, gains, n_skeletons, seed, limit=0):
                  "fit_skeletons": len({r["skeleton"] for r in fit}), "mean_amplitude": mean_amp}
 
 
-def steer(run, rows, st, coefs, n_random, n, seed, limit=0):
+def steer(run, rows, st, coefs, n_random, n, seed, limit=0, split="dev"):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
+    pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main], POS["t_post"], st["L_steer"]], dtype=np.float32)
     env = np.array([r["env"] == "P" for r in dev_main])
     ref = torch.tensor(np.load(RUNS / run.key / "refsets" / "directions.npz")["r_ref"][st["L_steer"]])
@@ -145,7 +148,7 @@ def steer(run, rows, st, coefs, n_random, n, seed, limit=0):
     rng = random.Random(seed)
     out = []
     for grp in ("DP", "DS", "BP"):
-        cand = [r for r in dev_main if code(r) in {grp + "AN", grp + "NN"}]
+        cand = [r for r in pool if code(r) in {grp + "AN", grp + "NN"}]
         for r in rng.sample(cand, min(limit or n, n, len(cand))):
             out.append(run.record(r, "clean"))
             for name, v in dirs.items():
@@ -169,21 +172,24 @@ def main():
     ap.add_argument("--seed", type=int, default=5)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--suffix", default="")
+    ap.add_argument("--split", default="dev", choices=["dev", "heldout"])
+    ap.add_argument("--masked", action="store_true")
     args = ap.parse_args()
     t0 = time.time()
-    rows, acts = load_rows(args.model, args.tag, False)
+    held = args.split == "heldout"
+    rows, acts = load_rows(args.model, args.tag, held)
     run = Runner(args.model, args.max_new)
     run.acts = acts
-    st = settings(args.model, args.tag, False)
+    st = settings(args.model, args.tag, held)
     meta = {"model": args.model, "mode": args.mode, "args": vars(args)}
     if args.mode == "c2":
-        out = c2(run, rows, st, args.random, args.limit)
+        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked)
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))
         out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed, args.limit)
         meta.update(info)
     else:
-        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed, args.limit)
+        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed, args.limit, args.split)
     dest = RUNS / args.model / args.tag / f"decoded_{args.mode}{args.suffix}.jsonl"
     dest.write_text("".join(json.dumps(o) + "\n" for o in out))
     meta.update(records=len(out), seconds=round(time.time() - t0, 1))
