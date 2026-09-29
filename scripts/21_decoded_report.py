@@ -105,13 +105,34 @@ def steer_report(recs):
                     "labels": dict(c)} for g, c in v.items()} for k, v in out.items()}
 
 
+def compare(run, mode, a, b):
+    load = lambda sfx: {(r["id"], r["condition"]): r for r in map(json.loads, open(run / f"decoded_{mode}{sfx}.jsonl"))}
+    x, y = load(a), load(b)
+    keys = sorted(set(x) & set(y))
+    flips = Counter((x[k]["label_v2"], y[k]["label_v2"]) for k in keys if x[k]["label_v2"] != y[k]["label_v2"])
+    return {"mode": mode, "a": a, "b": b, "n": len(keys), "only_a": len(set(x) - set(y)), "only_b": len(set(y) - set(x)),
+            "label_agreement": round(sum(x[k]["label_v2"] == y[k]["label_v2"] for k in keys) / max(1, len(keys)), 4),
+            "text_identical": round(sum(x[k]["text"] == y[k]["text"] for k in keys) / max(1, len(keys)), 4),
+            "max_m_diff": round(max((abs(x[k]["m"] - y[k]["m"]) for k in keys), default=0.0), 4),
+            "flips": {f"{p}->{q}": n for (p, q), n in flips.items()}}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model")
     ap.add_argument("--tag", default="grid")
     ap.add_argument("--suffix", default="")
+    ap.add_argument("--compare", default="")
+    ap.add_argument("--mode", default="steer")
     args = ap.parse_args()
     run = RUNS / args.model / args.tag
+    if args.compare:
+        a, b = args.compare.split(",")
+        res = compare(run, args.mode, a, b)
+        RESULTS.mkdir(exist_ok=True)
+        (RESULTS / f"decoded_compare_{args.model}_{args.mode}{a}{b}.json").write_text(json.dumps(res, indent=1))
+        print(json.dumps(res))
+        return
     sfx = args.suffix
     load = lambda mode: [json.loads(line) for line in open(run / f"decoded_{mode}{sfx}.jsonl")]
     report = {"model": args.model, "suffix": sfx}

@@ -65,6 +65,30 @@ class Runner:
         return {"id": r["id"], "cell": code(r), "condition": condition, "m": m, "text": text,
                 "label_v2": evaluate(text, r, self.key)["label"], **extra}
 
+    def generate_many(self, id_lists, edits=()):
+        n = max(len(ids) for ids in id_lists)
+        x = torch.tensor([[self.pad] * (n - len(ids)) + ids for ids in id_lists], device=self.model.device)
+        mask = torch.tensor([[0] * (n - len(ids)) + [1] * len(ids) for ids in id_lists], device=self.model.device)
+        with torch.inference_mode(), hooks.hooked(*edits):
+            out = self.model.generate(x, attention_mask=mask, max_new_tokens=self.max_new, do_sample=False,
+                                      eos_token_id=self.stops, pad_token_id=self.pad, output_logits=True, return_dict_in_generate=True)
+        res = []
+        for i in range(len(id_lists)):
+            row = out.sequences[i, n:].tolist()
+            cut = next((k for k, t in enumerate(row) if t in self.ends or t == self.pad), len(row))
+            res.append((action_logodds(out.logits[0][i].float().cpu(), self.opener).item(), self.tok.decode(row[:cut])))
+        return res
+
+    def records(self, rows, condition, edits, batch):
+        order = sorted(rows, key=lambda r: len(self.render(r).ids))
+        out = []
+        for s in range(0, len(order), batch):
+            part = order[s:s + batch]
+            for r, (m, text) in zip(part, self.generate_many([self.render(r).ids for r in part], edits)):
+                out.append({"id": r["id"], "cell": code(r), "condition": condition, "m": m, "text": text,
+                            "label_v2": evaluate(text, r, self.key)["label"]})
+        return out
+
 
 def panel(dev_main, n_skeletons, seed):
     by_cls = defaultdict(set)
@@ -75,7 +99,7 @@ def panel(dev_main, n_skeletons, seed):
     return {s for skels in by_cls.values() for s in rng.sample(sorted(skels), min(per_cls, len(skels)))}
 
 
-def c2(run, rows, st, n_random, limit=0, split="dev", masked=False):
+def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
@@ -88,11 +112,14 @@ def c2(run, rows, st, n_random, limit=0, split="dev", masked=False):
     asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
     asks = asks[:limit] if limit else asks
     keep = [torch.tensor(k) for k in outlier_keep(run.key)] if masked else None
+    edit = lambda v: [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]
+    if batch > 1:
+        return run.records(asks, "clean", [], batch) + [x for name, v in dirs.items() for x in run.records(asks, name, edit(v), batch)]
     out = []
     for r in asks:
         out.append(run.record(r, "clean"))
         for name, v in dirs.items():
-            out.append(run.record(r, name, [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]))
+            out.append(run.record(r, name, edit(v)))
     return out
 
 
@@ -137,7 +164,7 @@ def gain(run, rows, layer, gains, n_skeletons, seed, limit=0):
                  "fit_skeletons": len({r["skeleton"] for r in fit}), "mean_amplitude": mean_amp}
 
 
-def steer(run, rows, st, coefs, n_random, n, seed, limit=0, split="dev"):
+def steer(run, rows, st, coefs, n_random, n, seed, limit=0, split="dev", batch=1):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main], POS["t_post"], st["L_steer"]], dtype=np.float32)
@@ -146,14 +173,20 @@ def steer(run, rows, st, coefs, n_random, n, seed, limit=0, split="dev"):
     blast = torch.tensor(unit(unmatched(x, env, ~env, np.array([r["skeleton"] for r in dev_main])))) * ref.norm()
     dirs = {"r_ref": ref, "r_blast": blast, **{f"rand_{s}": random_unit(ref / ref.norm(), s) * ref.norm() for s in range(n_random)}}
     rng = random.Random(seed)
-    out = []
+    picked = []
     for grp in ("DP", "DS", "BP"):
         cand = [r for r in pool if code(r) in {grp + "AN", grp + "NN"}]
-        for r in rng.sample(cand, min(limit or n, n, len(cand))):
-            out.append(run.record(r, "clean"))
-            for name, v in dirs.items():
-                for cf in coefs:
-                    out.append(run.record(r, f"{name}|{cf}", [hooks.steer(run.model, st["L_steer"], v, cf)]))
+        picked += rng.sample(cand, min(limit or n, n, len(cand)))
+    edit = lambda v, cf: [hooks.steer(run.model, st["L_steer"], v, cf)]
+    if batch > 1:
+        return run.records(picked, "clean", [], batch) + [x for name, v in dirs.items() for cf in coefs
+                                                         for x in run.records(picked, f"{name}|{cf}", edit(v, cf), batch)]
+    out = []
+    for r in picked:
+        out.append(run.record(r, "clean"))
+        for name, v in dirs.items():
+            for cf in coefs:
+                out.append(run.record(r, f"{name}|{cf}", edit(v, cf)))
     return out
 
 
@@ -174,6 +207,7 @@ def main():
     ap.add_argument("--suffix", default="")
     ap.add_argument("--split", default="dev", choices=["dev", "heldout"])
     ap.add_argument("--masked", action="store_true")
+    ap.add_argument("--batch", type=int, default=1)
     args = ap.parse_args()
     t0 = time.time()
     held = args.split == "heldout"
@@ -183,13 +217,13 @@ def main():
     st = settings(args.model, args.tag, held)
     meta = {"model": args.model, "mode": args.mode, "args": vars(args)}
     if args.mode == "c2":
-        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked)
+        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch)
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))
         out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed, args.limit)
         meta.update(info)
     else:
-        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed, args.limit, args.split)
+        out = steer(run, rows, st, [float(c) for c in args.coefs.split(",")], args.random, args.n, args.seed, args.limit, args.split, args.batch)
     dest = RUNS / args.model / args.tag / f"decoded_{args.mode}{args.suffix}.jsonl"
     dest.write_text("".join(json.dumps(o) + "\n" for o in out))
     meta.update(records=len(out), seconds=round(time.time() - t0, 1))
