@@ -38,3 +38,13 @@ gemma4_e4b:
   steer_coef: 1.0
   random_directions: 24
   patch_layers: [1, 7, 12, 18, 23, 29, 34, 40]
+llama31_8b:
+  L_harm: 15
+  L_ref: 13
+  L_steer: 16
+  blast:
+    registered: [t_post, 6]
+    dev_best: [t_post, 5]
+  steer_coef: 1.0
+  random_directions: 24
+  patch_layers: [1, 5, 9, 13, 18, 22, 26, 30]
