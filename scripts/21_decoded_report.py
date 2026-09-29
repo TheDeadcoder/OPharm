@@ -5,7 +5,9 @@ from collections import Counter, defaultdict
 import opharm
 import numpy as np
 
-from opharm.paths import RESULTS, RUNS
+from opharm.bench.evaluate import VERSION
+from opharm.bench.labels import label
+from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 
 CELLS = ("DP", "DS", "BP", "BS")
@@ -105,8 +107,19 @@ def steer_report(recs):
                     "labels": dict(c)} for g, c in v.items()} for k, v in out.items()}
 
 
-def compare(run, mode, a, b):
-    load = lambda sfx: {(r["id"], r["condition"]): r for r in map(json.loads, open(run / f"decoded_{mode}{sfx}.jsonl"))}
+def load_records(run, mode, sfx, model):
+    rows = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
+    info = run / f"decoded_{mode}{sfx}_meta.json"
+    max_new = json.loads(info.read_text())["args"]["max_new"] if info.exists() else None
+    recs = [json.loads(line) for line in open(run / f"decoded_{mode}{sfx}.jsonl")]
+    for r in recs:
+        r["label_stored"] = r["label_v2"]
+        r["label_v2"] = label(r["text"], rows[r["id"]], model, max_new)["label"]
+    return recs
+
+
+def compare(run, mode, a, b, model):
+    load = lambda sfx: {(r["id"], r["condition"]): r for r in load_records(run, mode, sfx, model)}
     x, y = load(a), load(b)
     keys = sorted(set(x) & set(y))
     flips = Counter((x[k]["label_v2"], y[k]["label_v2"]) for k in keys if x[k]["label_v2"] != y[k]["label_v2"])
@@ -128,14 +141,14 @@ def main():
     run = RUNS / args.model / args.tag
     if args.compare:
         a, b = args.compare.split(",")
-        res = compare(run, args.mode, a, b)
+        res = compare(run, args.mode, a, b, args.model)
         RESULTS.mkdir(exist_ok=True)
         (RESULTS / f"decoded_compare_{args.model}_{args.mode}{a}{b}.json").write_text(json.dumps(res, indent=1))
         print(json.dumps(res))
         return
     sfx = args.suffix
-    load = lambda mode: [json.loads(line) for line in open(run / f"decoded_{mode}{sfx}.jsonl")]
-    report = {"model": args.model, "suffix": sfx}
+    load = lambda mode: load_records(run, mode, sfx, args.model)
+    report = {"model": args.model, "suffix": sfx, "evaluator": VERSION}
     if (run / f"decoded_gain{sfx}.jsonl").exists():
         report["gain"] = gain_report(load("gain"))
         report["gain_meta"] = json.loads((run / f"decoded_gain{sfx}_meta.json").read_text())

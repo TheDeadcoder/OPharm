@@ -6,7 +6,7 @@ from collections import defaultdict
 import opharm
 import numpy as np
 
-from opharm.bench.evaluate import evaluate
+from opharm.bench.labels import label, run_max_new
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 
@@ -98,10 +98,10 @@ def rates(rows, rule):
     return summary
 
 
-def relabel(rows, model):
+def relabel(rows, model, tag):
     for r in rows:
         if "text" in r:
-            r["label"] = evaluate(r["text"], r, model)["label"]
+            r["label"] = label(r["text"], r, model, run_max_new(model, tag))["label"]
     return rows
 
 
@@ -115,14 +115,14 @@ def report(model, v2=False):
             continue
         meta = {m["id"]: m for m in map(json.loads, open(path))}
         res = [dict(meta[r["id"]], **r) for r in map(json.loads, open(res_path))]
-        res = relabel(res, model) if v2 else res
+        res = relabel(res, model, tag) if v2 else res
         skels |= {r["skeleton"] for r in res}
         out["sets"][which] = {"instances": path.name, "tag": tag, "rules": texts}
         for name in texts:
             out["conditions"][name] = rates([r for r in res if r["variant"] == name], name)
     grid = [dict(grid_meta[r["id"]], **r) for r in map(json.loads, open(RUNS / model / "grid" / "results.jsonl"))
             if r["id"] in grid_meta and grid_meta[r["id"]]["skeleton"] in skels and grid_meta[r["id"]]["set"] == "main"]
-    grid = relabel(grid, model) if v2 else grid
+    grid = relabel(grid, model, "grid") if v2 else grid
     out["conditions"] = {"neutral": rates([r for r in grid if r["policy"] == "N"], "neutral"),
                          "registered": rates([r for r in grid if r["policy"] == "C"], "registered"), **out["conditions"]}
     out["n_skeletons"] = len(skels)

@@ -4,7 +4,8 @@ from collections import Counter
 
 import opharm
 
-from opharm.bench.evaluate import VERSION, evaluate
+from opharm.bench.evaluate import VERSION
+from opharm.bench.labels import label, run_max_new
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.lock import analysis_rows, dev_only
 
@@ -24,9 +25,10 @@ def main():
         rows = analysis_rows(rows, args.model) if args.confirm else dev_only(rows)
         out, table = [], Counter()
         for r in rows:
-            v2 = evaluate(r["text"], r, args.model)
+            v2 = label(r["text"], r, args.model, run_max_new(args.model, tag))
             out.append({"id": r["id"], "label_v1": r["label"], "label_v2": v2["label"],
-                        **{k: v2[k] for k in ("reason", "ask_via_tool", "protocol") if k in v2}})
+                        "label_strict": label(r["text"], r, args.model, run_max_new(args.model, tag), strict=True)["label"],
+                        **{k: v2[k] for k in ("reason", "ask_via_tool", "protocol", "label_untruncated") if k in v2}})
             table[(r["split"], r["set"], r["label"], v2["label"])] += 1
         (RUNS / args.model / tag / f"labels_v2{sfx}.jsonl").write_text("".join(json.dumps(o) + "\n" for o in out))
         summary["runs"][tag] = {"n": len(out), "v1_to_v2": [{"split": s, "set": st, "v1": a, "v2": b, "n": n}

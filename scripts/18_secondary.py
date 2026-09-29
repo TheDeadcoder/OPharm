@@ -7,7 +7,8 @@ import opharm
 import numpy as np
 from sklearn.metrics import roc_auc_score
 
-from opharm.bench.evaluate import VERSION, evaluate, final_channel
+from opharm.bench.evaluate import VERSION, final_channel
+from opharm.bench.labels import label as label_reply, run_max_new
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows
@@ -58,14 +59,18 @@ def load(model, tag, meta, split, label=False):
             continue
         row = {**m, **r}
         if label and "text" in r:
-            v2 = evaluate(r["text"], m, model)
+            v2 = label_reply(r["text"], m, model, run_max_new(model, tag))
             row.update(label_v2=v2["label"], reason_v2=v2.get("reason"))
         out.append(row)
     return analysis_rows(out, model)
 
 
 def load_tags(model, tags, meta, split, label=False):
-    return [r for t in tags if (RUNS / model / t / "results.jsonl").exists() for r in load(model, t, meta, split, label)]
+    rows = [r for t in tags if (RUNS / model / t / "results.jsonl").exists() for r in load(model, t, meta, split, label)]
+    ids = [r["id"] for r in rows]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{model} {tags}: the same instance appears in more than one run")
+    return rows
 
 
 def judgment(rows):
