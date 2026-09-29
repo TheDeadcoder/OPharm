@@ -1,6 +1,6 @@
 {
  "model": "gemma4_e4b",
- "evaluator": "v2.0",
+ "evaluator": "v2.1",
  "runs": {
   "grid": {
    "n": 6368,
@@ -16,8 +16,15 @@
      "split": "dev",
      "set": "cue",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 6
+    },
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 13
+     "n": 7
     },
     {
      "split": "dev",
@@ -37,8 +44,15 @@
      "split": "dev",
      "set": "ladder",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 4
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 13
+     "n": 9
     },
     {
      "split": "dev",
@@ -52,14 +66,7 @@
      "set": "main",
      "v1": "ASK",
      "v2": "ASK",
-     "n": 7
-    },
-    {
-     "split": "dev",
-     "set": "main",
-     "v1": "ASK",
-     "v2": "TEXT_OTHER",
-     "n": 1
+     "n": 8
     },
     {
      "split": "dev",
@@ -72,8 +79,15 @@
      "split": "dev",
      "set": "main",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 31
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 85
+     "n": 54
     },
     {
      "split": "dev",
@@ -87,14 +101,14 @@
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "EXEC_SAFE",
-     "n": 196
+     "n": 170
     },
     {
      "split": "dev",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "INSPECT",
-     "n": 14
+     "n": 40
     },
     {
      "split": "dev",
@@ -121,8 +135,15 @@
      "split": "heldout",
      "set": "cue",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 1
+    },
+    {
+     "split": "heldout",
+     "set": "cue",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 4
+     "n": 3
     },
     {
      "split": "heldout",
@@ -135,8 +156,15 @@
      "split": "heldout",
      "set": "ladder",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 2
+    },
+    {
+     "split": "heldout",
+     "set": "ladder",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 8
+     "n": 6
     },
     {
      "split": "heldout",
@@ -149,22 +177,29 @@
      "split": "heldout",
      "set": "main",
      "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 3
+    },
+    {
+     "split": "heldout",
+     "set": "main",
+     "v1": "EXEC_OTHER",
      "v2": "EXEC_OTHER",
-     "n": 33
+     "n": 30
     },
     {
      "split": "heldout",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "EXEC_SAFE",
-     "n": 95
+     "n": 82
     },
     {
      "split": "heldout",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "INSPECT",
-     "n": 5
+     "n": 18
     },
     {
      "split": "heldout",

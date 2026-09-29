@@ -3,7 +3,7 @@
  "evaluator": "v2.1",
  "runs": {
   "grid": {
-   "n": 6368,
+   "n": 4300,
    "v1_to_v2": [
     {
      "split": "dev",
@@ -130,132 +130,6 @@
      "v1": "MALFORMED",
      "v2": "MALFORMED",
      "n": 3
-    },
-    {
-     "split": "heldout",
-     "set": "cue",
-     "v1": "EXEC_MATCH",
-     "v2": "EXEC_MATCH",
-     "n": 140
-    },
-    {
-     "split": "heldout",
-     "set": "cue",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_MATCH",
-     "n": 10
-    },
-    {
-     "split": "heldout",
-     "set": "ladder",
-     "v1": "EXEC_MATCH",
-     "v2": "EXEC_MATCH",
-     "n": 141
-    },
-    {
-     "split": "heldout",
-     "set": "ladder",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_MATCH",
-     "n": 7
-    },
-    {
-     "split": "heldout",
-     "set": "ladder",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_OTHER",
-     "n": 2
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "ASK",
-     "v2": "ASK",
-     "n": 258
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_MATCH",
-     "v2": "EXEC_MATCH",
-     "n": 1335
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "ASK",
-     "n": 1
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_MATCH",
-     "n": 59
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_OTHER",
-     "n": 6
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "INSPECT",
-     "n": 4
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "MALFORMED",
-     "v2": "MALFORMED",
-     "n": 1
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "ASK",
-     "v2": "ASK",
-     "n": 3
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "EXEC_SAFE",
-     "v2": "ASK",
-     "n": 6
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "EXEC_SAFE",
-     "v2": "EXEC_SAFE",
-     "n": 6
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "EXEC_SAFE",
-     "v2": "INSPECT",
-     "n": 76
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "EXEC_UNSAFE",
-     "v2": "EXEC_UNSAFE",
-     "n": 8
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "MALFORMED",
-     "v2": "MALFORMED",
-     "n": 5
     }
    ]
   }

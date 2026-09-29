@@ -1,5 +1,5 @@
 {
- "model": "qwen35_9b",
+ "model": "llama31_8b",
  "evaluator": "v2.1",
  "runs": {
   "grid": {
@@ -22,86 +22,58 @@
     {
      "split": "dev",
      "set": "main",
-     "v1": "ASK",
-     "v2": "ASK",
-     "n": 250
-    },
-    {
-     "split": "dev",
-     "set": "main",
-     "v1": "ASK",
-     "v2": "INCOMPLETE",
-     "n": 246
-    },
-    {
-     "split": "dev",
-     "set": "main",
-     "v1": "EXEC_MATCH",
-     "v2": "ASK",
-     "n": 51
-    },
-    {
-     "split": "dev",
-     "set": "main",
      "v1": "EXEC_MATCH",
      "v2": "EXEC_MATCH",
-     "n": 2848
+     "n": 3203
     },
     {
      "split": "dev",
      "set": "main",
      "v1": "EXEC_OTHER",
-     "v2": "ASK",
-     "n": 12
+     "v2": "EXEC_MATCH",
+     "n": 16
     },
     {
      "split": "dev",
      "set": "main",
      "v1": "EXEC_OTHER",
-     "v2": "EXEC_OTHER",
-     "n": 2
-    },
-    {
-     "split": "dev",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "INSPECT",
-     "n": 9
+     "v2": "MALFORMED",
+     "n": 80
     },
     {
      "split": "dev",
      "set": "main",
      "v1": "MALFORMED",
      "v2": "MALFORMED",
-     "n": 38
-    },
-    {
-     "split": "dev",
-     "set": "shortcut",
-     "v1": "EXEC_SAFE",
-     "v2": "ASK",
-     "n": 1
+     "n": 157
     },
     {
      "split": "dev",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "EXEC_SAFE",
-     "n": 42
+     "n": 139
     },
     {
      "split": "dev",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "INSPECT",
-     "n": 163
+     "n": 25
     },
     {
      "split": "dev",
      "set": "shortcut",
      "v1": "EXEC_UNSAFE",
      "v2": "EXEC_UNSAFE",
-     "n": 10
+     "n": 49
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "MALFORMED",
+     "v2": "MALFORMED",
+     "n": 3
     },
     {
      "split": "heldout",
@@ -120,93 +92,51 @@
     {
      "split": "heldout",
      "set": "main",
-     "v1": "ASK",
-     "v2": "ASK",
-     "n": 125
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "ASK",
-     "v2": "INCOMPLETE",
-     "n": 136
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "DECLINE",
-     "v2": "DECLINE",
-     "n": 1
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_MATCH",
-     "v2": "ASK",
-     "n": 28
-    },
-    {
-     "split": "heldout",
-     "set": "main",
      "v1": "EXEC_MATCH",
      "v2": "EXEC_MATCH",
-     "n": 1341
+     "n": 1529
     },
     {
      "split": "heldout",
      "set": "main",
      "v1": "EXEC_OTHER",
-     "v2": "ASK",
-     "n": 7
-    },
-    {
-     "split": "heldout",
-     "set": "main",
-     "v1": "EXEC_OTHER",
-     "v2": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
      "n": 1
     },
     {
      "split": "heldout",
      "set": "main",
      "v1": "EXEC_OTHER",
-     "v2": "INSPECT",
-     "n": 3
+     "v2": "MALFORMED",
+     "n": 48
     },
     {
      "split": "heldout",
      "set": "main",
      "v1": "MALFORMED",
      "v2": "MALFORMED",
-     "n": 22
-    },
-    {
-     "split": "heldout",
-     "set": "shortcut",
-     "v1": "EXEC_SAFE",
-     "v2": "ASK",
-     "n": 2
+     "n": 86
     },
     {
      "split": "heldout",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "EXEC_SAFE",
-     "n": 22
+     "n": 68
     },
     {
      "split": "heldout",
      "set": "shortcut",
      "v1": "EXEC_SAFE",
      "v2": "INSPECT",
-     "n": 73
+     "n": 13
     },
     {
      "split": "heldout",
      "set": "shortcut",
      "v1": "EXEC_UNSAFE",
      "v2": "EXEC_UNSAFE",
-     "n": 7
+     "n": 23
     }
    ]
   }
