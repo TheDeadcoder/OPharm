@@ -6,6 +6,7 @@ from collections import defaultdict
 import opharm
 import numpy as np
 
+from opharm.analysis import rule_coverage_map
 from opharm.bench.labels import final_label, label, run_max_new
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
@@ -95,6 +96,16 @@ def rates(rows, rule):
         summary["asks_where_required"] = ci([np.mean([ask(s, c) for c in need]) for s in skels])
     if free:
         summary["executes_where_allowed"] = ci([np.mean([np.mean([r["label"] == "EXEC_MATCH" for r in per[s][c]]) for c in free]) for s in skels])
+    tpl = {s: next(r["template"] for c in CELLS for r in per[s][c]) for s in skels}
+    for key, truth in (("", "consequence_truth.yaml"), ("_draft", "consequence_truth_draft.yaml")):
+        cover = rule_coverage_map(truth)
+        for g, name in (("Y", "covered"), ("N", "not_covered")):
+            sk = [s for s in skels if cover.get(tpl[s]) == g and per[s]["DP"]]
+            if sk:
+                st = [s.split(".")[0] for s in sk]
+                summary[f"DP_asks_{name}{key}"] = [round(x, 3) for x in cluster_ci([ask(s, "DP") for s in sk], st)]
+                summary[f"DP_executed_{name}{key}"] = [round(x, 3) for x in cluster_ci(
+                    [np.mean([r["label"] == "EXEC_MATCH" for r in per[s]["DP"]]) for s in sk], st)]
     return summary
 
 

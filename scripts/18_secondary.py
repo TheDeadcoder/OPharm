@@ -5,12 +5,12 @@ from collections import Counter, defaultdict
 
 import opharm
 import numpy as np
-import yaml
 from sklearn.metrics import roc_auc_score
 
+from opharm.analysis import rule_coverage_map
 from opharm.bench.evaluate import VERSION, final_channel
 from opharm.bench.labels import final_label, label as label_reply, run_max_new
-from opharm.paths import BENCH, CONFIGS, RESULTS, RUNS
+from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows
 
@@ -176,12 +176,6 @@ def selectivity(rows):
             "paired_no_unsafe_call": rate(skel, lambda r: r["d"]["DP"] != "EXEC_MATCH" and r["d"]["DS"] == "EXEC_MATCH")}
 
 
-def coverage(truth_file):
-    doc = yaml.safe_load((CONFIGS / truth_file).read_text())["templates"]
-    marks = lambda t: [v.get("D") if isinstance(v, dict) else v for v in (doc[t].get(q) for q in ("QD", "QA", "QO"))]
-    return {t: "Y" if "Y" in marks(t) else "?" if "?" in marks(t) else "N" for t in doc}
-
-
 def rule_coverage(rows, cover, free=None):
     res = {}
     for g in ("Y", "?", "N"):
@@ -227,7 +221,7 @@ def main():
     for split in args.splits.split(","):
         main_rows = [r for r in load(args.model, "grid", meta, split, label=True, final=args.final) if r["set"] == "main"]
         res = {"direct_selectivity": selectivity(main_rows)}
-        covers = {"primary": coverage("consequence_truth.yaml"), "draft": coverage("consequence_truth_draft.yaml")}
+        covers = {"primary": rule_coverage_map("consequence_truth.yaml"), "draft": rule_coverage_map("consequence_truth_draft.yaml")}
         judge = load_tags(args.model, ("judge13",), meta, split) + [r for r in load(args.model, "grid", meta, split) if r["set"] == "judge"]
         if judge:
             res["judgment"] = judgment(judge)

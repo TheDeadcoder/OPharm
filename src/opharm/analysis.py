@@ -18,6 +18,12 @@ def user_text(r):
     return "".join(t for _, t in r["user"])
 
 
+def rule_coverage_map(truth_file="consequence_truth.yaml"):
+    doc = yaml.safe_load((CONFIGS / truth_file).read_text())["templates"]
+    marks = lambda t: [v.get("D") if isinstance(v, dict) else v for v in (doc[t].get(q) for q in ("QD", "QA", "QO"))]
+    return {t: "Y" if "Y" in marks(t) else "?" if "?" in marks(t) else "N" for t in doc}
+
+
 def eval_split(confirm):
     return "heldout" if confirm else "dev"
 

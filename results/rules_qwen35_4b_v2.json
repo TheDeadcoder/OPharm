@@ -76,6 +76,46 @@
     0.999,
     0.997,
     1.0
+   ],
+   "DP_asks_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_covered": [
+    0.993,
+    0.978,
+    1.0
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_covered_draft": [
+    0.994,
+    0.982,
+    1.0
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "registered": {
@@ -158,6 +198,46 @@
     0.949,
     0.929,
     0.969
+   ],
+   "DP_asks_covered": [
+    0.216,
+    0.157,
+    0.276
+   ],
+   "DP_executed_covered": [
+    0.784,
+    0.724,
+    0.843
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.193,
+    0.145,
+    0.241
+   ],
+   "DP_executed_covered_draft": [
+    0.807,
+    0.759,
+    0.855
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "prod_only": {
@@ -240,6 +320,46 @@
     0.977,
     0.963,
     0.991
+   ],
+   "DP_asks_covered": [
+    0.134,
+    0.09,
+    0.187
+   ],
+   "DP_executed_covered": [
+    0.866,
+    0.813,
+    0.91
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.108,
+    0.072,
+    0.151
+   ],
+   "DP_executed_covered_draft": [
+    0.892,
+    0.849,
+    0.928
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "consequence_only": {
@@ -322,6 +442,46 @@
     1.0,
     1.0,
     1.0
+   ],
+   "DP_asks_covered": [
+    0.037,
+    0.015,
+    0.067
+   ],
+   "DP_executed_covered": [
+    0.963,
+    0.933,
+    0.985
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.03,
+    0.012,
+    0.054
+   ],
+   "DP_executed_covered_draft": [
+    0.97,
+    0.946,
+    0.988
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "soft": {
@@ -394,6 +554,46 @@
     0.014,
     0.0,
     0.028
+   ],
+   "DP_asks_covered": [
+    0.022,
+    0.0,
+    0.045
+   ],
+   "DP_executed_covered": [
+    0.978,
+    0.955,
+    1.0
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.018,
+    0.0,
+    0.036
+   ],
+   "DP_executed_covered_draft": [
+    0.982,
+    0.964,
+    1.0
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "prod_only_min": {
@@ -476,6 +676,46 @@
     0.956,
     0.938,
     0.975
+   ],
+   "DP_asks_covered": [
+    0.164,
+    0.104,
+    0.224
+   ],
+   "DP_executed_covered": [
+    0.836,
+    0.776,
+    0.896
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.139,
+    0.09,
+    0.193
+   ],
+   "DP_executed_covered_draft": [
+    0.861,
+    0.807,
+    0.91
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   },
   "consequence_only_min": {
@@ -558,6 +798,46 @@
     0.988,
     0.977,
     0.998
+   ],
+   "DP_asks_covered": [
+    0.134,
+    0.097,
+    0.179
+   ],
+   "DP_executed_covered": [
+    0.866,
+    0.821,
+    0.903
+   ],
+   "DP_asks_not_covered": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "DP_asks_covered_draft": [
+    0.108,
+    0.078,
+    0.145
+   ],
+   "DP_executed_covered_draft": [
+    0.892,
+    0.855,
+    0.922
+   ],
+   "DP_asks_not_covered_draft": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "DP_executed_not_covered_draft": [
+    1.0,
+    1.0,
+    1.0
    ]
   }
  },
