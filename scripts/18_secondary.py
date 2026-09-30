@@ -5,11 +5,12 @@ from collections import Counter, defaultdict
 
 import opharm
 import numpy as np
+import yaml
 from sklearn.metrics import roc_auc_score
 
 from opharm.bench.evaluate import VERSION, final_channel
 from opharm.bench.labels import final_label, label as label_reply, run_max_new
-from opharm.paths import BENCH, RESULTS, RUNS
+from opharm.paths import BENCH, CONFIGS, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows
 
@@ -175,6 +176,23 @@ def selectivity(rows):
             "paired_no_unsafe_call": rate(skel, lambda r: r["d"]["DP"] != "EXEC_MATCH" and r["d"]["DS"] == "EXEC_MATCH")}
 
 
+def coverage(truth_file):
+    doc = yaml.safe_load((CONFIGS / truth_file).read_text())["templates"]
+    marks = lambda t: [v.get("D") if isinstance(v, dict) else v for v in (doc[t].get(q) for q in ("QD", "QA", "QO"))]
+    return {t: "Y" if "Y" in marks(t) else "?" if "?" in marks(t) else "N" for t in doc}
+
+
+def rule_coverage(rows, cover, free=None):
+    res = {}
+    for g in ("Y", "?", "N"):
+        sub = [r for r in rows if cell(r) == "DP" and r["policy"] == "C" and cover.get(r["template"]) == g]
+        res[g] = {"n": len(sub), "templates": len({r["template"] for r in sub}),
+                  "exec": rate(sub, lambda r: r["label_v2"] == "EXEC_MATCH"), "ask": rate(sub, lambda r: r["label_v2"] == "ASK")}
+        if free is not None and sub:
+            res[g]["paired_tool_free_q1"] = paired(free, sub, "q1")["DPC"]
+    return res
+
+
 def thinking(think, direct, model):
     res = {"contrast": contrast(direct, think, "thinking"), "selectivity_thinking": selectivity(think),
            "selectivity_direct": selectivity([d for d in direct if key(d) in {key(t) for t in think}])}
@@ -209,6 +227,7 @@ def main():
     for split in args.splits.split(","):
         main_rows = [r for r in load(args.model, "grid", meta, split, label=True, final=args.final) if r["set"] == "main"]
         res = {"direct_selectivity": selectivity(main_rows)}
+        covers = {"primary": coverage("consequence_truth.yaml"), "draft": coverage("consequence_truth_draft.yaml")}
         judge = load_tags(args.model, ("judge13",), meta, split) + [r for r in load(args.model, "grid", meta, split) if r["set"] == "judge"]
         if judge:
             res["judgment"] = judgment(judge)
@@ -222,12 +241,15 @@ def main():
             res["paired_tool_free"] = {q: paired(free, main_rows, q) for q in sorted({r["question"] for r in free})}
             res["self_check_from_tool_free_q1"] = self_check(free, main_rows)
             res["tool_free_vs_tools"] = tools_contrast(free, judge)
+        res["rule_coverage"] = {k: rule_coverage(main_rows, c, free or None) for k, c in covers.items()}
         if (RUNS / args.model / "narr" / "results.jsonl").exists():
             narr = load(args.model, "narr", meta, split, label=True, final=args.final)
-            res["narration"] = {"contrast": contrast(main_rows, narr, "narration"), "selectivity_narration": selectivity(narr)}
+            res["narration"] = {"contrast": contrast(main_rows, narr, "narration"), "selectivity_narration": selectivity(narr),
+                                "rule_coverage": {k: rule_coverage(narr, c) for k, c in covers.items()}}
         think = load_tags(args.model, ("think", "think_rest"), meta, split, label=True, final=args.final)
         if think:
             res["thinking"] = thinking(think, main_rows, args.model)
+            res["thinking"]["rule_coverage"] = {k: rule_coverage(think, c) for k, c in covers.items()}
         out["splits"][split] = res
     RESULTS.mkdir(exist_ok=True)
     name = f"secondary_{args.model}{'_final' if args.final else ''}.json"
