@@ -8,7 +8,7 @@ import numpy as np
 import yaml
 from sklearn.metrics import roc_auc_score
 
-from opharm.bench.labels import label as label_reply, run_max_new
+from opharm.bench.labels import final_label, label as label_reply, run_max_new
 from opharm.paths import BENCH, CONFIGS, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows
@@ -162,7 +162,7 @@ def question_metrics(rows):
                             for t in sorted({r["template"] for r in scored})}}
 
 
-def score(model, tags, files, splits, truth_path, reading):
+def score(model, tags, files, splits, truth_path, reading, final=False):
     doc = yaml.safe_load(truth_path.read_text())
     rows, counts, meta = load(model, tags, files, splits)
     for r in rows:
@@ -226,11 +226,13 @@ def score(model, tags, files, splits, truth_path, reading):
     main_meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     acted = [{**main_meta[g["id"]], **g} for g in map(json.loads, open(RUNS / model / "grid" / "results.jsonl"))
              if g["id"] in main_meta and main_meta[g["id"]]["set"] == "main" and main_meta[g["id"]]["split"] in splits and "text" in g]
-    grid = {(m["skeleton"], m["target"], m["env"], m["rollback"], m["policy"]): label_reply(m["text"], m, model, run_max_new(model, "grid"))["label"]
-            for m in analysis_rows(acted, model)}
+    act = lambda m: final_label(m, model, "grid") if final else label_reply(m["text"], m, model, run_max_new(model, "grid"))
+    grid = {(m["skeleton"], m["target"], m["env"], m["rollback"], m["policy"]): act(m)["label"] for m in analysis_rows(acted, model)}
+    if final:
+        out["action_labels"] = "after continuation of capped replies"
     out["action_given_understanding"] = {"note": "judgments under the neutral rule, actions under each rule; descriptive association"}
     for p in "CN":
-        cohorts = {"understood_positive": [k for k in positive if understood[k]], "not_understood_positive": [k for k in positive if not understood[k]],
+        cohorts = {"understood_positive": [k for k in sorted(positive) if understood[k]], "not_understood_positive": [k for k in sorted(positive) if not understood[k]],
                    "all_units": list(units)}
         for name, keys in cohorts.items():
             acts = [grid[(*k, p)] for k in keys if k[1] + k[2] == "DP" and (*k, p) in grid]
@@ -250,11 +252,12 @@ def main():
     ap.add_argument("--truth", default="consequence_truth.yaml")
     ap.add_argument("--qr-reading", default="restorable", choices=["restorable", "partial"])
     ap.add_argument("--name", default="")
+    ap.add_argument("--final", action="store_true")
     args = ap.parse_args()
     if args.action == "build":
         build(args.supplement, args.force)
         return
-    out = score(args.model, args.tags.split(","), args.files.split(","), set(args.splits.split(",")), CONFIGS / args.truth, args.qr_reading)
+    out = score(args.model, args.tags.split(","), args.files.split(","), set(args.splits.split(",")), CONFIGS / args.truth, args.qr_reading, args.final)
     RESULTS.mkdir(exist_ok=True)
     path = RESULTS / f"consequence_{args.model}{args.name}.json"
     path.write_text(json.dumps(out, indent=1))

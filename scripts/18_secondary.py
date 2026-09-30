@@ -8,7 +8,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 
 from opharm.bench.evaluate import VERSION, final_channel
-from opharm.bench.labels import label as label_reply, run_max_new
+from opharm.bench.labels import final_label, label as label_reply, run_max_new
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 from opharm.stats.lock import analysis_rows
@@ -50,7 +50,7 @@ def auroc(rows):
     return round(float(roc_auc_score(y, [r["judge"] for r in rows])), 4) if len(set(y)) == 2 else None
 
 
-def load(model, tag, meta, split, label=False):
+def load(model, tag, meta, split, label=False, final=False):
     out = []
     for line in open(RUNS / model / tag / "results.jsonl"):
         r = json.loads(line)
@@ -59,14 +59,14 @@ def load(model, tag, meta, split, label=False):
             continue
         row = {**m, **r}
         if label and "text" in r:
-            v2 = label_reply(r["text"], m, model, run_max_new(model, tag))
+            v2 = final_label(row, model, tag) if final else label_reply(r["text"], m, model, run_max_new(model, tag))
             row.update(label_v2=v2["label"], reason_v2=v2.get("reason"))
         out.append(row)
     return analysis_rows(out, model)
 
 
-def load_tags(model, tags, meta, split, label=False):
-    rows = [r for t in tags if (RUNS / model / t / "results.jsonl").exists() for r in load(model, t, meta, split, label)]
+def load_tags(model, tags, meta, split, label=False, final=False):
+    rows = [r for t in tags if (RUNS / model / t / "results.jsonl").exists() for r in load(model, t, meta, split, label, final)]
     ids = [r["id"] for r in rows]
     if len(ids) != len(set(ids)):
         raise ValueError(f"{model} {tags}: the same instance appears in more than one run")
@@ -200,11 +200,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("model", nargs="?", default="qwen35_4b")
     ap.add_argument("--splits", default="dev,heldout")
+    ap.add_argument("--final", action="store_true")
     args = ap.parse_args()
     meta = {json.loads(l)["id"]: json.loads(l) for l in open(BENCH / "instances.jsonl")}
     out = {"model": args.model, "evaluator": "opharm.bench.evaluate " + VERSION, "splits": {}}
+    if args.final:
+        out["labels"] = "after continuation of capped replies"
     for split in args.splits.split(","):
-        main_rows = [r for r in load(args.model, "grid", meta, split, label=True) if r["set"] == "main"]
+        main_rows = [r for r in load(args.model, "grid", meta, split, label=True, final=args.final) if r["set"] == "main"]
         res = {"direct_selectivity": selectivity(main_rows)}
         judge = load_tags(args.model, ("judge13",), meta, split) + [r for r in load(args.model, "grid", meta, split) if r["set"] == "judge"]
         if judge:
@@ -220,15 +223,16 @@ def main():
             res["self_check_from_tool_free_q1"] = self_check(free, main_rows)
             res["tool_free_vs_tools"] = tools_contrast(free, judge)
         if (RUNS / args.model / "narr" / "results.jsonl").exists():
-            narr = load(args.model, "narr", meta, split, label=True)
+            narr = load(args.model, "narr", meta, split, label=True, final=args.final)
             res["narration"] = {"contrast": contrast(main_rows, narr, "narration"), "selectivity_narration": selectivity(narr)}
-        think = load_tags(args.model, ("think", "think_rest"), meta, split, label=True)
+        think = load_tags(args.model, ("think", "think_rest"), meta, split, label=True, final=args.final)
         if think:
             res["thinking"] = thinking(think, main_rows, args.model)
         out["splits"][split] = res
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"secondary_{args.model}.json").write_text(json.dumps(out, indent=1))
-    print("wrote", RESULTS / f"secondary_{args.model}.json")
+    name = f"secondary_{args.model}{'_final' if args.final else ''}.json"
+    (RESULTS / name).write_text(json.dumps(out, indent=1))
+    print("wrote", RESULTS / name)
 
 
 if __name__ == "__main__":
