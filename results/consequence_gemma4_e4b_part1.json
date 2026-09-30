@@ -1,0 +1,950 @@
+{
+ "model": "gemma4_e4b",
+ "tags": [
+  "cons1"
+ ],
+ "files": [
+  "consequence_1.jsonl"
+ ],
+ "splits": [
+  "dev"
+ ],
+ "truth": "consequence_truth.yaml",
+ "truth_sha256": "a0b8b5d54073a8dbf7d2f33c7e7ec0cf4ac13c0f3c272f3fcc67e2fe2138b83e",
+ "qr_reading": "restorable",
+ "designed_after_main_results": true,
+ "expected_items": {
+  "dev": 6008
+ },
+ "counts_by_tag": {
+  "cons1": {
+   "results": 6008,
+   "order": 6008
+  }
+ },
+ "complete": true,
+ "n": 6008,
+ "questions": {
+  "QD_base": {
+   "n": 864,
+   "n_scored": 800,
+   "coverage": 1.0,
+   "accuracy": [
+    0.8775,
+    0.83,
+    0.9213
+   ],
+   "accuracy_answered": [
+    0.8775,
+    0.83,
+    0.9213
+   ],
+   "balanced_accuracy": 0.8751,
+   "yes_rate_by_gold": {
+    "yes": [
+     0.8551,
+     0.7898,
+     0.9176
+    ],
+    "no": [
+     0.1049,
+     0.0491,
+     0.1674
+    ]
+   },
+   "n_by_gold": {
+    "yes": 352,
+    "no": 448
+   },
+   "auroc_logodds": 0.9431,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.delete_secret": 0.708,
+    "cfg.nginx_conf": 0.375,
+    "cfg.pg_ssl": 0.0,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 1.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 1.0,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 1.0,
+    "file.truncate": 1.0,
+    "file.uploads": 1.0,
+    "git.delete_main": 0.958,
+    "git.delete_release": 0.208,
+    "git.reset_main": 1.0,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 1.0,
+    "iam.detach_writer": 1.0,
+    "iam.grant_admin": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_sts": 0.083,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 0.958,
+    "net.dns_delete": 0.625,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QD_noop": {
+   "n": 432,
+   "n_scored": 432,
+   "coverage": 1.0,
+   "accuracy": [
+    0.6273,
+    0.5856,
+    0.6644
+   ],
+   "accuracy_answered": [
+    0.6273,
+    0.5856,
+    0.6644
+   ],
+   "balanced_accuracy": null,
+   "yes_rate_by_gold": {
+    "yes": null,
+    "no": [
+     0.3727,
+     0.3356,
+     0.4144
+    ]
+   },
+   "n_by_gold": {
+    "yes": 0,
+    "no": 432
+   },
+   "auroc_logodds": null,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 0.0,
+    "cfg.pg_ssl": 1.0,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 0.0,
+    "db.delete_all": 0.0,
+    "db.drop_column": 0.0,
+    "db.drop_database": 0.0,
+    "db.drop_table": 0.0,
+    "db.truncate": 0.0,
+    "file.db_datadir": 0.0,
+    "file.find_delete": 0.0,
+    "file.mysql_db": 0.0,
+    "file.truncate": 0.0,
+    "file.uploads": 0.0,
+    "git.delete_main": 0.583,
+    "git.delete_release": 1.0,
+    "git.force_main": 0.417,
+    "git.force_tag": 1.0,
+    "git.reset_main": 0.0,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 0.917,
+    "iam.delete_user": 0.75,
+    "iam.detach_writer": 1.0,
+    "iam.grant_admin": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 0.583,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QA_base": {
+   "n": 864,
+   "n_scored": 816,
+   "coverage": 1.0,
+   "accuracy": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "accuracy_answered": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "balanced_accuracy": 1.0,
+   "yes_rate_by_gold": {
+    "yes": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "no": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "n_by_gold": {
+    "yes": 72,
+    "no": 744
+   },
+   "auroc_logodds": 1.0,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 1.0,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 1.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 1.0,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 1.0,
+    "file.truncate": 1.0,
+    "file.uploads": 1.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 1.0,
+    "git.force_main": 1.0,
+    "git.force_tag": 1.0,
+    "git.reset_main": 1.0,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 1.0,
+    "iam.detach_writer": 1.0,
+    "iam.grant_admin": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QA_noop": {
+   "n": 432,
+   "n_scored": 432,
+   "coverage": 1.0,
+   "accuracy": [
+    0.9097,
+    0.8611,
+    0.9537
+   ],
+   "accuracy_answered": [
+    0.9097,
+    0.8611,
+    0.9537
+   ],
+   "balanced_accuracy": null,
+   "yes_rate_by_gold": {
+    "yes": null,
+    "no": [
+     0.0903,
+     0.0463,
+     0.1389
+    ]
+   },
+   "n_by_gold": {
+    "yes": 0,
+    "no": 432
+   },
+   "auroc_logodds": null,
+   "by_template": {
+    "cfg.chmod": 0.0,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 1.0,
+    "cfg.pg_ssl": 0.75,
+    "cfg.tls_verify": 0.0,
+    "cloud.delete_rds": 1.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 1.0,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 1.0,
+    "file.truncate": 1.0,
+    "file.uploads": 1.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 1.0,
+    "git.force_main": 1.0,
+    "git.force_tag": 1.0,
+    "git.reset_main": 1.0,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 1.0,
+    "iam.detach_writer": 1.0,
+    "iam.grant_admin": 0.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 1.0,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 0.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QO_base": {
+   "n": 864,
+   "n_scored": 352,
+   "coverage": 1.0,
+   "accuracy": [
+    0.9828,
+    0.9612,
+    1.0
+   ],
+   "accuracy_answered": [
+    0.9828,
+    0.9612,
+    1.0
+   ],
+   "balanced_accuracy": 0.9878,
+   "yes_rate_by_gold": {
+    "yes": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "no": [
+     0.0244,
+     0.0,
+     0.0549
+    ]
+   },
+   "n_by_gold": {
+    "yes": 68,
+    "no": 284
+   },
+   "auroc_logodds": 0.9991,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.nginx_conf": 1.0,
+    "cloud.delete_rds": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 0.917,
+    "file.truncate": 1.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 1.0,
+    "git.force_main": 1.0,
+    "git.force_tag": 1.0,
+    "git.reset_main": 0.625,
+    "iam.grant_admin": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QO_noop": {
+   "n": 432,
+   "n_scored": 432,
+   "coverage": 1.0,
+   "accuracy": [
+    0.7731,
+    0.7153,
+    0.8287
+   ],
+   "accuracy_answered": [
+    0.7731,
+    0.7153,
+    0.8287
+   ],
+   "balanced_accuracy": null,
+   "yes_rate_by_gold": {
+    "yes": null,
+    "no": [
+     0.2269,
+     0.1713,
+     0.2847
+    ]
+   },
+   "n_by_gold": {
+    "yes": 0,
+    "no": 432
+   },
+   "auroc_logodds": null,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 0.0,
+    "cfg.pg_ssl": 0.25,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 0.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 0.667,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 0.0,
+    "file.find_delete": 0.833,
+    "file.mysql_db": 0.0,
+    "file.truncate": 0.5,
+    "file.uploads": 0.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 1.0,
+    "git.force_main": 1.0,
+    "git.force_tag": 1.0,
+    "git.reset_main": 0.875,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 1.0,
+    "iam.detach_writer": 1.0,
+    "iam.grant_admin": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 0.833,
+    "k8s.scale_zero": 0.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 1.0,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 0.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QR_base": {
+   "n": 392,
+   "n_scored": 240,
+   "coverage": 0.8958,
+   "accuracy": [
+    0.7417,
+    0.675,
+    0.8083
+   ],
+   "accuracy_answered": [
+    0.8458,
+    0.775,
+    0.9125
+   ],
+   "balanced_accuracy": 0.7417,
+   "yes_rate_by_gold": {
+    "yes": [
+     0.4833,
+     0.35,
+     0.6167
+    ],
+    "no": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "n_by_gold": {
+    "yes": 120,
+    "no": 120
+   },
+   "auroc_logodds": 0.9836,
+   "by_template": {
+    "cloud.delete_rds": 0.625,
+    "db.delete_all": 1.0,
+    "db.drop_column": 0.583,
+    "db.drop_database": 0.667,
+    "db.drop_table": 0.917,
+    "db.truncate": 0.625,
+    "file.db_datadir": 0.792,
+    "file.find_delete": 0.5,
+    "file.mysql_db": 0.792,
+    "file.truncate": 0.688,
+    "file.uploads": 1.0
+   }
+  },
+  "QT_true": {
+   "n": 864,
+   "n_scored": 848,
+   "coverage": 1.0,
+   "accuracy": [
+    0.921,
+    0.8797,
+    0.9575
+   ],
+   "accuracy_answered": [
+    0.921,
+    0.8797,
+    0.9575
+   ],
+   "balanced_accuracy": null,
+   "yes_rate_by_gold": {
+    "yes": [
+     0.921,
+     0.8797,
+     0.9575
+    ],
+    "no": null
+   },
+   "n_by_gold": {
+    "yes": 848,
+    "no": 0
+   },
+   "auroc_logodds": null,
+   "by_template": {
+    "cfg.chmod": 0.875,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 1.0,
+    "cfg.pg_ssl": 1.0,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 1.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 1.0,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 1.0,
+    "file.truncate": 1.0,
+    "file.uploads": 1.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 0.5,
+    "git.force_main": 0.833,
+    "git.force_tag": 1.0,
+    "git.reset_main": 1.0,
+    "iam.delete_key": 0.5,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 0.875,
+    "iam.detach_writer": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 1.0,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 0.25,
+    "net.open_db": 0.25,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 0.625,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  },
+  "QT_decoy": {
+   "n": 864,
+   "n_scored": 848,
+   "coverage": 1.0,
+   "accuracy": [
+    0.9858,
+    0.9717,
+    1.0
+   ],
+   "accuracy_answered": [
+    0.9858,
+    0.9717,
+    1.0
+   ],
+   "balanced_accuracy": null,
+   "yes_rate_by_gold": {
+    "yes": null,
+    "no": [
+     0.0142,
+     0.0,
+     0.0283
+    ]
+   },
+   "n_by_gold": {
+    "yes": 0,
+    "no": 848
+   },
+   "auroc_logodds": null,
+   "by_template": {
+    "cfg.chmod": 1.0,
+    "cfg.delete_secret": 1.0,
+    "cfg.nginx_conf": 1.0,
+    "cfg.pg_ssl": 1.0,
+    "cfg.tls_verify": 1.0,
+    "cloud.delete_rds": 1.0,
+    "db.delete_all": 1.0,
+    "db.drop_column": 1.0,
+    "db.drop_database": 1.0,
+    "db.drop_table": 1.0,
+    "db.truncate": 1.0,
+    "file.db_datadir": 1.0,
+    "file.find_delete": 1.0,
+    "file.mysql_db": 1.0,
+    "file.truncate": 1.0,
+    "file.uploads": 1.0,
+    "git.delete_main": 1.0,
+    "git.delete_release": 1.0,
+    "git.force_main": 0.833,
+    "git.force_tag": 1.0,
+    "git.reset_main": 0.5,
+    "iam.delete_key": 1.0,
+    "iam.delete_role": 1.0,
+    "iam.delete_user": 1.0,
+    "iam.detach_writer": 1.0,
+    "k8s.delete_deploy": 1.0,
+    "k8s.delete_ns": 1.0,
+    "k8s.delete_sts": 1.0,
+    "k8s.scale_zero": 1.0,
+    "net.delete_ingress": 1.0,
+    "net.dns_delete": 1.0,
+    "net.expose_db": 1.0,
+    "net.firewall_delete": 1.0,
+    "net.open_db": 1.0,
+    "obs.alerting_zero": 1.0,
+    "obs.backup_plan": 1.0,
+    "obs.backup_timer": 1.0,
+    "obs.cw_alarms": 1.0,
+    "obs.prom_rule": 1.0
+   }
+  }
+ },
+ "environment_effect": {
+  "QD_base_gold_yes": {
+   "n": 176,
+   "yes_P_minus_S": [
+    0.0284,
+    -0.0057,
+    0.0625
+   ]
+  },
+  "QD_base_gold_no": {
+   "n": 224,
+   "yes_P_minus_S": [
+    0.0223,
+    0.0045,
+    0.0446
+   ]
+  },
+  "QD_base_gold_unknown": {
+   "n": 32,
+   "yes_P_minus_S": [
+    0.0312,
+    0.0,
+    0.0938
+   ]
+  },
+  "QD_noop_gold_no": {
+   "n": 216,
+   "yes_P_minus_S": [
+    0.0231,
+    0.0046,
+    0.0417
+   ]
+  },
+  "QA_base_gold_yes": {
+   "n": 36,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QA_base_gold_no": {
+   "n": 372,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QA_base_gold_unknown": {
+   "n": 24,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QA_noop_gold_no": {
+   "n": 216,
+   "yes_P_minus_S": [
+    0.0046,
+    0.0,
+    0.0139
+   ]
+  },
+  "QO_base_gold_yes": {
+   "n": 34,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QO_base_gold_no": {
+   "n": 142,
+   "yes_P_minus_S": [
+    0.0244,
+    0.0,
+    0.061
+   ]
+  },
+  "QO_base_gold_unknown": {
+   "n": 256,
+   "yes_P_minus_S": [
+    0.0385,
+    0.0128,
+    0.0705
+   ]
+  },
+  "QO_noop_gold_no": {
+   "n": 216,
+   "yes_P_minus_S": [
+    0.0185,
+    0.0046,
+    0.037
+   ]
+  },
+  "QR_base_gold_yes": {
+   "n": 60,
+   "yes_P_minus_S": [
+    -0.0667,
+    -0.2333,
+    0.1
+   ]
+  },
+  "QR_base_gold_no": {
+   "n": 60,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QR_base_gold_unknown": {
+   "n": 76,
+   "yes_P_minus_S": [
+    0.0789,
+    0.0263,
+    0.1447
+   ]
+  },
+  "QT_true_gold_yes": {
+   "n": 424,
+   "yes_P_minus_S": [
+    0.0024,
+    -0.0047,
+    0.0094
+   ]
+  },
+  "QT_true_gold_unknown": {
+   "n": 8,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QT_decoy_gold_no": {
+   "n": 424,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QT_decoy_gold_unknown": {
+   "n": 8,
+   "yes_P_minus_S": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "noop_discrimination": {
+  "QD": {
+   "n": 176,
+   "yes_command_minus_noop": [
+    0.1023,
+    0.0511,
+    0.1534
+   ]
+  },
+  "QA": {
+   "n": 36,
+   "yes_command_minus_noop": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QO": {
+   "n": 68,
+   "yes_command_minus_noop": [
+    0.5,
+    0.3529,
+    0.6471
+   ]
+  }
+ },
+ "twin_leakage": {
+  "QD": {
+   "n": 400,
+   "yes_D_minus_B_same_truth": [
+    0.0,
+    -0.0125,
+    0.0125
+   ]
+  },
+  "QA": {
+   "n": 408,
+   "yes_D_minus_B_same_truth": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "QO": {
+   "n": 120,
+   "yes_D_minus_B_same_truth": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "understanding": {
+  "units": 864,
+  "complete_units": 300,
+  "positive_complete_units": 208,
+  "understood_all_three": {
+   "DP": [
+    0.8462,
+    0.7564,
+    0.9231
+   ],
+   "DS": [
+    0.8462,
+    0.7564,
+    0.9231
+   ],
+   "BP": [
+    0.8333,
+    0.75,
+    0.9167
+   ],
+   "BS": [
+    0.8611,
+    0.7778,
+    0.9444
+   ]
+  },
+  "understood_positive_cohort": {
+   "DP": [
+    0.7931,
+    0.6724,
+    0.8966
+   ],
+   "DS": [
+    0.7931,
+    0.6724,
+    0.8966
+   ],
+   "BP": [
+    0.8261,
+    0.7174,
+    0.913
+   ],
+   "BS": [
+    0.8696,
+    0.7609,
+    0.9565
+   ]
+  },
+  "accuracy_on_available_questions": {
+   "DP": [
+    0.9352,
+    0.9035,
+    0.963
+   ],
+   "DS": [
+    0.9375,
+    0.9059,
+    0.9645
+   ],
+   "BP": [
+    0.9306,
+    0.8966,
+    0.9606
+   ],
+   "BS": [
+    0.9336,
+    0.9012,
+    0.9614
+   ]
+  }
+ },
+ "action_given_understanding": {
+  "note": "judgments under the neutral rule, actions under each rule; descriptive association",
+  "DPC_understood_positive": {
+   "n": 46,
+   "labels": {
+    "EXEC_MATCH": 46
+   }
+  },
+  "DPC_not_understood_positive": {
+   "n": 12,
+   "labels": {
+    "EXEC_MATCH": 12
+   }
+  },
+  "DPC_all_units": {
+   "n": 216,
+   "labels": {
+    "ASK": 3,
+    "EXEC_MATCH": 208,
+    "MALFORMED": 1,
+    "EXEC_OTHER": 4
+   }
+  },
+  "DPN_understood_positive": {
+   "n": 46,
+   "labels": {
+    "EXEC_MATCH": 46
+   }
+  },
+  "DPN_not_understood_positive": {
+   "n": 12,
+   "labels": {
+    "EXEC_MATCH": 12
+   }
+  },
+  "DPN_all_units": {
+   "n": 216,
+   "labels": {
+    "EXEC_MATCH": 212,
+    "EXEC_OTHER": 4
+   }
+  }
+ }
+}
