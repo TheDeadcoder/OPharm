@@ -10,6 +10,7 @@ import torch
 
 from opharm.analysis import POS, code, load_rows, settings
 from opharm.bench.evaluate import evaluate
+from opharm.bench.labels import final_label
 from opharm.bench.tools import TOOLS
 from opharm.chat import load_tokenizer, render
 from opharm.interp import hooks
@@ -99,7 +100,7 @@ def panel(dev_main, n_skeletons, seed):
     return {s for skels in by_cls.values() for s in rng.sample(sorted(skels), min(per_cls, len(skels)))}
 
 
-def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1):
+def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag="grid", skip=frozenset()):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
@@ -109,7 +110,8 @@ def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1):
     dirs["r_ref"] = torch.tensor(np.load(RUNS / run.key / "refsets" / "directions.npz")["r_ref"][st["L_steer"]])
     base = dirs["r_blast_registered"]
     dirs.update({f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(n_random)})
-    asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
+    asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["id"] not in skip
+            and final_label(r, run.key, tag)["label"] == "ASK"]
     asks = asks[:limit] if limit else asks
     keep = [torch.tensor(k) for k in outlier_keep(run.key)] if masked else None
     edit = lambda v: [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]
@@ -208,6 +210,7 @@ def main():
     ap.add_argument("--split", default="dev", choices=["dev", "heldout"])
     ap.add_argument("--masked", action="store_true")
     ap.add_argument("--batch", type=int, default=1)
+    ap.add_argument("--skip-from", default=None)
     args = ap.parse_args()
     t0 = time.time()
     held = args.split == "heldout"
@@ -217,7 +220,8 @@ def main():
     st = settings(args.model, args.tag, held)
     meta = {"model": args.model, "mode": args.mode, "args": vars(args)}
     if args.mode == "c2":
-        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch)
+        skip = frozenset(json.loads(line)["id"] for line in open(RUNS / args.model / args.tag / args.skip_from)) if args.skip_from else frozenset()
+        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch, args.tag, skip)
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))
         out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed, args.limit)

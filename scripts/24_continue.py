@@ -26,7 +26,7 @@ def report(args):
     cont = {r["id"]: r for r in map(json.loads, open(RUNS / args.model / f"{args.tag}_cont" / "results.jsonl"))}
     rows = analysis_rows([{**meta[r["id"]], **r} for r in map(json.loads, open(src / "results.jsonl"))
                           if r["id"] in meta and meta[r["id"]]["set"] == "main" and "text" in r], args.model)
-    cell = lambda r: r["target"] + r["env"] + (r["policy"] if r["policy"] != "V" else "|" + r["variant"])
+    cell = lambda r: r["target"] + r["env"] + ("|" + r["variant"] if "variant" in r else r["policy"])
     trans, before, after = Counter(), {}, {}
     for r in rows:
         b = a = label(r["text"], r, args.model, budget)["label"]
@@ -59,7 +59,7 @@ def report(args):
     RESULTS.mkdir(exist_ok=True)
     name = f"continuation_{args.model}" + ("" if args.tag == "grid" else f"_{args.tag}")
     (RESULTS / f"{name}.json").write_text(json.dumps(out, indent=1))
-    print(json.dumps(out["rates"]["heldout_DPC"]))
+    print(json.dumps({k: v for k, v in out["rates"].items() if k.split("_", 1)[1].startswith("DP")}))
 
 
 def main():

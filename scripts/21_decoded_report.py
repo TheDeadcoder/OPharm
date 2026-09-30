@@ -6,7 +6,7 @@ import opharm
 import numpy as np
 
 from opharm.bench.evaluate import VERSION
-from opharm.bench.labels import label
+from opharm.bench.labels import label, tokenizer
 from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import cluster_ci
 
@@ -71,9 +71,14 @@ def gain_report(recs):
     return out
 
 
+def cut_short(rows):
+    return dict(Counter(r["label_untruncated"] for r in rows if r["label_v2"] == "INCOMPLETE"))
+
+
 def c2_report(recs):
     out = {}
     clean = {r["id"]: r for r in recs if r["condition"] == "clean"}
+    asked = {i for i, r in clean.items() if r["label_v2"] == "ASK"}
     for cond in sorted({r["condition"] for r in recs} - {"clean"}):
         rows = [r for r in recs if r["condition"] == cond]
         base = lambda r: clean[r["id"]]
@@ -83,38 +88,61 @@ def c2_report(recs):
         for r, e in zip(rows, executed):
             by[skel(r["id"])].append(float(e))
         skels = sorted(by)
+        given = defaultdict(list)
+        for r, e in zip(rows, executed):
+            if r["id"] in asked:
+                given[skel(r["id"])].append(float(e))
+        gs = sorted(given)
         out[cond] = {"n": len(rows), "executes": ci([float(np.mean(by[s])) for s in skels], skels),
+                     "n_clean_ask": sum(len(v) for v in given.values()),
+                     "executes_given_clean_ask": ci([float(np.mean(given[s])) for s in gs], gs) if gs else None,
+                     "incomplete_untruncated": cut_short(rows),
                      "m_crossed_zero": round(float(np.mean(crossed)), 4),
                      "crossed_and_executes": int(sum(c and e for c, e in zip(crossed, executed))),
                      "crossed_not_executes": int(sum(c and not e for c, e in zip(crossed, executed))),
                      "executes_not_crossed": int(sum(e and not c for c, e in zip(crossed, executed))),
                      "labels": dict(Counter(r["label_v2"] for r in rows))}
     out["clean_labels"] = dict(Counter(r["label_v2"] for r in clean.values()))
+    out["clean_incomplete_untruncated"] = cut_short(clean.values())
     return out
 
 
 def steer_report(recs):
-    out = {}
+    out, short = {}, {}
     for cond in sorted({r["condition"] for r in recs}):
         name = "random" if cond.startswith("rand") else cond
         key = name if cond == "clean" else f"{name.split('|')[0]}|{cond.split('|')[1]}" if "|" in cond else name
         for grp in ("DP", "DS", "BP"):
             rows = [r for r in recs if r["condition"] == cond and r["cell"][:2] == grp]
-            e = out.setdefault(key, {}).setdefault(grp, Counter())
-            e.update(r["label_v2"] for r in rows)
+            out.setdefault(key, {}).setdefault(grp, Counter()).update(r["label_v2"] for r in rows)
+            short.setdefault(key, {}).setdefault(grp, Counter()).update(cut_short(rows))
     return {k: {g: {"n": sum(c.values()), "exec": round(c["EXEC_MATCH"] / max(1, sum(c.values())), 4),
                     "ask": round(c["ASK"] / max(1, sum(c.values())), 4), "decline": round(c["DECLINE"] / max(1, sum(c.values())), 4),
-                    "labels": dict(c)} for g, c in v.items()} for k, v in out.items()}
+                    "labels": dict(c), "incomplete_untruncated": dict(short[k][g])} for g, c in v.items()} for k, v in out.items()}
 
 
-def load_records(run, mode, sfx, model):
+def load_records(run, mode, sfx, model, at=None):
     rows = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     info = run / f"decoded_{mode}{sfx}_meta.json"
     max_new = json.loads(info.read_text())["args"]["max_new"] if info.exists() else None
+    if at and max_new and at > max_new:
+        raise ValueError(f"decoded_{mode}{sfx} ran at {max_new} tokens, below {at}")
     recs = [json.loads(line) for line in open(run / f"decoded_{mode}{sfx}.jsonl")]
     for r in recs:
-        r["label_stored"] = r["label_v2"]
-        r["label_v2"] = label(r["text"], rows[r["id"]], model, max_new)["label"]
+        text, budget = r["text"], max_new
+        if at and at != max_new:
+            ids = tokenizer(model).encode(text, add_special_tokens=False)
+            text, budget = tokenizer(model).decode(ids[:at]) if len(ids) > at else text, at
+        lab = label(text, rows[r["id"]], model, budget)
+        r["label_stored"], r["label_v2"], r["label_untruncated"] = r["label_v2"], lab["label"], lab.get("label_untruncated")
+    return recs
+
+
+def load_parts(run, mode, sfxs, model, at=None):
+    recs = [r for s in sfxs if (run / f"decoded_{mode}{s}.jsonl").exists() for r in load_records(run, mode, s, model, at)]
+    keys = [(r["id"], r["condition"]) for r in recs]
+    if len(keys) != len(set(keys)):
+        raise ValueError(f"decoded_{mode}: parts {sfxs} overlap")
     return recs
 
 
@@ -137,6 +165,8 @@ def main():
     ap.add_argument("--suffix", default="")
     ap.add_argument("--compare", default="")
     ap.add_argument("--mode", default="steer")
+    ap.add_argument("--parts", default="")
+    ap.add_argument("--at", type=int, default=0)
     args = ap.parse_args()
     run = RUNS / args.model / args.tag
     if args.compare:
@@ -147,8 +177,9 @@ def main():
         print(json.dumps(res))
         return
     sfx = args.suffix
-    load = lambda mode: load_records(run, mode, sfx, args.model)
-    report = {"model": args.model, "suffix": sfx, "evaluator": VERSION}
+    parts = [sfx] + [p for p in args.parts.split(",") if p]
+    load = lambda mode: load_parts(run, mode, parts, args.model, args.at or None)
+    report = {"model": args.model, "suffix": sfx, "parts": parts, "at": args.at or None, "evaluator": VERSION}
     if (run / f"decoded_gain{sfx}.jsonl").exists():
         report["gain"] = gain_report(load("gain"))
         report["gain_meta"] = json.loads((run / f"decoded_gain{sfx}_meta.json").read_text())
@@ -157,8 +188,9 @@ def main():
     if (run / f"decoded_steer{sfx}.jsonl").exists():
         report["steer"] = steer_report(load("steer"))
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"decoded_{args.model}{sfx}.json").write_text(json.dumps(report, indent=1))
-    print("wrote", RESULTS / f"decoded_{args.model}{sfx}.json")
+    name = f"decoded_{args.model}{sfx}" + (f"_at{args.at}" if args.at else "")
+    (RESULTS / f"{name}.json").write_text(json.dumps(report, indent=1))
+    print("wrote", RESULTS / f"{name}.json")
 
 
 if __name__ == "__main__":
