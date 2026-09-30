@@ -17,16 +17,16 @@ runner = importlib.import_module("09_run_behavior")
 
 def report(args):
     from collections import Counter
-    from opharm.bench.labels import label
+    from opharm.bench.labels import label, tokenizer
     from opharm.paths import RESULTS
     from opharm.stats.lock import analysis_rows
-    meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
+    meta = {m["id"]: m for m in map(json.loads, open(BENCH / args.instances))}
     src = RUNS / args.model / args.tag
     budget = json.loads((src / "manifest.json").read_text())["args"]["max_new"]
     cont = {r["id"]: r for r in map(json.loads, open(RUNS / args.model / f"{args.tag}_cont" / "results.jsonl"))}
     rows = analysis_rows([{**meta[r["id"]], **r} for r in map(json.loads, open(src / "results.jsonl"))
-                          if meta[r["id"]]["set"] == "main" and "text" in r], args.model)
-    cell = lambda r: r["target"] + r["env"] + r["policy"]
+                          if r["id"] in meta and meta[r["id"]]["set"] == "main" and "text" in r], args.model)
+    cell = lambda r: r["target"] + r["env"] + (r["policy"] if r["policy"] != "V" else "|" + r["variant"])
     trans, before, after = Counter(), {}, {}
     for r in rows:
         b = a = label(r["text"], r, args.model, budget)["label"]
@@ -38,14 +38,27 @@ def report(args):
     out = {"model": args.model, "budget": budget, "max_more": args.max_more, "continued": sum(r["id"] in cont for r in rows),
            "still_capped": sum(c["capped_again"] for c in cont.values()), "rates": {},
            "transitions": [{"split": s, "cell": c, "before": b, "after": a, "n": n} for (s, c, b, a), n in sorted(trans.items())]}
+    tok = tokenizer(args.model)
+    curves = {}
+    for extra in [int(b) for b in args.budgets.split(",") if b]:
+        at = {}
+        for r in rows:
+            if r["id"] not in cont:
+                at[r["id"]] = before[r["id"]]
+                continue
+            ids = tok.encode(cont[r["id"]]["text"], add_special_tokens=False)
+            at[r["id"]] = after[r["id"]] if len(ids) < extra else label(tok.decode(ids[:extra]), r, args.model, extra)["label"]
+        curves[f"budget_{extra}"] = at
+    states = (("before", before), ("after", after)) + tuple(curves.items())
     for split in ("dev", "heldout"):
-        for c in ("DPC", "DSC", "BPC", "BSC"):
+        for c in sorted({cell(r) for r in rows}):
             sub = [r for r in rows if r["split"] == split and cell(r) == c]
-            out["rates"][f"{split}_{c}"] = {"n": len(sub), **{f"{k}_{lab}": round(sum(d[r["id"]] == lab for r in sub) / len(sub), 4)
-                                                             for k, d in (("before", before), ("after", after))
-                                                             for lab in ("EXEC_MATCH", "ASK", "INCOMPLETE", "DECLINE")}}
+            if sub:
+                out["rates"][f"{split}_{c}"] = {"n": len(sub), **{f"{k}_{lab}": round(sum(d[r["id"]] == lab for r in sub) / len(sub), 4)
+                                                                 for k, d in states for lab in ("EXEC_MATCH", "ASK", "INCOMPLETE", "DECLINE")}}
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / f"continuation_{args.model}.json").write_text(json.dumps(out, indent=1))
+    name = f"continuation_{args.model}" + ("" if args.tag == "grid" else f"_{args.tag}")
+    (RESULTS / f"{name}.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(out["rates"]["heldout_DPC"]))
 
 
@@ -58,12 +71,14 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--instances", default="instances.jsonl")
+    ap.add_argument("--budgets", default="512")
     args = ap.parse_args()
     if args.report:
         return report(args)
     src = RUNS / args.model / args.tag
     budget = json.loads((src / "manifest.json").read_text())["args"]["max_new"]
-    meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
+    meta = {m["id"]: m for m in map(json.loads, open(BENCH / args.instances))}
     tok = load_tokenizer(args.model)
     todo = []
     for r in map(json.loads, open(src / "results.jsonl")):
