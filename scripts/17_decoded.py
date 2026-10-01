@@ -124,11 +124,26 @@ def factor_controls(x, dev_main, st, base):
     scale = base.float().norm()
     out = {k: v / v.norm() * scale for k, v in f.items()}
     out["r_blast_shared"], out["r_blast_unique"] = shared / shared.norm() * scale, unique / unique.norm() * scale
+    h = np.asarray(x[:, POS[p], layer], dtype=np.float64)
+    pc1 = torch.tensor(np.linalg.svd(h - h.mean(0), full_matrices=False)[2][0], dtype=torch.float32)
+    out["pc1"] = pc1 / pc1.norm() * scale
+    return out
+
+
+def shuffled(x, dev_main, st, base, n):
+    p, layer = st["blast"]["registered"]
+    env = np.array([r["env"] == "P" for r in dev_main])
+    skel = np.array([r["skeleton"] for r in dev_main])
+    out = {}
+    for s in range(n):
+        lab = np.random.default_rng(3000 + s).permutation(env)
+        v = torch.tensor(unmatched(x[:, POS[p]], lab, ~lab, skel)[layer], dtype=torch.float32)
+        out[f"shuf_{s}"] = v / v.norm() * base.float().norm()
     return out
 
 
 def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag="grid", skip=frozenset(), random_start=0,
-       controls_only=False, factors=False):
+       controls_only=False, factors=False, n_shuffled=0, executions=0):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
@@ -140,11 +155,18 @@ def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag
     ctrl = {f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(random_start, random_start + n_random)}
     if factors:
         ctrl.update(factor_controls(x, dev_main, st, base))
+    if n_shuffled:
+        ctrl.update(shuffled(x, dev_main, st, base, n_shuffled))
+    want = "EXEC_MATCH" if executions else "ASK"
     asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["id"] not in skip
-            and final_label(r, run.key, tag)["label"] == "ASK"]
+            and final_label(r, run.key, tag)["label"] == want]
+    if executions:
+        asks = sorted(asks, key=lambda r: (r["m"], r["id"]))[:executions]
     asks = asks[:limit] if limit else asks
     earlier = {f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(random_start)}
-    run.info = {"energy": energy(run, asks, {**dirs, **earlier, **ctrl}), "asks": len(asks)}
+    run.info = {"energy": energy(run, asks, {**dirs, **earlier, **ctrl}), "targets": want, "asks": len(asks)}
+    if executions:
+        run.info["m_range"] = [round(min(r["m"] for r in asks), 4), round(max(r["m"] for r in asks), 4)]
     dirs = ctrl if controls_only else {**dirs, **ctrl}
     keep = [torch.tensor(k) for k in outlier_keep(run.key)] if masked else None
     edit = lambda v: [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]
@@ -249,6 +271,8 @@ def main():
     ap.add_argument("--random-start", type=int, default=0)
     ap.add_argument("--controls-only", action="store_true")
     ap.add_argument("--factors", action="store_true")
+    ap.add_argument("--shuffled", type=int, default=0)
+    ap.add_argument("--executions", type=int, default=0)
     args = ap.parse_args()
     t0 = time.time()
     held = args.split == "heldout"
@@ -260,7 +284,7 @@ def main():
     if args.mode == "c2":
         skip = frozenset(json.loads(line)["id"] for line in open(RUNS / args.model / args.tag / args.skip_from)) if args.skip_from else frozenset()
         out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch, args.tag, skip, args.random_start,
-                 args.controls_only, args.factors)
+                 args.controls_only, args.factors, args.shuffled, args.executions)
         meta.update(getattr(run, "info", {}))
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))

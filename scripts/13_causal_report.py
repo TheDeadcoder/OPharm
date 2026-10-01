@@ -93,7 +93,7 @@ def main():
     out = {}
     env = lambda r: patch_summary(r, 1)
     for test, suffix, fn in (("c1", "", env), ("c4", "", lambda r: patch_summary(r, 3)), ("c3", "", steer_summary),
-                             ("c2", "", ablate_summary), ("c6", "", env), ("c6", "post", env), ("c7", "", env),
+                             ("c2", "", ablate_summary), ("c6", "", env), ("c6", "post", env), ("c6", "decomp", env), ("c7", "", env),
                              ("c8", "", gain_summary)):
         recs = load(args.model, args.tag, test, args.confirm, suffix)
         if recs:

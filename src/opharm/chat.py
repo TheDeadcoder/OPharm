@@ -51,13 +51,14 @@ def _token_span(offsets, start, end):
     return hit[0], hit[-1] + 1
 
 
-def render(tok, system, user, tools=None, thinking=False):
+def render(tok, system, user, tools=None, thinking=False, tools_in_user=True):
     sys_text = "".join(t for _, t in system)
     user_text = "".join(t for _, t in user)
     if any(c != c.strip() for c in (sys_text, user_text)):
         raise ValueError("message content must not start or end with whitespace, some templates trim it")
     msgs =[{"role": "system", "content": sys_text}, {"role": "user", "content": user_text}]
-    text = tok.apply_chat_template(msgs, tools=tools, add_generation_prompt=True, tokenize=False, enable_thinking=thinking)
+    extra = {} if tools_in_user else {"tools_in_user_message": False}
+    text = tok.apply_chat_template(msgs, tools=tools, add_generation_prompt=True, tokenize=False, enable_thinking=thinking, **extra)
     enc = tok(text, add_special_tokens=False, return_offsets_mapping=True)
     ids, offsets = enc["input_ids"], [tuple(o) for o in enc["offset_mapping"]]
     spans = {}

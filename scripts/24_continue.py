@@ -22,7 +22,8 @@ def report(args):
     from opharm.stats.lock import analysis_rows
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / args.instances))}
     src = RUNS / args.model / args.tag
-    budget = json.loads((src / "manifest.json").read_text())["args"]["max_new"]
+    src_args = json.loads((src / "manifest.json").read_text())["args"]
+    budget = src_args["max_new"]
     cont = {r["id"]: r for r in map(json.loads, open(RUNS / args.model / f"{args.tag}_cont" / "results.jsonl"))}
     rows = analysis_rows([{**meta[r["id"]], **r} for r in map(json.loads, open(src / "results.jsonl"))
                           if r["id"] in meta and meta[r["id"]]["set"] == "main" and "text" in r], args.model)
@@ -89,7 +90,8 @@ def main():
             if tok.decode(reply) != r["text"]:
                 raise ValueError(f"{r['id']}: reply does not round-trip through the tokenizer")
             m = meta[r["id"]]
-            prompt = render(tok, m["system"], m["user"], runner.tools_for(m, False)).ids
+            prompt = render(tok, m["system"], m["user"], runner.tools_for(m, bool(src_args.get("no_tools"))), thinking=bool(src_args.get("thinking")),
+                            tools_in_user=not src_args.get("tools_in_system")).ids
             todo.append((r, prompt + reply, len(reply)))
     todo = todo[:args.limit] if args.limit else todo
     print(json.dumps({"model": args.model, "budget": budget, "capped": len(todo)}))

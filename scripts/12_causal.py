@@ -101,10 +101,29 @@ def patch_panel(ctx, pairs, span, layers, complement=False):
     return out
 
 
+def decomposition(ctx, layers):
+    rows = ctx.dev_main
+    x = np.asarray(ctx.acts[[r["row"] for r in rows], POS["t_post"]], dtype=np.float32)
+    skel = np.array([r["skeleton"] for r in rows])
+    masks = [np.array([f(r) for r in rows]) for f in (lambda r: r["target"] == "D", lambda r: r["rollback"] == "N", lambda r: r["policy"] == "C")]
+    factors = [unmatched(x, m, ~m, skel) for m in masks]
+    out = {"r_blast_shared": {}, "r_blast_unique": {}, "pc1": {}}
+    for l in layers:
+        span = torch.linalg.qr(torch.tensor(np.stack([f[l] / np.linalg.norm(f[l]) for f in factors], 1), dtype=torch.float32))[0]
+        u = torch.tensor(unit(ctx.r_blast["t_post"][l]), dtype=torch.float32)
+        out["r_blast_shared"][l] = span @ (span.T @ u)
+        out["r_blast_unique"][l] = u - out["r_blast_shared"][l]
+        h = x[:, l].astype(np.float64)
+        out["pc1"][l] = torch.tensor(np.linalg.svd(h - h.mean(0), full_matrices=False)[2][0], dtype=torch.float32)
+    return out
+
+
 def swap_panel(ctx, pairs, layers, names):
     dirs = {"r_blast": {l: torch.tensor(ctx.r_blast["t_inst"][l]) for l in layers},
             "r_blast_post": {l: torch.tensor(ctx.r_blast["t_post"][l]) for l in layers}}
     dirs["random"] = {l: random_like(dirs["r_blast"][l], 3000 + l) for l in layers}
+    if {"r_blast_shared", "r_blast_unique", "pc1"} & set(names):
+        dirs.update(decomposition(ctx, layers))
     dirs = {k: dirs[k] for k in names}
     out = []
     for a, b in pairs:

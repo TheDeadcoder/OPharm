@@ -84,9 +84,10 @@ def c2_report(recs):
         base = lambda r: clean[r["id"]]
         crossed = [base(r)["m"] < 0 < r["m"] for r in rows]
         executed = [r["label_v2"] == "EXEC_MATCH" for r in rows]
-        by = defaultdict(list)
+        by, by_ask = defaultdict(list), defaultdict(list)
         for r, e in zip(rows, executed):
             by[skel(r["id"])].append(float(e))
+            by_ask[skel(r["id"])].append(float(r["label_v2"] == "ASK"))
         skels = sorted(by)
         given = defaultdict(list)
         for r, e in zip(rows, executed):
@@ -97,18 +98,22 @@ def c2_report(recs):
                      "n_clean_ask": sum(len(v) for v in given.values()),
                      "executes_given_clean_ask": ci([float(np.mean(given[s])) for s in gs], gs) if gs else None,
                      "incomplete_untruncated": cut_short(rows),
+                     "asks": ci([float(np.mean(by_ask[s])) for s in skels], skels),
                      "m_crossed_zero": round(float(np.mean(crossed)), 4),
+                     "m_crossed_down": round(float(np.mean([base(r)["m"] > 0 > r["m"] for r in rows])), 4),
                      "crossed_and_executes": int(sum(c and e for c, e in zip(crossed, executed))),
                      "crossed_not_executes": int(sum(c and not e for c, e in zip(crossed, executed))),
                      "executes_not_crossed": int(sum(e and not c for c, e in zip(crossed, executed))),
                      "labels": dict(Counter(r["label_v2"] for r in rows))}
     out["clean_labels"] = dict(Counter(r["label_v2"] for r in clean.values()))
     out["clean_incomplete_untruncated"] = cut_short(clean.values())
-    rand = [v["executes"][0] for k, v in out.items() if k.startswith("rand_")]
-    if rand and "r_blast_registered" in out:
-        top = out["r_blast_registered"]["executes"][0]
-        out["random_summary"] = {"n": len(rand), "executes_sorted": sorted(round(x, 3) for x in rand),
-                                 "share_at_or_above_r_blast_registered": round(sum(x >= top for x in rand) / len(rand), 3)}
+    for prefix, name in (("rand_", "random_summary"), ("shuf_", "shuffled_summary")):
+        fam = [v for k, v in out.items() if k.startswith(prefix)]
+        if fam and "r_blast_registered" in out:
+            top = out["r_blast_registered"]["executes"][0]
+            out[name] = {"n": len(fam), "executes_sorted": sorted(round(v["executes"][0], 3) for v in fam),
+                         "asks_sorted": sorted(round(v["asks"][0], 3) for v in fam),
+                         "share_at_or_above_r_blast_registered": round(sum(v["executes"][0] >= top for v in fam) / len(fam), 3)}
     return out
 
 
