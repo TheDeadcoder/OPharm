@@ -50,6 +50,9 @@ def hooked(*edits):
     try:
         for group in edits:
             for kind, module, fn in group:
+                if kind == "raw":
+                    handles.append(module.register_forward_pre_hook(fn))
+                    continue
                 hook = _on_input(fn) if kind == "pre" else _on_output(fn)
                 register = module.register_forward_pre_hook if kind == "pre" else module.register_forward_hook
                 handles.append(register(hook))
@@ -57,6 +60,41 @@ def hooked(*edits):
     finally:
         for h in handles:
             h.remove()
+
+
+def text_config(model):
+    return getattr(model.config, "text_config", model.config)
+
+
+def has_layer_inputs(model):
+    return bool(getattr(text_config(model), "hidden_size_per_layer_input", 0))
+
+
+def last_patchable_layer(model):
+    cfg = text_config(model)
+    shared = getattr(cfg, "num_kv_shared_layers", 0) or 0
+    if not shared:
+        return None
+    types = cfg.layer_types[: cfg.num_hidden_layers - shared]
+    return min(max(i for i, t in enumerate(types) if t == kind) for kind in set(types))
+
+
+def capture_layer_inputs(model, store):
+    def make(i):
+        def hook(module, args):
+            store[i] = args[1].detach().clone()
+        return hook
+    return [("raw", layer, make(i)) for i, layer in enumerate(layers(model))]
+
+
+def patch_layer_inputs(model, start, positions, values):
+    def make(i):
+        def hook(module, args):
+            x = args[1].clone()
+            x[:, _idx(positions)] = values[i][:, _idx(positions)].to(device=x.device, dtype=x.dtype)
+            return (args[0], x) + tuple(args[2:])
+        return hook
+    return [("raw", layers(model)[i], make(i)) for i in range(start, len(layers(model)))]
 
 
 def capture(model, points, positions, store):

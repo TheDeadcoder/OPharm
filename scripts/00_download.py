@@ -19,6 +19,7 @@ MODELS = {
     "qwen35_9b": ("Qwen/Qwen3.5-9B", "confirmatory"),
     "llama31_8b": ("meta-llama/Llama-3.1-8B-Instruct", "comparator_2"),
     "gemma4_e4b": ("google/gemma-4-E4B-it", "comparator_3"),
+    "qwen35_2b": ("Qwen/Qwen3.5-2B", "scale"),
 }
 DEFAULT = ["qwen35_08b", "qwen35_4b", "qwen3_4b_2507", "qwen35_9b"]
 SMALL = ["*.json", "*.jinja", "*.txt", "LICENSE*", "README.md"]

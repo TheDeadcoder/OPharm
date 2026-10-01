@@ -28,3 +28,8 @@ gemma4_e4b:
   revision: ee0ef6023621cff504d758262d4e04895a5af4a2
   role: comparator_3
   safetensors_bytes: 15992595884
+qwen35_2b:
+  repo: Qwen/Qwen3.5-2B
+  revision: 15852e8c16360a2fea060d615a32b45270f8a8fc
+  role: scale
+  safetensors_bytes: 4548221488
