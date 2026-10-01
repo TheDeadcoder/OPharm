@@ -1,0 +1,14 @@
+{
+ "mode": "c2",
+ "a": "_vc21",
+ "b": "_vc28",
+ "n": 56,
+ "only_a": 0,
+ "only_b": 0,
+ "label_agreement": 0.9821,
+ "text_identical": 0.5714,
+ "max_m_diff": 0.9129,
+ "flips": {
+  "EXEC_MATCH->ASK": 1
+ }
+}
