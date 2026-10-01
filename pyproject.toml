@@ -20,6 +20,7 @@ dependencies = [
     "mlx>=0.32.2,<0.33; sys_platform == 'darwin'",
     "mlx-lm>=0.31.3,<0.32; sys_platform == 'darwin'",
     "pyarrow>=25.0.1",
+    "google-genai>=2.27.0",
 ]
 
 [dependency-groups]
