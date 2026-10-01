@@ -104,6 +104,11 @@ def c2_report(recs):
                      "labels": dict(Counter(r["label_v2"] for r in rows))}
     out["clean_labels"] = dict(Counter(r["label_v2"] for r in clean.values()))
     out["clean_incomplete_untruncated"] = cut_short(clean.values())
+    rand = [v["executes"][0] for k, v in out.items() if k.startswith("rand_")]
+    if rand and "r_blast_registered" in out:
+        top = out["r_blast_registered"]["executes"][0]
+        out["random_summary"] = {"n": len(rand), "executes_sorted": sorted(round(x, 3) for x in rand),
+                                 "share_at_or_above_r_blast_registered": round(sum(x >= top for x in rand) / len(rand), 3)}
     return out
 
 
@@ -185,6 +190,10 @@ def main():
         report["gain_meta"] = json.loads((run / f"decoded_gain{sfx}_meta.json").read_text())
     if (run / f"decoded_c2{sfx}.jsonl").exists():
         report["c2"] = c2_report(load("c2"))
+        metas = [json.loads((run / f"decoded_c2{s}_meta.json").read_text()) for s in parts if (run / f"decoded_c2{s}_meta.json").exists()]
+        energy = {k: v for m in metas for k, v in m.get("energy", {}).items()}
+        if energy:
+            report["c2_energy"] = energy
     if (run / f"decoded_steer{sfx}.jsonl").exists():
         report["steer"] = steer_report(load("steer"))
     RESULTS.mkdir(exist_ok=True)

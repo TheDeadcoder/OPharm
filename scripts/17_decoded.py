@@ -100,7 +100,35 @@ def panel(dev_main, n_skeletons, seed):
     return {s for skels in by_cls.values() for s in rng.sample(sorted(skels), min(per_cls, len(skels)))}
 
 
-def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag="grid", skip=frozenset()):
+def energy(run, rows, dirs):
+    h = np.asarray(run.acts[[r["row"] for r in rows]], dtype=np.float64)
+    tot = (h ** 2).sum(-1)
+    out = {}
+    for name, v in dirs.items():
+        u = v.double().numpy() / float(v.double().norm())
+        share = ((h @ u) ** 2 / tot).mean(0)
+        out[name] = {pos: [round(float(x), 5) for x in share[i]] for pos, i in POS.items()}
+    return out
+
+
+def factor_controls(x, dev_main, st, base):
+    p, layer = st["blast"]["registered"]
+    skel = np.array([r["skeleton"] for r in dev_main])
+    masks = {"f_target": [r["target"] == "D" for r in dev_main], "f_rollback": [r["rollback"] == "N" for r in dev_main],
+             "f_rule": [r["policy"] == "C" for r in dev_main]}
+    f = {k: torch.tensor(unmatched(x[:, POS[p]], np.array(m), ~np.array(m), skel)[layer], dtype=torch.float32) for k, m in masks.items()}
+    span = torch.linalg.qr(torch.stack([v / v.norm() for v in f.values()], 1))[0]
+    u = base.float() / base.float().norm()
+    shared = span @ (span.T @ u)
+    unique = u - shared
+    scale = base.float().norm()
+    out = {k: v / v.norm() * scale for k, v in f.items()}
+    out["r_blast_shared"], out["r_blast_unique"] = shared / shared.norm() * scale, unique / unique.norm() * scale
+    return out
+
+
+def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag="grid", skip=frozenset(), random_start=0,
+       controls_only=False, factors=False):
     dev_main = [r for r in rows if r["set"] == "main" and r["split"] == "dev"]
     pool = [r for r in rows if r["set"] == "main" and r["split"] == split]
     x = np.asarray(run.acts[[r["row"] for r in dev_main]])
@@ -109,17 +137,24 @@ def c2(run, rows, st, n_random, limit=0, split="dev", masked=False, batch=1, tag
     dirs = {f"r_blast_{k}": torch.tensor(unmatched(x[:, POS[p]], env, ~env, skel)[layer]) for k, (p, layer) in st["blast"].items()}
     dirs["r_ref"] = torch.tensor(np.load(RUNS / run.key / "refsets" / "directions.npz")["r_ref"][st["L_steer"]])
     base = dirs["r_blast_registered"]
-    dirs.update({f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(n_random)})
+    ctrl = {f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(random_start, random_start + n_random)}
+    if factors:
+        ctrl.update(factor_controls(x, dev_main, st, base))
     asks = [r for r in pool if code(r)[:2] == "DP" and r["policy"] == "C" and r["id"] not in skip
             and final_label(r, run.key, tag)["label"] == "ASK"]
     asks = asks[:limit] if limit else asks
+    earlier = {f"rand_{s}": random_unit(base / base.norm(), 2000 + s) * base.norm() for s in range(random_start)}
+    run.info = {"energy": energy(run, asks, {**dirs, **earlier, **ctrl}), "asks": len(asks)}
+    dirs = ctrl if controls_only else {**dirs, **ctrl}
     keep = [torch.tensor(k) for k in outlier_keep(run.key)] if masked else None
     edit = lambda v: [hooks.ablate_masked(run.model, v, keep) if masked else hooks.ablate(run.model, v)]
     if batch > 1:
-        return run.records(asks, "clean", [], batch) + [x for name, v in dirs.items() for x in run.records(asks, name, edit(v), batch)]
+        clean = [] if controls_only else run.records(asks, "clean", [], batch)
+        return clean + [x for name, v in dirs.items() for x in run.records(asks, name, edit(v), batch)]
     out = []
     for r in asks:
-        out.append(run.record(r, "clean"))
+        if not controls_only:
+            out.append(run.record(r, "clean"))
         for name, v in dirs.items():
             out.append(run.record(r, name, edit(v)))
     return out
@@ -211,6 +246,9 @@ def main():
     ap.add_argument("--masked", action="store_true")
     ap.add_argument("--batch", type=int, default=1)
     ap.add_argument("--skip-from", default=None)
+    ap.add_argument("--random-start", type=int, default=0)
+    ap.add_argument("--controls-only", action="store_true")
+    ap.add_argument("--factors", action="store_true")
     args = ap.parse_args()
     t0 = time.time()
     held = args.split == "heldout"
@@ -221,7 +259,9 @@ def main():
     meta = {"model": args.model, "mode": args.mode, "args": vars(args)}
     if args.mode == "c2":
         skip = frozenset(json.loads(line)["id"] for line in open(RUNS / args.model / args.tag / args.skip_from)) if args.skip_from else frozenset()
-        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch, args.tag, skip)
+        out = c2(run, rows, st, args.random, args.limit, args.split, args.masked, args.batch, args.tag, skip, args.random_start,
+                 args.controls_only, args.factors)
+        meta.update(getattr(run, "info", {}))
     elif args.mode == "gain":
         layer = args.layer or round(0.82 * len(hooks.layers(run.model)))
         out, info = gain(run, rows, layer, [float(v) for v in args.gains.split(",")], args.skeletons, args.seed, args.limit)
