@@ -18,7 +18,7 @@ def serialize(message_text, calls):
     return "\n".join(parts)
 
 
-def gemini_client(location):
+def gemini_client(location, timeout=600):
     import google.auth
     from google import genai
     from google.genai import types
@@ -29,7 +29,7 @@ def gemini_client(location):
     if not project:
         raise ValueError("no project: set GOOGLE_CLOUD_PROJECT or a quota project on the credentials")
     return genai.Client(enterprise=True, project=project, location=location, credentials=creds,
-                        http_options=types.HttpOptions(timeout=600_000))
+                        http_options=types.HttpOptions(timeout=int(timeout * 1000)))
 
 
 def parse_gemini(resp):

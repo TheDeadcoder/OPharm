@@ -166,6 +166,7 @@ def main():
     ap.add_argument("--max-usd", type=float, default=5.0)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--retry-window", type=float, default=1800.0)
+    ap.add_argument("--timeout", type=float, default=0.0)
     ap.add_argument("--max-consecutive-failures", type=int, default=6)
     args = ap.parse_args()
     if not os.path.isabs(args.instances) and not os.path.exists(args.instances):
@@ -221,7 +222,9 @@ def main():
         tmp.write_text(json.dumps(body, indent=1))
         os.replace(tmp, out / "manifest.json")
 
-    client = gemini_client(spec["location"])
+    timeout = args.timeout or (1800.0 if args.thinking_level == "high" else 600.0)
+    window = max(args.retry_window, 2 * timeout)
+    client = gemini_client(spec["location"], timeout)
     logs = {k: Log(out / f"{k}.jsonl") for k in ("results", "raw", "errors") + (("samples",) if args.samples > 1 else ())}
     consecutive, last = 0, time.time()
     with ThreadPoolExecutor(args.workers) as pool:
@@ -229,7 +232,7 @@ def main():
             while not (stop.is_set() or any(status.values())) and len(pending) < args.workers and (nxt := next(todo, None)) is not None:
                 r, s = nxt
                 tools = None if args.no_tools or r["set"] == "flat" else TOOLS
-                pending[pool.submit(call, client, spec, r, tools, args.thinking_level, gate, args.retry_window, stop)] = nxt
+                pending[pool.submit(call, client, spec, r, tools, args.thinking_level, gate, window, stop)] = nxt
             if not pending:
                 break
             finished, _ = wait(pending, timeout=30, return_when=FIRST_COMPLETED)
