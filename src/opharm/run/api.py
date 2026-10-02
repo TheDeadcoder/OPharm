@@ -29,7 +29,16 @@ def gemini_client(location, timeout=600):
     if not project:
         raise ValueError("no project: set GOOGLE_CLOUD_PROJECT or a quota project on the credentials")
     return genai.Client(enterprise=True, project=project, location=location, credentials=creds,
-                        http_options=types.HttpOptions(timeout=int(timeout * 1000)))
+                        http_options=types.HttpOptions(timeout=int(timeout * 1000), httpx_client=keepalive_client(timeout)))
+
+
+def keepalive_client(timeout):
+    import socket
+    import httpx
+    opts = [(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)]
+    idle = getattr(socket, "TCP_KEEPALIVE", None) or getattr(socket, "TCP_KEEPIDLE", None)
+    opts += [(socket.IPPROTO_TCP, o, v) for o, v in ((idle, 60), (getattr(socket, "TCP_KEEPINTVL", None), 15), (getattr(socket, "TCP_KEEPCNT", None), 4)) if o]
+    return httpx.Client(transport=httpx.HTTPTransport(socket_options=opts), timeout=httpx.Timeout(timeout, connect=30.0))
 
 
 def parse_gemini(resp):
