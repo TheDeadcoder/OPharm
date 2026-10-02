@@ -188,6 +188,31 @@
    "model": "qwen35_9b",
    "family": "registered",
    "condition": "registered",
+   "mode": "narration",
+   "split": "heldout",
+   "required_ask": 0.7212,
+   "over_ask": 0.5385,
+   "selectivity": 0.1827,
+   "selectivity_ci_template": [
+    0.1101,
+    0.2585
+   ],
+   "source": "modes_qwen35_9b_final",
+   "required_ci_template": [
+    0.6238,
+    0.8137
+   ],
+   "over_ci_template": [
+    0.4455,
+    0.6298
+   ],
+   "required_ask_covered": 0.8561,
+   "paired_correct": 0.2404
+  },
+  {
+   "model": "qwen35_9b",
+   "family": "registered",
+   "condition": "registered",
    "mode": "thinking",
    "split": "heldout",
    "required_ask": 0.7596,
