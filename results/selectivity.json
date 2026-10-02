@@ -577,6 +577,31 @@
   },
   {
    "model": "llama31_8b",
+   "family": "registered",
+   "condition": "registered",
+   "mode": "narration",
+   "split": "heldout",
+   "required_ask": 0.0,
+   "over_ask": 0.0,
+   "selectivity": 0.0,
+   "selectivity_ci_template": [
+    0.0,
+    0.0
+   ],
+   "source": "modes_llama31_8b",
+   "required_ci_template": [
+    0.0,
+    0.0
+   ],
+   "over_ci_template": [
+    0.0,
+    0.0
+   ],
+   "required_ask_covered": 0.0,
+   "paired_correct": 0.0
+  },
+  {
+   "model": "llama31_8b",
    "family": "rule_variant",
    "condition": "prod_only",
    "mode": "direct",
