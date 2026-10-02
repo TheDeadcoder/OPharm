@@ -22,8 +22,7 @@ def report(args):
     from opharm.stats.lock import analysis_rows
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / args.instances))}
     src = RUNS / args.model / args.tag
-    src_args = json.loads((src / "manifest.json").read_text())["args"]
-    budget = src_args["max_new"]
+    budget = json.loads((src / "manifest.json").read_text())["args"]["max_new"]
     cont = {r["id"]: r for r in map(json.loads, open(RUNS / args.model / f"{args.tag}_cont" / "results.jsonl"))}
     rows = analysis_rows([{**meta[r["id"]], **r} for r in map(json.loads, open(src / "results.jsonl"))
                           if r["id"] in meta and meta[r["id"]]["set"] == "main" and "text" in r], args.model)
@@ -78,7 +77,8 @@ def main():
     if args.report:
         return report(args)
     src = RUNS / args.model / args.tag
-    budget = json.loads((src / "manifest.json").read_text())["args"]["max_new"]
+    src_args = json.loads((src / "manifest.json").read_text())["args"]
+    budget = src_args["max_new"]
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / args.instances))}
     tok = load_tokenizer(args.model)
     todo = []
