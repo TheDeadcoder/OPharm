@@ -1,15 +1,20 @@
 import argparse
+import atexit
 import hashlib
 import importlib
 import json
+import os
 import random
+import signal
 import sys
+import threading
 import time
 from collections import Counter
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 
 import opharm
+import google.auth.exceptions as gauth
 import httpx
 import yaml
 from google import genai
@@ -20,8 +25,12 @@ from opharm.paths import BENCH, CONFIGS, ROOT, RUNS
 from opharm.run.api import gemini_call, gemini_client, serialize
 
 sys.path.insert(0, str(ROOT / "scripts"))
-RETRY = (429, 500, 502, 503, 504)
-ATTEMPTS = 6
+TRANSIENT = {408, 429, 500, 502, 503, 504}
+EXIT_DONE, EXIT_FAILED, EXIT_BUDGET, EXIT_OUTAGE, EXIT_PERMANENT, EXIT_STOPPED = 0, 1, 2, 3, 4, 130
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def answer_of(text):
@@ -31,6 +40,65 @@ def answer_of(text):
 
 def cost(usage, spec):
     return (usage["input"] * spec["usd_per_m_input"] + (usage["output"] + usage["thinking"]) * spec["usd_per_m_output"]) / 1e6
+
+
+def transient(e):
+    if isinstance(e, errors.APIError):
+        return e.code in TRANSIENT
+    return isinstance(e, (httpx.TransportError, gauth.TransportError, ConnectionError, TimeoutError)) or \
+        (type(e).__module__.startswith("httpx") and any(w in type(e).__name__ for w in ("Timeout", "Connect", "Network", "Protocol", "Read", "Write")))
+
+
+def read_jsonl(path):
+    if not path.exists():
+        return []
+    data = path.read_bytes()
+    keep = data[: data.rfind(b"\n") + 1]
+    if len(keep) != len(data):
+        path.write_bytes(keep)
+        print(f"dropped a torn last line in {path.name}")
+    return [json.loads(line) for line in keep.splitlines() if line.strip()]
+
+
+class Log:
+    def __init__(self, path):
+        self.f = open(path, "a")
+
+    def write(self, obj):
+        self.f.write(json.dumps(obj) + "\n")
+        self.f.flush()
+        os.fsync(self.f.fileno())
+
+    def close(self):
+        self.f.close()
+
+
+class Gate:
+    def __init__(self):
+        self.until, self.lock = 0.0, threading.Lock()
+
+    def hold(self, seconds):
+        with self.lock:
+            self.until = max(self.until, time.time() + seconds)
+
+    def wait(self, stop):
+        while not stop.is_set() and (delay := self.until - time.time()) > 0:
+            time.sleep(min(delay, 2.0))
+
+
+def take_lock(out):
+    lock = out / "run.lock"
+    if lock.exists():
+        pid = int(lock.read_text().strip() or 0)
+        try:
+            os.kill(pid, 0)
+            alive = pid > 0
+        except OSError:
+            alive = False
+        if alive:
+            raise SystemExit(f"process {pid} is already running {out}")
+    lock.write_text(str(os.getpid()))
+    atexit.register(lambda: lock.exists() and lock.read_text().strip() == str(os.getpid()) and lock.unlink())
 
 
 def select(args):
@@ -44,20 +112,27 @@ def select(args):
     return rows[: args.limit] if args.limit else rows
 
 
-def call(client, spec, row, tools, level):
-    for k in range(ATTEMPTS):
+def call(client, spec, row, tools, level, gate, window, stop):
+    start, k = time.time(), 0
+    while True:
+        gate.wait(stop)
         try:
-            return gemini_call(client, spec["model"], row, tools, level)
-        except (errors.APIError, httpx.TransportError) as e:
-            if (isinstance(e, errors.APIError) and e.code not in RETRY) or k == ATTEMPTS - 1:
+            return gemini_call(client, spec["model"], row, tools, level), k + 1
+        except Exception as e:
+            e.attempts = k + 1
+            if not transient(e) or stop.is_set() or time.time() - start > window:
                 raise
-            time.sleep(min(60.0, 2 ** k + random.random()))
+            delay = min(120.0, 2.0 ** min(k, 7)) * (0.5 + random.random())
+            if not isinstance(e, errors.APIError) or e.code == 429:
+                gate.hold(delay)
+            time.sleep(delay)
+            k += 1
 
 
 def sanity(out, rows, model):
     from opharm.bench.labels import label
     meta, counts = {r["id"]: r for r in rows}, Counter()
-    for rec in map(json.loads, open(out / "results.jsonl")):
+    for rec in read_jsonl(out / "results.jsonl"):
         r = meta.get(rec["id"])
         if r is not None and r["set"] in ("main", "narr"):
             counts[(r["set"], r["policy"], r["target"] + r["env"], label(rec["text"], r, model, None)["label"])] += 1
@@ -82,17 +157,31 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-usd", type=float, default=5.0)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--retry-window", type=float, default=1800.0)
+    ap.add_argument("--max-consecutive-failures", type=int, default=8)
     args = ap.parse_args()
+    if not os.path.isabs(args.instances) and not os.path.exists(args.instances):
+        args.instances = str(BENCH / args.instances)
     spec = yaml.safe_load((CONFIGS / "api_models.yaml").read_text())[args.model]
     rows = select(args)
     out = RUNS / args.model / args.tag
     out.mkdir(parents=True, exist_ok=True)
+    take_lock(out)
     order = [r["id"] for r in rows]
     if (out / "order.json").exists() and json.loads((out / "order.json").read_text()) != order:
         raise ValueError("run directory holds a different instance order; use a new tag")
     (out / "order.json").write_text(json.dumps(order))
     kept = out / ("samples.jsonl" if args.samples > 1 else "results.jsonl")
-    previous = list(map(json.loads, open(kept))) if kept.exists() else []
+    previous = read_jsonl(kept)
+    if args.samples > 1:
+        have = {r["id"] for r in read_jsonl(out / "results.jsonl")}
+        fix = Log(out / "results.jsonl")
+        for r in previous:
+            if r.get("sample") == 0 and r["id"] not in have:
+                fix.write({k: v for k, v in r.items() if k != "sample"})
+        fix.close()
+    read_jsonl(out / "raw.jsonl")
+    read_jsonl(out / "errors.jsonl")
     done = {(r["id"], r.get("sample", 0)) for r in previous}
     spent, totals, versions = sum(cost(r["usage"], spec) for r in previous), Counter(), Counter()
     for r in previous:
@@ -100,59 +189,96 @@ def main():
         versions[r["model_version"]] += 1
     todo = iter([(r, s) for r in rows for s in range(args.samples) if (r["id"], s) not in done])
     old = json.loads((out / "manifest.json").read_text()) if (out / "manifest.json").exists() else {}
-    start, n_err, stopped, pending = old.get("utc_start", datetime.now(timezone.utc).isoformat(timespec="seconds")), 0, spent >= args.max_usd, {}
+    inst_sha = hashlib.sha256(open(args.instances, "rb").read()).hexdigest()
+    start, session = old.get("utc_start", now()), now()
+    stop, gate, pending = threading.Event(), Gate(), {}
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(sig, lambda *_: (print("stop requested; finishing the calls in flight"), stop.set()))
+    counts = Counter(done=len(done))
+    status = {"budget": spent >= args.max_usd, "outage": False, "fatal": None}
+
+    def manifest(final=False):
+        n_done = counts["done"]
+        body = {"model": args.model, "provider": spec["provider"], "provider_model": spec["model"], "location": spec["location"],
+                "model_versions": dict(versions), "sdk": {"name": "google-genai", "version": genai.__version__}, "args": vars(args),
+                "instances_sha256": inst_sha, "utc_start": start,
+                "utc_session_start": session, "utc_end": now() if final else None, "running": not final,
+                "n_selected": len(rows), "n_calls_planned": len(rows) * args.samples, "n_calls_done": n_done,
+                "errors_this_session": {"transient": counts["transient"], "permanent": counts["permanent"]},
+                "tokens": {k: totals[k] for k in ("input", "output", "thinking")}, "cost_usd": round(spent, 4),
+                "prices_usd_per_m": {"input": spec["usd_per_m_input"], "output_and_thinking": spec["usd_per_m_output"]},
+                "stopped_at_budget": status["budget"] and n_done < len(rows) * args.samples, "stopped_after_outage": status["outage"]}
+        tmp = out / "manifest.json.tmp"
+        tmp.write_text(json.dumps(body, indent=1))
+        os.replace(tmp, out / "manifest.json")
+
     client = gemini_client(spec["location"])
-    names = ("results", "raw", "errors") + (("samples",) if args.samples > 1 else ())
-    files = {k: open(out / f"{k}.jsonl", "a") for k in names}
+    logs = {k: Log(out / f"{k}.jsonl") for k in ("results", "raw", "errors") + (("samples",) if args.samples > 1 else ())}
+    consecutive, last = 0, time.time()
     with ThreadPoolExecutor(args.workers) as pool:
         while True:
-            while not stopped and len(pending) < args.workers and (nxt := next(todo, None)) is not None:
+            while not (stop.is_set() or any(status.values())) and len(pending) < args.workers and (nxt := next(todo, None)) is not None:
                 r, s = nxt
                 tools = None if args.no_tools or r["set"] == "flat" else TOOLS
-                pending[pool.submit(call, client, spec, r, tools, args.thinking_level)] = nxt
+                pending[pool.submit(call, client, spec, r, tools, args.thinking_level, gate, args.retry_window, stop)] = nxt
             if not pending:
                 break
-            finished, _ = wait(pending, return_when=FIRST_COMPLETED)
+            finished, _ = wait(pending, timeout=30, return_when=FIRST_COMPLETED)
             for fut in finished:
                 r, s = pending.pop(fut)
                 try:
-                    res = fut.result()
+                    res, attempts = fut.result()
                 except Exception as e:
-                    files["errors"].write(json.dumps({"id": r["id"], "sample": s, "error": f"{type(e).__name__}: {e}"}) + "\n")
-                    n_err += 1
+                    kind = "transient" if transient(e) else "permanent"
+                    counts[kind] += 1
+                    logs["errors"].write({"id": r["id"], "sample": s, "kind": kind, "attempts": getattr(e, "attempts", 1),
+                                          "error": f"{type(e).__name__}: {e}"[:2000], "utc": now()})
+                    if isinstance(e, gauth.RefreshError):
+                        status["fatal"] = "the credentials no longer refresh; run gcloud auth application-default login again"
+                    consecutive = consecutive + 1 if kind == "transient" else consecutive
+                    status["outage"] = status["outage"] or consecutive >= args.max_consecutive_failures
                     continue
+                consecutive = 0
                 rec = {"id": r["id"], "set": r["set"], "text": serialize(res["text"], res["calls"]), "n_calls": len(res["calls"]),
-                       "usage": res["usage"], "stop_reason": res["stop_reason"], "model_version": res["model_version"]}
+                       "usage": res["usage"], "stop_reason": res["stop_reason"], "model_version": res["model_version"], "attempts": attempts}
                 if r["set"] == "judge":
                     rec.update(answer=answer_of(res["text"]), judge_text=res["text"])
-                files["raw"].write(json.dumps({"id": r["id"], "sample": s, "response": res["raw"]}) + "\n")
+                logs["raw"].write({"id": r["id"], "sample": s, "response": res["raw"]})
                 if args.samples > 1:
-                    files["samples"].write(json.dumps({**rec, "sample": s}) + "\n")
+                    logs["samples"].write({**rec, "sample": s})
                 if s == 0:
-                    files["results"].write(json.dumps(rec) + "\n")
+                    logs["results"].write(rec)
+                counts["done"] += 1
                 spent += cost(res["usage"], spec)
                 totals.update(res["usage"])
                 versions[res["model_version"]] += 1
-                stopped = stopped or spent >= args.max_usd
-            for f in files.values():
-                f.flush()
-    for f in files.values():
-        f.close()
-    n_done = sum(1 for _ in open(kept)) if kept.exists() else 0
-    manifest = {"model": args.model, "provider": spec["provider"], "provider_model": spec["model"], "location": spec["location"],
-                "model_versions": dict(versions), "sdk": {"name": "google-genai", "version": genai.__version__}, "args": vars(args),
-                "instances_sha256": hashlib.sha256(open(args.instances, "rb").read()).hexdigest(),
-                "utc_start": start, "utc_end": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "n_selected": len(rows), "n_calls_planned": len(rows) * args.samples, "n_calls_done": n_done, "n_errors_this_session": n_err,
-                "tokens": {k: totals[k] for k in ("input", "output", "thinking")}, "cost_usd": round(spent, 4),
-                "prices_usd_per_m": {"input": spec["usd_per_m_input"], "output_and_thinking": spec["usd_per_m_output"]},
-                "stopped_at_budget": n_done < len(rows) * args.samples and spent >= args.max_usd}
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
-    print(f"{n_done} of {len(rows) * args.samples} calls done, {n_err} errors this session, cost ${spent:.4f}")
-    if manifest["stopped_at_budget"]:
-        print(f"stopped at the budget of ${args.max_usd}; rerun with a higher --max-usd to continue")
+                status["budget"] = status["budget"] or spent >= args.max_usd
+            if time.time() - last > 60:
+                manifest()
+                last = time.time()
+    for log in logs.values():
+        log.close()
+    manifest(final=True)
+    planned = len(rows) * args.samples
+    print(f"{counts['done']} of {planned} calls done, errors this session: {counts['transient']} transient, {counts['permanent']} permanent, "
+          f"cost ${spent:.4f} of ${args.max_usd}")
     if (out / "results.jsonl").exists():
         sanity(out, rows, args.model)
+    if status["fatal"]:
+        print(status["fatal"])
+        sys.exit(EXIT_FAILED)
+    if counts["done"] >= planned:
+        sys.exit(EXIT_DONE)
+    if stop.is_set():
+        sys.exit(EXIT_STOPPED)
+    if status["budget"]:
+        print(f"stopped at the budget of ${args.max_usd}; rerun with a higher --max-usd to continue")
+        sys.exit(EXIT_BUDGET)
+    if status["outage"]:
+        print(f"stopped after {args.max_consecutive_failures} consecutive failed calls; rerun later to resume")
+        sys.exit(EXIT_OUTAGE)
+    print("some calls failed with errors that retrying did not fix; see errors.jsonl, rerun to retry them")
+    sys.exit(EXIT_PERMANENT)
 
 
 if __name__ == "__main__":
