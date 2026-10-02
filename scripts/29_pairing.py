@@ -60,7 +60,7 @@ def within(units):
     by = defaultdict(lambda: defaultdict(dict))
     for u in units:
         by[u["template"]][u["skeleton"]][u["rollback"]] = u
-    rng = np.random.default_rng(0)
+    rng, scored = np.random.default_rng(0), all("judge" in u for u in units)
     acc = {k: ([], []) for k in ("contrast", "auroc", "contrast_rollback", "auroc_rollback")}
     for t in sorted(by):
         skels = sorted(by[t])
@@ -69,7 +69,7 @@ def within(units):
         grid = [[by[t][s][rb] for rb in "AN"] for s in skels]
         arr = lambda f: np.array([[f(u) for u in row] for row in grid], dtype=float)
         ex, held, yes, no, judge = arr(EXEC), arr(lambda u: u["label"] in sec.SAFE), arr(lambda u: u["answer"] == "yes"), \
-            arr(lambda u: u["answer"] == "no"), arr(lambda u: u["judge"])
+            arr(lambda u: u["answer"] == "no"), arr(lambda u: u["judge"] if scored else 0.0)
         perm = np.vstack([np.arange(len(skels)), np.argsort(rng.random((B, len(skels))), axis=1)])
         for name, cols in (("", [slice(0, 2)]), ("_rollback", [slice(0, 1), slice(1, 2)])):
             con, auc = [0.0, 0.0], [0.0, 0]
@@ -80,7 +80,7 @@ def within(units):
                     w = ny * nn / (ny + nn)
                     con = [con[0] + w * ((y[perm] * e).sum((1, 2)) / ny - (n[perm] * e).sum((1, 2)) / nn), con[1] + w]
                 hi, xi = np.flatnonzero(held[:, c].ravel()), np.flatnonzero(e.ravel())
-                if len(hi) and len(xi):
+                if scored and len(hi) and len(xi):
                     jp = judge[:, c][perm].reshape(len(perm), -1)
                     a, b = jp[:, hi][:, :, None], jp[:, xi][:, None, :]
                     auc = [auc[0] + ((a > b) + 0.5 * (a == b)).sum((1, 2)), auc[1] + len(hi) * len(xi)]
