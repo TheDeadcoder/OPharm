@@ -169,6 +169,9 @@ def main():
     ap.add_argument("--timeout", type=float, default=0.0)
     ap.add_argument("--max-consecutive-failures", type=int, default=6)
     args = ap.parse_args()
+    caps = RUNS / "queue" / "api_caps.json"
+    if caps.exists():
+        args.max_usd = float(json.loads(caps.read_text()).get(args.model, {}).get(args.tag, args.max_usd))
     if not os.path.isabs(args.instances) and not os.path.exists(args.instances):
         args.instances = str(BENCH / args.instances)
     spec = yaml.safe_load((CONFIGS / "api_models.yaml").read_text())[args.model]
