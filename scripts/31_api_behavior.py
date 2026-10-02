@@ -5,6 +5,7 @@ import importlib
 import json
 import os
 import random
+import re
 import signal
 import sys
 import threading
@@ -26,6 +27,7 @@ from opharm.run.api import gemini_call, gemini_client, serialize
 
 sys.path.insert(0, str(ROOT / "scripts"))
 TRANSIENT = {408, 429, 500, 502, 503, 504}
+BACKOFF_START, BACKOFF_CAP = 10.0, 300.0
 EXIT_DONE, EXIT_FAILED, EXIT_BUDGET, EXIT_OUTAGE, EXIT_PERMANENT, EXIT_STOPPED = 0, 1, 2, 3, 4, 130
 
 
@@ -47,6 +49,11 @@ def transient(e):
         return e.code in TRANSIENT
     return isinstance(e, (httpx.TransportError, gauth.TransportError, ConnectionError, TimeoutError)) or \
         (type(e).__module__.startswith("httpx") and any(w in type(e).__name__ for w in ("Timeout", "Connect", "Network", "Protocol", "Read", "Write")))
+
+
+def server_delay(e):
+    m = re.search(r'"retryDelay":\s*"(\d+(?:\.\d+)?)s"', json.dumps(getattr(e, "details", None) or {}))
+    return float(m.group(1)) if m else 0.0
 
 
 def read_jsonl(path):
@@ -122,9 +129,10 @@ def call(client, spec, row, tools, level, gate, window, stop):
             e.attempts = k + 1
             if not transient(e) or stop.is_set() or time.time() - start > window:
                 raise
-            delay = min(120.0, 2.0 ** min(k, 7)) * (0.5 + random.random())
+            delay = max(min(BACKOFF_CAP, BACKOFF_START * 2.0 ** min(k, 6)) * (0.75 + 0.5 * random.random()), server_delay(e))
             if not isinstance(e, errors.APIError) or e.code == 429:
                 gate.hold(delay)
+            print(f"{now()} retry {row['id']} attempt {k + 2} in {delay:.0f}s after {type(e).__name__}: {str(e)[:160]}", flush=True)
             time.sleep(delay)
             k += 1
 
@@ -156,9 +164,9 @@ def main():
     ap.add_argument("--samples", type=int, default=1)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-usd", type=float, default=5.0)
-    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--retry-window", type=float, default=1800.0)
-    ap.add_argument("--max-consecutive-failures", type=int, default=8)
+    ap.add_argument("--max-consecutive-failures", type=int, default=6)
     args = ap.parse_args()
     if not os.path.isabs(args.instances) and not os.path.exists(args.instances):
         args.instances = str(BENCH / args.instances)
@@ -190,6 +198,7 @@ def main():
     todo = iter([(r, s) for r in rows for s in range(args.samples) if (r["id"], s) not in done])
     old = json.loads((out / "manifest.json").read_text()) if (out / "manifest.json").exists() else {}
     inst_sha = hashlib.sha256(open(args.instances, "rb").read()).hexdigest()
+    code_sha = hashlib.sha256(b"".join(open(f, "rb").read() for f in (__file__, ROOT / "src" / "opharm" / "run" / "api.py"))).hexdigest()
     start, session = old.get("utc_start", now()), now()
     stop, gate, pending = threading.Event(), Gate(), {}
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -201,7 +210,7 @@ def main():
         n_done = counts["done"]
         body = {"model": args.model, "provider": spec["provider"], "provider_model": spec["model"], "location": spec["location"],
                 "model_versions": dict(versions), "sdk": {"name": "google-genai", "version": genai.__version__}, "args": vars(args),
-                "instances_sha256": inst_sha, "utc_start": start,
+                "instances_sha256": inst_sha, "code_sha256": code_sha, "utc_start": start,
                 "utc_session_start": session, "utc_end": now() if final else None, "running": not final,
                 "n_selected": len(rows), "n_calls_planned": len(rows) * args.samples, "n_calls_done": n_done,
                 "errors_this_session": {"transient": counts["transient"], "permanent": counts["permanent"]},
