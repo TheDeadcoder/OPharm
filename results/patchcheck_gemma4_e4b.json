@@ -1,0 +1,38 @@
+{
+ "layers": [
+  1,
+  7,
+  12,
+  18,
+  22
+ ],
+ "pairs": 3,
+ "per_layer": {
+  "1": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.1262645721435547
+  },
+  "7": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.101776123046875
+  },
+  "12": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.1600627899169922
+  },
+  "18": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.17072296142578125
+  },
+  "22": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.18364524841308594
+  }
+ },
+ "valid": true
+}
