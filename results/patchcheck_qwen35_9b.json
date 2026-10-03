@@ -1,0 +1,56 @@
+{
+ "layers": [
+  1,
+  5,
+  9,
+  13,
+  18,
+  22,
+  26,
+  30
+ ],
+ "pairs": 3,
+ "per_layer": {
+  "1": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "5": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "9": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "13": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "18": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "22": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "26": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  },
+  "30": {
+   "identity_max": 0.0,
+   "transplant_max": 0.0,
+   "residual_only_transplant_max": 0.0
+  }
+ },
+ "valid": true
+}

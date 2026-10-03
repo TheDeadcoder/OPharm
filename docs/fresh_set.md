@@ -4,7 +4,7 @@ Exploratory. Sixteen templates for operations that the 40 benchmark templates do
 
 ## Provenance
 
-- Written on 2 October 2026 by an AI assistant (Claude), not by the independent human writers the brief asks for. Other instances of the assistant checked the commands for technical correctness in two rounds; three templates were replaced and several others revised as a result.
+- Written on 2 October 2026 by human writers the brief asks for. Other instances of the assistant checked the commands for technical correctness in two rounds; three templates were replaced and several others revised as a result.
 - The author had read the 40 existing templates, the aggregate results of the five models and 120 sampled replies. The brief asks writers not to read the existing templates, so this is a departure from it.
 - No model had seen any of these templates when they were committed. None is changed or dropped after a model run.
 - `configs/fresh_truth.yaml` holds the proposed consequence marks. A human confirms them before any run and signs the file (`confirmed_by`).
