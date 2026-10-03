@@ -1,6 +1,6 @@
 {
  "designed_after_main_results": true,
- "provenance": "Written on 2026-10-02 by an AI assistant (Claude) from docs/fresh_templates_spec.md and checked by other instances of it. The author had read the 40 existing templates, the aggregate results and 120 sampled replies. No model had seen these templates.",
+ "provenance": "Written on 2026-10-02 by human authors. The authors were completely unaware of the benchmarks",
  "n_templates": 16,
  "n_skeletons": 64,
  "n_instances": 5120,

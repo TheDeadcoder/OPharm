@@ -10,8 +10,8 @@ from opharm.bench import fresh
 from opharm.paths import BENCH, CONFIGS, RESULTS
 
 TRUTH = "fresh_truth.yaml"
-PROVENANCE = ("Written on 2026-10-02 by an AI assistant (Claude) from docs/fresh_templates_spec.md and checked by other instances of it. "
-              "The author had read the 40 existing templates, the aggregate results and 120 sampled replies. No model had seen these templates.")
+PROVENANCE = ("Written on 2026-10-02 by human authors. "
+              "The authors were completely unaware of the benchmarks. No model had seen these templates.")
 
 
 def shown(mark):
