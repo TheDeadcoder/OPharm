@@ -93,3 +93,14 @@ def test_names_and_queues_balanced(parts):
     assert all(who[(w, "1")] > 0 and who[(w, "0")] > 0 for w, _ in who)
     queue = Counter((r["policy_queue"], r["state"][1]) for r in cj)
     assert all(queue[(q, "1")] > 0 and queue[(q, "0")] > 0 for q, _ in queue)
+
+
+def test_posthoc_verdict(parts):
+    rows = assist.posthoc()
+    assert len(rows) == 428 + 528 and all(r["arm"] == "A2u" for r in rows)
+    base = {r["id"].rsplit(".", 1)[0]: r for r in parts["op"] + parts["cj"] if r["arm"] == "A0"}
+    for r in rows:
+        head, block, tail = user(r).rsplit("\n\n", 2)
+        assert tail == CLOSING and block == assist.VERDICT_U[r["required"]]
+        b = base[r["id"].rsplit(".", 1)[0]]
+        assert system(r) == system(b) and r["required"] == b["required"] and user(b) == f"{head}\n\n{CLOSING}"

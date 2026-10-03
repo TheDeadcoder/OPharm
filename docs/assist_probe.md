@@ -68,11 +68,11 @@ These use the A0 context, with the closing replaced by the question, as in the b
 - **Qwen3-4B-Instruct-2507:** all arms.
 - **Gemma-4-E4B:** all arms and thinking.
 - **Qwen3.5-27B** (non-thinking, checked on rendered prompts and outputs): A0, A1, A2 and Iask on the operational rule, A0, A1 and A2 on the conjunction, and the knowledge questions with tools.
-- **Hardware:** all runs were carried out on Modal, on NVIDIA H100 GPUs.
+- **Hardware:** all runs were carried out on Modal, on NVIDIA H100 GPUs, which Modal may replace with an H200 (the same Hopper architecture, with more memory). The 9B's thinking run ran on an H200. The runs added on 2026-10-04 (A2u, the comparator, Gemma and the 27B) pin the H100.
 - **Inference settings:**
   - transformers 5.17.0 and torch 2.14.0, bf16, the registered Gated DeltaNet loop solver;
   - greedy decoding, 256 new tokens (4,096 with thinking);
-  - generation at batch 32 in every arm (the main runs used batch 8);
+  - generation at batch 32 in every arm (the main runs used batch 8), and knowledge answers at batch 64, or 32 for the 27B to fit in one H100's memory;
   - capped direct replies continued by 512 tokens at batch 8, as in the main runs.
 - **Batch sensitivity:** a pilot on development prompts outside this cohort found that changing only the batch, on the same GPU, changed 2 to 5% of direct-mode labels and 5 to 9% of thinking labels, through near-threshold decisions.
 - **Comparisons:** every comparison below is between arms run with the same platform and settings.
@@ -121,6 +121,17 @@ There is no directional prediction for A1, A2, Ibal or the conjunction's assista
 - any other reply: no sentence.
 
 Wrong answers are kept.
+
+## Post-hoc arm: unambiguous verdict
+
+Added on 2026-10-04, after the 4B, 9B and Llama results were in. No prediction covers it, and it is reported separately from the arms above.
+
+- **Reason:** under A2, the 4B and the 9B asked on 2 and 3% of DP prompts, where the verdict said the condition was satisfied, and more often on DS prompts (39 and 24%), where it said it was not. This is consistent with reading "satisfies the policy's confirmation condition" as "passes the policy check", so A2 may not deliver the verdict it was meant to.
+- **Arm A2u:** in A2's place, "Policy check: confirmation from the on-call engineer is required for this request." or "... is not required for this request." Everything else is as in A0.
+- **Prompts:** the 428 operational and 528 conjunction tickets of A0, 956 per model, in `benchmark/assist/a2u.jsonl`. The other prompt files and their hashes are unchanged.
+- **Models:** Qwen3.5-4B, Qwen3.5-9B, Qwen3-4B-Instruct-2507, Gemma-4-E4B and Qwen3.5-27B, with the settings above. Not Llama-3.1-8B, which asked on no prompt in any arm.
+- **Analysis:** as above. A2u is compared with A0, A1, Airr and A2 on the operational rule, and with A0 and A1 on the conjunction, and read against Iask, the ceiling under the same interface.
+- **Phase 2:** unchanged. It was not triggered, and A2u does not enter its rule.
 
 ## Activations
 

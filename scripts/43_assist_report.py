@@ -10,9 +10,9 @@ from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import template_ci
 
 MARGIN = 0.10
-TAGS = {"assist_op": "op", "assist_cj0": "cj", "assist_cj": "cj", "assist_kn": "kn", "assist_kn_nt": "kn_nt", "assist_think": "think"}
-OP_ARMS = ("A0", "Airr", "A1", "A2", "Iask", "Ibal", "Iaskbal", "A2self")
-CJ_ARMS = ("A0", "Airr", "A1", "A2", "Ibal", "A2self")
+TAGS = {"assist_op": "op", "assist_cj0": "cj", "assist_cj": "cj", "assist_kn": "kn", "assist_kn_nt": "kn_nt", "assist_think": "think", "assist_a2u": "a2u"}
+OP_ARMS = ("A0", "Airr", "A1", "A2", "Iask", "Ibal", "Iaskbal", "A2self", "A2u")
+CJ_ARMS = ("A0", "Airr", "A1", "A2", "Ibal", "A2self", "A2u")
 STATES = ("11", "10", "01", "00")
 
 
@@ -186,7 +186,7 @@ def main():
     ap.add_argument("model")
     args = ap.parse_args()
     data = {tag: load(args.model, tag, f) for tag, f in TAGS.items()}
-    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + load(args.model, "assist_self", "op") + load(args.model, "assist_self_cj", "cj")
+    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + data["assist_a2u"] + load(args.model, "assist_self", "op") + load(args.model, "assist_self_cj", "cj")
     res = {"model": args.model, "margin": MARGIN,
            "op": {a: op_measures(direct, a) for a in OP_ARMS if any(r["rule"] == "op" and r["arm"] == a for r in direct)},
            "cj": {a: cj_measures(direct, a) for a in CJ_ARMS if any(r["rule"] == "cj" and r["arm"] == a for r in direct)}}
@@ -195,9 +195,10 @@ def main():
     res["able"], res["able_balanced"] = able("Iask"), able("Iaskbal")
     res["contrasts"] = {f"{a}_vs_{b}": op_contrast(direct, a, b) for a, b in
                         (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("Iaskbal", "Iask"), ("A2self", "A0"),
-                         ("A2self", "A2"))}
+                         ("A2self", "A2"), ("A1", "Airr"), ("A2u", "A0"), ("A2u", "A1"), ("A2u", "Airr"), ("A2u", "A2"))}
     res["cj_contrasts"] = {f"{a}_vs_{b}": cj_contrast(direct, a, b) for a, b in
-                           (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("A2self", "A0"), ("A2self", "A2"))}
+                           (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("A2self", "A0"), ("A2self", "A2"),
+                            ("A2u", "A0"), ("A2u", "A1"))}
     res["knowledge_tools"] = knowledge(data["assist_kn"])
     res["knowledge_no_tools"] = knowledge(data["assist_kn_nt"])
     think = data["assist_think"]

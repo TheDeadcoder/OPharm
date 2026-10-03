@@ -33,3 +33,8 @@ qwen35_2b:
   revision: 15852e8c16360a2fea060d615a32b45270f8a8fc
   role: scale
   safetensors_bytes: 4548221488
+qwen35_27b:
+  repo: Qwen/Qwen3.5-27B
+  revision: fc05daec18b0a78c049392ed2e771dde82bdf654
+  role: assist_probe
+  safetensors_bytes: 55563022432

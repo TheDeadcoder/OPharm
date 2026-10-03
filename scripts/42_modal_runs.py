@@ -18,7 +18,7 @@ APP = "opharm-runs"
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs"
 HF = "/root/.cache/huggingface"
-GPU, CPU, MEM = "H100", 2.0, 32768
+GPU, CPU, MEM = "H100!", 2.0, 32768
 GPU_USD_S = 0.001097 + CPU * 0.0000131 + MEM / 1024 * 0.00000222
 CPU_USD_S = 2.0 * 0.0000131 + 4.0 * 0.00000222
 CAP_USD = float(os.environ.get("OPHARM_CAP_USD", "28"))
@@ -110,51 +110,75 @@ def lines(path):
     return sum(1 for _ in open(path)) if path.exists() else 0
 
 
-def watch(key, out, t0, prior, max_seconds, stop):
+class TimeLimit(Exception):
+    pass
+
+
+def guarded(fn, limit):
+    def call(*args, **kwargs):
+        if limit.is_set():
+            raise TimeLimit
+        return fn(*args, **kwargs)
+    return call
+
+
+def watch(key, out, t0, prior, max_seconds, stop, limit):
     while not stop.wait(60):
         billed = prior + time.time() - t0
-        state = "stopped_time" if billed > max_seconds else "running"
-        progress[key] = {**progress.get(key, {}), "state": state, "billed_seconds": round(billed, 1),
+        if billed > max_seconds:
+            limit.set()
+        progress[key] = {**progress.get(key, {}), "state": "stopping" if limit.is_set() else "running", "billed_seconds": round(billed, 1),
                          "usd": round(billed * GPU_USD_S, 3), "prefill": lines(out / "prefill.jsonl"),
                          "decode": lines(out / "decode.jsonl"), "judge": lines(out / "judge.jsonl"), "updated": time.time()}
         runs.commit()
-        if state == "stopped_time":
-            os._exit(0)
 
 
 @app.function(gpu=GPU, cpu=CPU, memory=MEM, timeout=4 * 3600, volumes={HF: hf, "/root/runs": runs})
 def behave(model, tag, argv, cont, max_seconds, run_id):
     t0 = time.time()
     runner, cont_mod = prepare()
+    import gc
     import torch
+    from opharm.run.cache import forward_capture
+    from opharm.run.generate import greedy
+    gc.collect()
+    torch.cuda.empty_cache()
     key = f"{model}:{tag}"
     prev = progress.get(key, {})
     same = prev.get("run_id") == run_id
     prior, attempt = (prev.get("billed_seconds", 0.0), prev.get("attempt", 0) + 1) if same else (0.0, 1)
     progress[key] = {"run_id": run_id, "attempt": attempt, "state": "running", "billed_seconds": prior, "usd": round(prior * GPU_USD_S, 3),
-                     "device": torch.cuda.get_device_name(0), "updated": time.time()}
+                     "devices": [*(prev.get("devices", []) if same else []), torch.cuda.get_device_name(0)], "updated": time.time()}
     out = Path("/root/runs") / model / tag
-    stop = threading.Event()
-    threading.Thread(target=watch, args=(key, out, t0, prior, max_seconds, stop), daemon=True).start()
-    sys.argv = ["09_run_behavior.py", model, "--tag", tag, *argv]
-    runner.main()
-    capped = 0
-    if cont:
-        buf = io.StringIO()
-        sys.argv = ["24_continue.py", model, "--tag", tag, *cont, "--dry-run"]
-        with contextlib.redirect_stdout(buf):
-            cont_mod.main()
-        capped = json.loads(buf.getvalue().strip().splitlines()[-1])["capped"]
-        if capped:
-            sys.argv = ["24_continue.py", model, "--tag", tag, *cont, "--batch", "8"]
-            cont_mod.main()
-    stop.set()
-    runs.commit()
-    billed = prior + time.time() - t0
-    progress[key] = {**progress.get(key, {}), "state": "done", "billed_seconds": round(billed, 1), "usd": round(billed * GPU_USD_S, 3),
-                     "prefill": lines(out / "prefill.jsonl"), "decode": lines(out / "decode.jsonl"), "judge": lines(out / "judge.jsonl"),
-                     "capped": capped, "updated": time.time()}
-    return {"model": model, "tag": tag, "capped": capped, "seconds": round(billed)}
+    stop, limit = threading.Event(), threading.Event()
+    runner.greedy, runner.forward_capture = guarded(greedy, limit), guarded(forward_capture, limit)
+    watcher = threading.Thread(target=watch, args=(key, out, t0, prior, max_seconds, stop, limit), daemon=True)
+    watcher.start()
+    capped, state = 0, "failed"
+    try:
+        sys.argv = ["09_run_behavior.py", model, "--tag", tag, *argv]
+        runner.main()
+        if cont:
+            buf = io.StringIO()
+            sys.argv = ["24_continue.py", model, "--tag", tag, *cont, "--dry-run"]
+            with contextlib.redirect_stdout(buf):
+                cont_mod.main()
+            capped = json.loads(buf.getvalue().strip().splitlines()[-1])["capped"]
+            if capped:
+                sys.argv = ["24_continue.py", model, "--tag", tag, *cont, "--batch", "8"]
+                cont_mod.main()
+        state = "done"
+    except TimeLimit:
+        state = "stopped_time"
+    finally:
+        stop.set()
+        watcher.join(120)
+        runs.commit()
+        billed = prior + time.time() - t0
+        progress[key] = {**progress.get(key, {}), "state": state, "billed_seconds": round(billed, 1), "usd": round(billed * GPU_USD_S, 3),
+                         "prefill": lines(out / "prefill.jsonl"), "decode": lines(out / "decode.jsonl"), "judge": lines(out / "judge.jsonl"),
+                         "capped": capped, "updated": time.time()}
+    return {"model": model, "tag": tag, "state": state, "capped": capped, "seconds": round(billed)}
 
 
 def spent():
@@ -181,6 +205,8 @@ def launch(fn, model, tag, argv, cont, max_minutes, run_id):
     if fn == "behave":
         if not tag.startswith("assist_pilot"):
             gate()
+        if max_minutes > 230:
+            raise SystemExit("refused: the time limit must end before the 4-hour function timeout")
         if spent() + max_minutes * 60 * GPU_USD_S > CAP_USD:
             raise SystemExit(f"refused: ${spent():.2f} spent, this call could add ${max_minutes * 60 * GPU_USD_S:.2f}, cap ${CAP_USD:.0f}")
     f = modal.Function.from_name(APP, fn)
@@ -214,7 +240,7 @@ def status():
     now = time.time()
     for k, v in sorted(progress.items()):
         age = round((now - v.get("updated", now)) / 60, 1)
-        stale = " STALE?" if v.get("state") == "running" and age > 5 else ""
+        stale = " STALE?" if v.get("state") in ("running", "stopping") and age > 5 else ""
         print(f"{k:34s} {v.get('state', ''):13s} prefill {v.get('prefill', '-')} decode {v.get('decode', '-')} judge {v.get('judge', '-')}  "
               f"{v.get('billed_seconds', 0) / 60:6.1f} min ${v.get('usd', 0):6.3f}  updated {age} min ago{stale}")
     print(f"spent about ${spent():.2f} of the ${CAP_USD:.0f} cap on this account")

@@ -61,6 +61,14 @@
     "op.K": 16,
     "cj.K": 12
    }
+  },
+  "a2u": {
+   "sha256": "bd70bb038b9bc53eea9d706bb5a6763fe881b9627d65a07bb3af09adbe6163c7",
+   "n": 956,
+   "by_arm": {
+    "op.A2u": 428,
+    "cj.A2u": 528
+   }
   }
  },
  "cohort": {
@@ -107,6 +115,10 @@
   "verdict": {
    "true": "Policy check: this request satisfies the policy's confirmation condition.",
    "false": "Policy check: this request does not satisfy the policy's confirmation condition."
+  },
+  "verdict_unambiguous_posthoc": {
+   "true": "Policy check: confirmation from the on-call engineer is required for this request.",
+   "false": "Policy check: confirmation from the on-call engineer is not required for this request."
   },
   "important": {
    "D": "The resource this command changes is important, not temporary, test, or disposable.",
