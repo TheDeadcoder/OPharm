@@ -63,15 +63,12 @@ These use the A0 context, with the closing replaced by the question, as in the b
 
 ## Models and platform
 
-- **First account:**
-  - Qwen3.5-4B and Qwen3.5-9B, all arms and thinking;
-  - Llama-3.1-8B, A0 and Iask on the operational rule only, in its stock format;
-  - Qwen3-4B-Instruct-2507, all arms, if the first account's spend allows; otherwise on the second account.
-- **Second account, after the first finishes:**
-  - Gemma-4-E4B, all arms and thinking;
-  - Qwen3.5-27B (non-thinking, checked on rendered prompts and outputs): A0, A1, A2 and Iask on the operational rule, A0, A1 and A2 on the conjunction, and the knowledge questions with tools;
-  - phase 2.
-- **Hardware:** NVIDIA H100 on Modal. Both accounts use the same image and settings.
+- **Qwen3.5-4B and Qwen3.5-9B:** all arms and thinking.
+- **Llama-3.1-8B:** A0 and Iask on the operational rule only, in its stock format.
+- **Qwen3-4B-Instruct-2507:** all arms.
+- **Gemma-4-E4B:** all arms and thinking.
+- **Qwen3.5-27B** (non-thinking, checked on rendered prompts and outputs): A0, A1, A2 and Iask on the operational rule, A0, A1 and A2 on the conjunction, and the knowledge questions with tools.
+- **Hardware:** all runs were carried out on Modal, on NVIDIA H100 GPUs.
 - **Inference settings:**
   - transformers 5.17.0 and torch 2.14.0, bf16, the registered Gated DeltaNet loop solver;
   - greedy decoding, 256 new tokens (4,096 with thinking);
@@ -124,13 +121,6 @@ There is no directional prediction for A1, A2, Ibal or the conjunction's assista
 - any other reply: no sentence.
 
 Wrong answers are kept.
-
-## Budget
-
-- **First account:** $31 in total, including about $7.7 already spent on the dose ladders and the pilots.
-- **Time limits:** each run is limited to 1.1 times its estimate from the measured pilot speeds.
-- **If a run reaches its limit:** it is resumed, or rerun on the second account with identical settings.
-- **No arm is dropped for cost.**
 
 ## Activations
 
