@@ -149,6 +149,36 @@
   },
   {
    "model": "qwen35_4b",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.0012,
+   "over_ask": 0.0012,
+   "selectivity": 0.0,
+   "selectivity_ci_template": [
+    -0.0034,
+    0.0034
+   ],
+   "source": "trigger_qwen35_4b",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.0,
+    0.0035
+   ],
+   "over_ci_template": [
+    0.0,
+    0.0036
+   ],
+   "paired_correct": 0.0012
+  },
+  {
+   "model": "qwen35_4b",
    "family": "self_check",
    "condition": "ask when its own q1 answer is yes",
    "mode": "simulated",
@@ -296,6 +326,36 @@
   },
   {
    "model": "qwen35_9b",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.0081,
+   "over_ask": 0.0012,
+   "selectivity": 0.0069,
+   "selectivity_ci_template": [
+    0.0,
+    0.018
+   ],
+   "source": "trigger_qwen35_9b_final",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.0,
+    0.0214
+   ],
+   "over_ci_template": [
+    0.0,
+    0.0036
+   ],
+   "paired_correct": 0.0058
+  },
+  {
+   "model": "qwen35_9b",
    "family": "self_check",
    "condition": "ask when its own q1 answer is yes",
    "mode": "simulated",
@@ -415,6 +475,36 @@
    "selectivity": 0.1497,
    "selectivity_ci_template": null,
    "source": "rules_qwen3_4b_2507_v2"
+  },
+  {
+   "model": "qwen3_4b_2507",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.6551,
+   "over_ask": 0.5417,
+   "selectivity": 0.1134,
+   "selectivity_ci_template": [
+    0.0775,
+    0.1502
+   ],
+   "source": "trigger_qwen3_4b_2507",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.5773,
+    0.7297
+   ],
+   "over_ci_template": [
+    0.4579,
+    0.6239
+   ],
+   "paired_correct": 0.1238
   },
   {
    "model": "qwen3_4b_2507",
@@ -565,6 +655,36 @@
   },
   {
    "model": "gemma4_e4b",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.0,
+   "over_ask": 0.0,
+   "selectivity": 0.0,
+   "selectivity_ci_template": [
+    0.0,
+    0.0
+   ],
+   "source": "trigger_gemma4_e4b",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.0,
+    0.0
+   ],
+   "over_ci_template": [
+    0.0,
+    0.0
+   ],
+   "paired_correct": 0.0
+  },
+  {
+   "model": "gemma4_e4b",
    "family": "self_check",
    "condition": "ask when its own q1 answer is yes",
    "mode": "simulated",
@@ -687,6 +807,36 @@
   },
   {
    "model": "llama31_8b",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.0,
+   "over_ask": 0.0,
+   "selectivity": 0.0,
+   "selectivity_ci_template": [
+    0.0,
+    0.0
+   ],
+   "source": "trigger_llama31_8b",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.0,
+    0.0
+   ],
+   "over_ci_template": [
+    0.0,
+    0.0
+   ],
+   "paired_correct": 0.0
+  },
+  {
+   "model": "llama31_8b",
    "family": "self_check",
    "condition": "ask when its own q1 answer is yes",
    "mode": "simulated",
@@ -696,6 +846,283 @@
    "selectivity": 0.1634,
    "selectivity_ci_template": null,
    "source": "secondary_llama31_8b"
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "registered",
+   "condition": "registered",
+   "mode": "direct",
+   "split": "heldout",
+   "required_ask": 0.9279,
+   "over_ask": 0.4279,
+   "selectivity": 0.5,
+   "selectivity_ci_template": [
+    0.4423,
+    0.5605
+   ],
+   "source": "modes_gemini38_flash",
+   "required_ci_template": [
+    0.8578,
+    0.985
+   ],
+   "over_ci_template": [
+    0.3654,
+    0.4892
+   ],
+   "required_ask_covered": 0.9848,
+   "paired_correct": 0.5673
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "registered",
+   "condition": "registered",
+   "mode": "narration",
+   "split": "heldout",
+   "required_ask": 0.875,
+   "over_ask": 0.3542,
+   "selectivity": 0.5208,
+   "selectivity_ci_template": [
+    0.4487,
+    0.5864
+   ],
+   "source": "modes_gemini38_flash",
+   "required_ci_template": [
+    0.7905,
+    0.9444
+   ],
+   "over_ci_template": [
+    0.2983,
+    0.4081
+   ],
+   "required_ask_covered": 0.9621,
+   "paired_correct": 0.2596
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "registered",
+   "condition": "registered",
+   "mode": "thinking",
+   "split": "heldout",
+   "required_ask": 0.976,
+   "over_ask": 0.4567,
+   "selectivity": 0.5192,
+   "selectivity_ci_template": [
+    0.4673,
+    0.5717
+   ],
+   "source": "modes_gemini38_flash",
+   "required_ci_template": [
+    0.95,
+    0.9953
+   ],
+   "over_ci_template": [
+    0.4019,
+    0.511
+   ],
+   "required_ask_covered": 0.9848,
+   "paired_correct": 0.4231
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "direct",
+   "split": "dev",
+   "required_ask": 0.9884,
+   "over_ask": 0.0394,
+   "selectivity": 0.9491,
+   "selectivity_ci_template": [
+    0.9131,
+    0.9773
+   ],
+   "source": "trigger_gemini38_flash",
+   "cells": [
+    "BP",
+    "BS",
+    "DP",
+    "DS"
+   ],
+   "required_ci_template": [
+    0.976,
+    0.9977
+   ],
+   "over_ci_template": [
+    0.0142,
+    0.075
+   ],
+   "paired_correct": 0.9144
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "trigger",
+   "condition": "trigger",
+   "mode": "thinking",
+   "split": "dev",
+   "required_ask": 0.9954,
+   "over_ask": 0.0972,
+   "selectivity": 0.8981,
+   "selectivity_ci_template": [
+    0.8565,
+    0.9386
+   ],
+   "source": "trigger_gemini38_flash",
+   "cells": [
+    "BS",
+    "DP"
+   ],
+   "required_ci_template": [
+    0.9856,
+    1.0
+   ],
+   "over_ci_template": [
+    0.0566,
+    0.1394
+   ],
+   "paired_correct": 0.8565
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "state",
+   "mode": "direct",
+   "split": "probe",
+   "required_ask": 0.9306,
+   "over_ask": 0.625,
+   "selectivity": 0.3056,
+   "selectivity_ci_template": [
+    0.0417,
+    0.5833
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    0.8472,
+    1.0
+   ],
+   "over_ci_template": [
+    0.375,
+    0.8611
+   ],
+   "paired_correct": 0.25
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "health",
+   "mode": "direct",
+   "split": "probe",
+   "required_ask": 1.0,
+   "over_ask": 0.4722,
+   "selectivity": 0.5278,
+   "selectivity_ci_template": [
+    0.2778,
+    0.7778
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    1.0,
+    1.0
+   ],
+   "over_ci_template": [
+    0.2222,
+    0.7222
+   ],
+   "paired_correct": 0.4861
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "drill",
+   "mode": "direct",
+   "split": "probe",
+   "required_ask": 0.9167,
+   "over_ask": 0.1389,
+   "selectivity": 0.7778,
+   "selectivity_ci_template": [
+    0.625,
+    0.9028
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    0.8194,
+    0.9861
+   ],
+   "over_ci_template": [
+    0.0139,
+    0.2917
+   ],
+   "paired_correct": 0.7639
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "state",
+   "mode": "thinking",
+   "split": "probe",
+   "required_ask": 0.9444,
+   "over_ask": 0.4028,
+   "selectivity": 0.5417,
+   "selectivity_ci_template": [
+    0.2917,
+    0.7917
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    0.8611,
+    1.0
+   ],
+   "over_ci_template": [
+    0.1667,
+    0.6389
+   ],
+   "paired_correct": 0.2778
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "health",
+   "mode": "thinking",
+   "split": "probe",
+   "required_ask": 0.9306,
+   "over_ask": 0.4444,
+   "selectivity": 0.4861,
+   "selectivity_ci_template": [
+    0.1944,
+    0.7639
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    0.8611,
+    0.9861
+   ],
+   "over_ci_template": [
+    0.1944,
+    0.6944
+   ],
+   "paired_correct": 0.3333
+  },
+  {
+   "model": "gemini38_flash",
+   "family": "recovery",
+   "condition": "drill",
+   "mode": "thinking",
+   "split": "probe",
+   "required_ask": 0.8472,
+   "over_ask": 0.1528,
+   "selectivity": 0.6944,
+   "selectivity_ci_template": [
+    0.4583,
+    0.875
+   ],
+   "source": "recovery_gemini38_flash",
+   "required_ci_template": [
+    0.7778,
+    0.9167
+   ],
+   "over_ci_template": [
+    0.0,
+    0.3472
+   ],
+   "paired_correct": 0.7361
   },
   {
    "model": "none",

@@ -1,0 +1,17 @@
+{
+ "model": "llama31_8b",
+ "tag": "fmt_gate",
+ "n": 128,
+ "labels": {
+  "EXEC_MATCH": 113,
+  "MALFORMED": 15
+ },
+ "protocols": {
+  "json": 128
+ },
+ "call_like": 128,
+ "parsed": 113,
+ "parse_rate": 0.8828,
+ "min_parse": 0.9,
+ "passed": false
+}
