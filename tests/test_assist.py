@@ -104,3 +104,33 @@ def test_posthoc_verdict(parts):
         assert tail == CLOSING and block == assist.VERDICT_U[r["required"]]
         b = base[r["id"].rsplit(".", 1)[0]]
         assert system(r) == system(b) and r["required"] == b["required"] and user(b) == f"{head}\n\n{CLOSING}"
+
+
+def test_condition_arm(parts):
+    rows = assist.posthoc(arms=("A3",))
+    assert len(rows) == 428 + 528 and all(r["arm"] == "A3" for r in rows)
+    base = {r["id"].rsplit(".", 1)[0]: r for r in parts["op"] + parts["cj"] if r["arm"] == "A0"}
+    for r in rows:
+        head, block, tail = user(r).rsplit("\n\n", 2)
+        want = (assist.CONDITION[r["required"]] if r["rule"] == "op"
+                else assist.CONDITION_CJ[r["required"]].format(who=r["policy_who"], queue=r["policy_queue"]))
+        assert tail == CLOSING and block == want
+        b = base[r["id"].rsplit(".", 1)[0]]
+        assert system(r) == system(b) and r["required"] == b["required"] and user(b) == f"{head}\n\n{CLOSING}"
+    assert {r["cell"] for r in rows if r["rule"] == "op" and r["required"]} == {"DP"}
+    assert {r["state"] for r in rows if r["rule"] == "cj" and r["required"]} == {"11"}
+
+
+def test_replication(parts):
+    rows = assist.replication()
+    n = Counter(r["arm"] for r in rows)
+    assert n["A0"] == n["A2u"] and set(n) == {"A0", "A2u"} and len({r["skeleton"] for r in rows}) == 126
+    assert not {r["skeleton"] for r in rows} & {r["skeleton"] for r in assist.pilot()}
+    assert all(r["split"] == "dev" and r["rule"] == "op" for r in rows)
+    assert not {r["skeleton"] for r in rows} & {r["skeleton"] for r in parts["op"]}
+    assert {r["template"] for r in rows} == {r["template"] for r in parts["op"]}
+    for r in rows:
+        if r["arm"] == "A2u":
+            assert user(r).rsplit("\n\n", 2)[1] == assist.VERDICT_U[r["required"]]
+        else:
+            assert user(r).endswith("\n\n" + CLOSING)

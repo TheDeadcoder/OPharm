@@ -50,6 +50,8 @@ image = (modal.Image.debian_slim(python_version="3.12")
          .add_local_file(ROOT / "scripts" / "24_continue.py", "/root/scripts/24_continue.py")
          .add_local_dir(ROOT / "configs", "/root/configs")
          .add_local_file(ROOT / "benchmark" / "manifest.json", "/root/benchmark/manifest.json")
+         .add_local_file(ROOT / "benchmark" / "instances.jsonl", "/root/benchmark/instances.jsonl")
+         .add_local_file(ROOT / "benchmark" / "variants_trg.jsonl", "/root/benchmark/variants_trg.jsonl")
          .add_local_dir(ROOT / "benchmark" / "assist", "/root/benchmark/assist"))
 hf = modal.Volume.from_name("opharm-hf", create_if_missing=True)
 runs = modal.Volume.from_name("opharm-runs", create_if_missing=True)
@@ -199,6 +201,11 @@ def gate():
     for name, f in info["files"].items():
         if hashlib.sha256((ROOT / "benchmark" / "assist" / f"{name}.jsonl").read_bytes()).hexdigest() != f["sha256"]:
             raise SystemExit(f"refused: benchmark/assist/{name}.jsonl differs from results/assist_instances.json")
+    sha = lambda name: hashlib.sha256((ROOT / "benchmark" / name).read_bytes()).hexdigest()
+    if sha("instances.jsonl") != json.loads((ROOT / "benchmark" / "manifest.json").read_text())["sha256_instances"]:
+        raise SystemExit("refused: benchmark/instances.jsonl differs from benchmark/manifest.json")
+    if sha("variants_trg.jsonl") != info["sources"]["variants_trg"]:
+        raise SystemExit("refused: benchmark/variants_trg.jsonl differs from results/assist_instances.json")
 
 
 def launch(fn, model, tag, argv, cont, max_minutes, run_id):

@@ -10,9 +10,10 @@ from opharm.paths import BENCH, RESULTS, RUNS
 from opharm.stats.bootstrap import template_ci
 
 MARGIN = 0.10
-TAGS = {"assist_op": "op", "assist_cj0": "cj", "assist_cj": "cj", "assist_kn": "kn", "assist_kn_nt": "kn_nt", "assist_think": "think", "assist_a2u": "a2u"}
-OP_ARMS = ("A0", "Airr", "A1", "A2", "Iask", "Ibal", "Iaskbal", "A2self", "A2u")
-CJ_ARMS = ("A0", "Airr", "A1", "A2", "Ibal", "A2self", "A2u")
+TAGS = {"assist_op": "op", "assist_cj0": "cj", "assist_cj": "cj", "assist_kn": "kn", "assist_kn_nt": "kn_nt", "assist_think": "think", "assist_a2u": "a2u",
+        "assist_a3": "a3"}
+OP_ARMS = ("A0", "Airr", "A1", "A2", "Iask", "Ibal", "Iaskbal", "A2self", "A2u", "A3")
+CJ_ARMS = ("A0", "Airr", "A1", "A2", "Ibal", "A2self", "A2u", "A3")
 STATES = ("11", "10", "01", "00")
 
 
@@ -178,6 +179,11 @@ def predictions(res):
            "4_cj_a0_selectivity_BS": est((cj.get("A0") or {}).get("BS", {}).get("selectivity"))}
     d = (c.get("A2_vs_A0") or {}).get("success")
     out["phase2_rule_met"] = bool(d and d["estimate"] >= 0.20 and d["ci"][0] > 0)
+    rep = res.get("replication_dev") or {}
+    out.update({"5_7_a3_vs_a0_success": (c.get("A3_vs_A0") or {}).get("success"), "6_a3_vs_a2u_success": (c.get("A3_vs_A2u") or {}).get("success"),
+                "8_rep_a2u_vs_a0_success": (rep.get("A2u_vs_A0") or {}).get("success"),
+                "8_rep_a2u_ask_DS_BS": [est((rep.get("A2u") or {}).get(f"ask_{x}")) for x in ("DS", "BS")] if rep else None,
+                "11_success_A2u_A3": [est((op.get(a) or {}).get("success")) for a in ("A2u", "A3")]})
     return out
 
 
@@ -186,7 +192,7 @@ def main():
     ap.add_argument("model")
     args = ap.parse_args()
     data = {tag: load(args.model, tag, f) for tag, f in TAGS.items()}
-    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + data["assist_a2u"] + load(args.model, "assist_self", "op") + load(args.model, "assist_self_cj", "cj")
+    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + data["assist_a2u"] + data["assist_a3"] + load(args.model, "assist_self", "op") + load(args.model, "assist_self_cj", "cj")
     res = {"model": args.model, "margin": MARGIN,
            "op": {a: op_measures(direct, a) for a in OP_ARMS if any(r["rule"] == "op" and r["arm"] == a for r in direct)},
            "cj": {a: cj_measures(direct, a) for a in CJ_ARMS if any(r["rule"] == "cj" and r["arm"] == a for r in direct)}}
@@ -195,10 +201,14 @@ def main():
     res["able"], res["able_balanced"] = able("Iask"), able("Iaskbal")
     res["contrasts"] = {f"{a}_vs_{b}": op_contrast(direct, a, b) for a, b in
                         (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("Iaskbal", "Iask"), ("A2self", "A0"),
-                         ("A2self", "A2"), ("A1", "Airr"), ("A2u", "A0"), ("A2u", "A1"), ("A2u", "Airr"), ("A2u", "A2"))}
+                         ("A2self", "A2"), ("A1", "Airr"), ("A2u", "A0"), ("A2u", "A1"), ("A2u", "Airr"), ("A2u", "A2"),
+                         ("A3", "A0"), ("A3", "A1"), ("A3", "A2u"))}
     res["cj_contrasts"] = {f"{a}_vs_{b}": cj_contrast(direct, a, b) for a, b in
                            (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("A2self", "A0"), ("A2self", "A2"),
-                            ("A2u", "A0"), ("A2u", "A1"))}
+                            ("A2u", "A0"), ("A2u", "A1"), ("A3", "A0"), ("A3", "A2u"))}
+    rep = load(args.model, "assist_rep_dev", "rep_dev")
+    if rep:
+        res["replication_dev"] = {"A0": op_measures(rep, "A0"), "A2u": op_measures(rep, "A2u"), "A2u_vs_A0": op_contrast(rep, "A2u", "A0")}
     res["knowledge_tools"] = knowledge(data["assist_kn"])
     res["knowledge_no_tools"] = knowledge(data["assist_kn_nt"])
     think = data["assist_think"]
