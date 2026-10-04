@@ -204,7 +204,8 @@ def main():
     think = data["assist_think"]
     res["thinking"] = {"op": {a: op_measures(think, a) for a in ("A0", "A1") if any(r["rule"] == "op" and r["arm"] == a for r in think)},
                        "cj": {"A0": cj_measures(think, "A0")} if any(r["rule"] == "cj" for r in think) else {}}
-    res["parity_A0_vs_mps"] = parity(args.model, data["assist_op"]) if data["assist_op"] else None
+    has_main = (RUNS / args.model / "grid" / "results.jsonl").exists()
+    res["parity_A0_vs_mps"] = parity(args.model, data["assist_op"]) if data["assist_op"] and has_main else None
     res["predictions"] = predictions(res)
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"assist_{args.model}.json").write_text(json.dumps(res, indent=1))
