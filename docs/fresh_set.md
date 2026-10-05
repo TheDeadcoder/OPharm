@@ -29,4 +29,3 @@ Exploratory. Sixteen templates for operations that the 40 benchmark templates do
 - Same measures as the held-out report: execution and asking by cell, the covered subset, over-asking, selectivity and the differences between response modes.
 - Each measure is reported next to its held-out value, with skeleton-level and template-level intervals. There is no pooled test; 16 templates give wide intervals.
 - All 16 templates are reported. `scripts/38_fresh_report.py` lists the rates per template and per kind of harm.
-- Templates from human writers, if they arrive, form a second batch and are reported separately.
