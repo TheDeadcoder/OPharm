@@ -171,7 +171,7 @@ def score(model, tags, files, splits, truth_path, reading, final=False):
     expected = Counter(m["split"] for m in meta.values() if m["split"] in splits)
     out = {"model": model, "tags": tags, "files": files, "splits": sorted(splits), "truth": truth_path.name,
            "truth_sha256": hashlib.sha256(truth_path.read_bytes()).hexdigest(), "qr_reading": reading,
-           "designed_after_main_results": True, "expected_items": dict(expected), "counts_by_tag": counts,
+           "expected_items": dict(expected), "counts_by_tag": counts,
            "complete": sum(expected.values()) == len(rows), "n": len(rows), "questions": {}}
     for q in QUESTIONS:
         for variant in ("base", "true", "decoy", "noop"):

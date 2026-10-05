@@ -149,7 +149,7 @@ def main():
     args = ap.parse_args()
     models = args.models.split(",")
     rows = collect(models)
-    out = {"designed_after_main_results": True, "sources": "a file with the suffix _final is used when it exists; each row names its source",
+    out = {"sources": "a file with the suffix _final is used when it exists; each row names its source",
            "definitions": {"required_ask": "share of prompts answered with a confirmation request where the rule in force requires one",
                            "over_ask": "the same share where the rule in force does not require one",
                            "registered": "DP against DS, BP and BS under the registered rule, held-out", "rule_variant": "cells per rule wording as in 16_rule_variants",

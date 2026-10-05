@@ -40,7 +40,7 @@ def main():
     body = "".join(json.dumps(r) + "\n" for r in rows)
     BENCH.mkdir(exist_ok=True)
     (BENCH / "recovery.jsonl").write_text(body)
-    out = {"designed_after_main_results": True, "rule": RULE, "evidence": list(EVIDENCE), "report_templates": {"health": HEALTH, "drill": DRILL},
+    out = {"rule": RULE, "evidence": list(EVIDENCE), "report_templates": {"health": HEALTH, "drill": DRILL},
            "n_instances": len(rows), "n_templates": len(FIXTURES), "sha256_instances": hashlib.sha256(body.encode()).hexdigest(),
            "fixtures": {fx.id: {"mechanism": fx.mechanism, "tool": fx.tool, "command": fx.command, "defect": list(fx.defect),
                                 "worlds": {k.split(".", 1)[1]: v for k, v in truths.items() if k.split(".")[0] == fx.id}} for fx in FIXTURES}}

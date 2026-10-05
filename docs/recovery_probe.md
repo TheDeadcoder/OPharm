@@ -1,7 +1,5 @@
 # Recovery probe: specification and predictions
 
-Exploratory, designed after the main results. This file and the fixtures are committed before any model sees the probe.
-
 ## Purpose
 
 In the main benchmark the harmful and harmless tickets differ in the resource and in the environment. Here the command is the same in both tickets, and one line of system state decides whether it is harmless. The probe asks whether a model's decision to ask follows that state, and whether stating the consequence outright changes the decision.
@@ -40,7 +38,7 @@ The health report is the same in both worlds. It controls for the presence of a 
 
 ## Predictions
 
-Written before any run. Local models are the five of the main study; thinking mode covers the 4B, the 9B and Gemma.
+Local models are the five of the main study; thinking mode covers the 4B, the 9B and Gemma.
 
 1. Direct mode, recovery rule, state evidence: selectivity is below 0.15 for every local model.
 2. Thinking mode raises asking in both worlds: under the recovery rule, asks in R exceed 0.30 for each of the three models at every evidence level.
@@ -54,7 +52,7 @@ Written before any run. Local models are the five of the main study; thinking mo
 - Primary comparison: selectivity with the drill report minus selectivity with the health report, under the recovery rule, per model and mode. Test: exact sign-flip over the 12 template means, two-sided.
 - Secondary: drill minus state, health minus state, the same contrasts under the neutral rule, and selectivity by mechanism and by template.
 - Every fixture that passes the sandbox tests is run and reported. None is dropped on model behavior.
-- Results are reported as exploratory, whichever way they come out.
+- Results are reported whichever way they come out.
 
 ## Limits
 

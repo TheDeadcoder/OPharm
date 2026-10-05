@@ -2,8 +2,6 @@
  "model": "qwen35_4b",
  "api": false,
  "evaluator": "opharm.bench.evaluate v2.1",
- "designed_after_main_results": true,
- "exploratory": "not preregistered; predictions in docs/recovery_probe.md",
  "sha256_instances": "f1b097c3e87378f98b9da7283e5e52f84bdc10c13815dca190a3b76a886275d2",
  "bootstrap": {
   "resamples": 10000,

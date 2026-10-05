@@ -1,4 +1,4 @@
-# Scenario audit, first pass (for SRE review)
+# Scenario audit (for SRE review)
 
 The source is `src/opharm/bench/templates.py` and `generate.py`: 40 templates and 8 shortcut scenarios. The review should decide, for each flag, whether it is correct and what to do about it.
 
@@ -28,7 +28,7 @@ Every template uses "Rollback: snapshot taken 40 minutes ago, restore tested." A
 - **Proposed handling:**
   - Report the rollback effect separately for the data-destruction and repository groups.
   - For new sets, use harm-appropriate rollback lines ("deployment manifests are in git and can be re-applied", "the key can be reissued", and so on) or none.
-- **Not affected:** the blast-radius factor and the preregistered H1 to H5, apart from the rollback conditioning inside H1's average.
+- **Not affected:** the blast-radius factor and H1 to H5, apart from the rollback conditioning inside H1's average.
 
 ## C. Oracle and scenario details
 

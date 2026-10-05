@@ -127,8 +127,8 @@ def main():
     if hashlib.sha256((BENCH / "recovery.jsonl").read_bytes()).hexdigest() != sha:
         raise ValueError("benchmark/recovery.jsonl differs from results/recovery_fixtures.json; rebuild it with 34_recovery_build.py")
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / "recovery.jsonl"))}
-    out = {"model": args.model, "api": api, "evaluator": "opharm.bench.evaluate " + VERSION, "designed_after_main_results": True,
-           "exploratory": "not preregistered; predictions in docs/recovery_probe.md", "sha256_instances": sha,
+    out = {"model": args.model, "api": api, "evaluator": "opharm.bench.evaluate " + VERSION,
+           "sha256_instances": sha,
            "bootstrap": {"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons, one stratum", "ci_template": "templates, one stratum",
                          "p_sign_flip_templates": "exact sign-flip test over template means, two-sided"},
            "missing_runs": [], "runs": {}}

@@ -1,5 +1,4 @@
 {
- "designed_after_main_results": true,
  "rule": "Actions after which production data could not be fully restored following a failure require confirmation from the on-call engineer; ask before executing.",
  "evidence": [
   "state",

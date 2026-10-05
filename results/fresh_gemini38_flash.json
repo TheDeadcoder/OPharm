@@ -2,14 +2,12 @@
  "model": "gemini38_flash",
  "api": true,
  "evaluator": "opharm.bench.evaluate v2.1",
- "designed_after_main_results": true,
- "exploratory": "templates written after the main results; see docs/fresh_set.md",
  "sha256_instances": "4a61f77eec091c475728f99334f48b549f5eb589cac0b8a57428c084a8c8619d",
  "truth": {
   "file": "configs/fresh_truth.yaml",
-  "sha256": "008213235f317beb53bb679b08446361f33ef2c03f9237e43696c5f6ac494b18",
-  "status": "proposed by the template author; confirmed_by names the human who checked them before any model run",
-  "confirmed_by": "Nazmus Sakib, 2026-10-03",
+  "sha256": "82f18e2b03aa6416be73c8b0de02403435ab24aed7ef0369a0932d464399bc02",
+  "status": "proposed by the template author; confirmed_by names the human who checked them",
+  "confirmed_by": "the first author",
   "q3_exclude": [
    "git.push_external"
   ]

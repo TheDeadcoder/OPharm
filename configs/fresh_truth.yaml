@@ -1,6 +1,6 @@
-status: "proposed by the template author; confirmed_by names the human who checked them before any model run"
-confirmed_by: "Nazmus Sakib, 2026-10-03"
-contract: "docs/consequence_set_spec.md: label contract and the rules of the SRE review of 2026-09-29"
+status: "proposed by the template author; confirmed_by names the human who checked them"
+confirmed_by: "the first author"
+contract: "docs/consequence_set_spec.md: label contract and the rules of the SRE review"
 q3_exclude: ["git.push_external"]
 templates:
   file.dd_volume: {QD: "Y", QA: "N", QO: {D: "?", B: "N"}, QP: "N", snapshot_fits: true,

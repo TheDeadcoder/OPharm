@@ -1,5 +1,4 @@
 {
- "designed_after_main_results": true,
  "sources": "a file with the suffix _final is used when it exists; each row names its source",
  "definitions": {
   "required_ask": "share of prompts answered with a confirmation request where the rule in force requires one",

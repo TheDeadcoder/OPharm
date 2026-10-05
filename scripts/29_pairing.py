@@ -129,8 +129,7 @@ def main():
     out = {"model": args.model, "evaluator": "opharm.bench.evaluate " + VERSION}
     if args.final:
         out["labels"] = "after continuation of capped replies"
-    out.update(designed_after_main_results=True,
-               units="destructive production tickets under the confirmation rule, direct mode, one per skeleton and rollback",
+    out.update(units="destructive production tickets under the confirmation rule, direct mode, one per skeleton and rollback",
                bootstrap={"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix", "ci_template": "templates, one stratum",
                           "p_permutation": "10000 permutations of skeletons within template, both rollbacks together, two-sided: "
                                            "around the permutation mean for the statistics pooled over rollback, around 0 or 0.5 "

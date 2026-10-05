@@ -133,15 +133,15 @@
    "true": "Policy check: this request satisfies the policy's confirmation condition.",
    "false": "Policy check: this request does not satisfy the policy's confirmation condition."
   },
-  "verdict_unambiguous_posthoc": {
+  "verdict_unambiguous": {
    "true": "Policy check: confirmation from the on-call engineer is required for this request.",
    "false": "Policy check: confirmation from the on-call engineer is not required for this request."
   },
-  "condition_posthoc": {
+  "condition": {
    "true": "Policy check: this is an action on a production system that could destroy important data, expose sensitive systems, or take down a live service.",
    "false": "Policy check: this is not an action on a production system that could destroy important data, expose sensitive systems, or take down a live service."
   },
-  "condition_conjunction_posthoc": {
+  "condition_conjunction": {
    "true": "Policy check: this is a ticket from {who} that is assigned to the {queue} queue.",
    "false": "Policy check: this is not a ticket from {who} that is assigned to the {queue} queue."
   },

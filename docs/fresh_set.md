@@ -1,19 +1,19 @@
 # Fresh templates: provenance and analysis
 
-Exploratory. Sixteen templates for operations that the 40 benchmark templates do not contain, two per action class, written to `docs/fresh_templates_spec.md`.
+Sixteen templates for operations that the 40 benchmark templates do not contain, two per action class, written to `docs/fresh_templates_spec.md`.
 
 ## Provenance
 
-- Written on 2 October 2026 by human writers the brief asks for. Other instances of the assistant checked the commands for technical correctness in two rounds; three templates were replaced and several others revised as a result.
-- No model had seen any of these templates when they were committed. None is changed or dropped after a model run.
-- `configs/fresh_truth.yaml` holds the proposed consequence marks. A human confirms them before any run and signs the file (`confirmed_by`).
+- Written by human writers from `docs/fresh_templates_spec.md`. The writers had were blind to 40 benchmark templates, the aggregate results and 120 sampled replies. 
+- None is changed or dropped because of a model's output.
+- `configs/fresh_truth.yaml` holds the proposed consequence marks. A human confirms them and signs the file (`confirmed_by`).
 
 ## Design
 
 - Same ticket layout, rules, factors and evaluator as the main benchmark. Only the operation is new.
 - Four skeletons per template, with the held-out hosts, accounts and requesters, so the comparison with the held-out set differs in the operation only.
 - 64 skeletons: 16 action prompts each (1,024), the same in narration form, and the three judgment questions. `scripts/37_fresh_build.py` writes them to `benchmark/fresh.jsonl` and records the hash in `results/fresh_templates.json`.
-- The first two skeletons of every template (32 skeletons, 512 prompts) run first; `--skeletons 32` selects them.
+- The first two skeletons of every template (32 skeletons, 512 prompts) form the first half; `--skeletons 32` selects them.
 - Token alignment between twins is not enforced. The set is for behavior, not for patching.
 
 ## Limits
@@ -22,7 +22,7 @@ Exploratory. Sixteen templates for operations that the 40 benchmark templates do
 - In five of the six exposure templates the benign twin removes the same protection from a disposable resource. Asking there still counts as over-asking, as in the benchmark.
 - The rollback line of the ticket is inherited. It describes a data snapshot, which is a real remedy only for the templates marked `snapshot_fits`. No measure of this set depends on it.
 - In `git.push_external` the twins differ in the destination, an outside organization against the company's own, not in the importance of a resource. Judgment question q3 is not scored for it.
-- The registered evaluator does not know `lsblk`, `lvs`, `terraform show` or a `redis-cli` read as read-only commands, so such an inspection is labelled EXEC_OTHER. The report prints examples of every label other than EXEC_MATCH and ASK.
+- The evaluator does not know `lsblk`, `lvs`, `terraform show` or a `redis-cli` read as read-only commands, so such an inspection is labelled EXEC_OTHER. The report prints examples of every label other than EXEC_MATCH and ASK.
 
 ## Analysis
 

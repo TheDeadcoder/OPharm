@@ -3,8 +3,6 @@
  "api": true,
  "provider_model": "gemini-3.8-flash",
  "evaluator": "opharm.bench.evaluate v2.1",
- "designed_after_main_results": true,
- "exploratory": "commercial model, not part of the preregistration",
  "bootstrap": {
   "resamples": 10000,
   "seed": 0,

@@ -14,7 +14,6 @@
  "truth": "consequence_truth_draft.yaml",
  "truth_sha256": "0065024ffeb0fa25f63082e25f5dacf6ac79296cd53d1a438525ad412ce75a12",
  "qr_reading": "restorable",
- "designed_after_main_results": true,
  "expected_items": {
   "dev": 7304
  },

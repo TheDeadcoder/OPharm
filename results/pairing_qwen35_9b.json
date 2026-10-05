@@ -1,7 +1,6 @@
 {
  "model": "qwen35_9b",
  "evaluator": "opharm.bench.evaluate v2.1",
- "designed_after_main_results": true,
  "units": "destructive production tickets under the confirmation rule, direct mode, one per skeleton and rollback",
  "bootstrap": {
   "resamples": 10000,

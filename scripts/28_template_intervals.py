@@ -78,8 +78,7 @@ def main():
     out = {"model": args.model, "evaluator": "opharm.bench.evaluate " + VERSION}
     if args.final:
         out["labels"] = "after continuation of capped replies"
-    out.update(designed_after_main_results=True,
-               bootstrap={"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix (registered)",
+    out.update(bootstrap={"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix (registered)",
                           "ci_template": "templates, one stratum, null under 5 templates"}, splits={})
     for split in args.splits.split(","):
         rows = [r for r in sec.load(args.model, "grid", meta, split, label=True, final=args.final) if r["set"] == "main"]

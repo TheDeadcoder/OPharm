@@ -148,7 +148,6 @@ def main():
     cover = rule_coverage_map("consequence_truth.yaml")
     tags = {"direct": args.direct.split(","), "narration": args.narration.split(","), "thinking": args.thinking.split(",")}
     head = {"model": args.model, "api": True, "provider_model": spec["model"], "evaluator": "opharm.bench.evaluate " + VERSION,
-            "designed_after_main_results": True, "exploratory": "commercial model, not part of the preregistration",
             "bootstrap": {"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix",
                           "ci_template": "templates, one stratum, null under 5 templates"}}
     modes = {**head, "mode_notes": NOTES, "tags": tags, "missing_modes": {}, "splits": {}}

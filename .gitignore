@@ -19,7 +19,8 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 
-AI_safety_operational_harm_blindspot_research_plan_2026-09-24.md
+AI_safety_operational_harm_blindspot_research_plan_*.md
 docs/execution_plan.md
 benchmark/
 docs/report.md
+docs/timeline.md

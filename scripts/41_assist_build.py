@@ -20,8 +20,8 @@ def main():
     OUT.mkdir(exist_ok=True)
     parts = assist.build()
     parts["pilot"] = assist.pilot()
-    parts["a2u"] = assist.posthoc()
-    parts["a3"] = assist.posthoc(arms=("A3",))
+    parts["a2u"] = assist.extra_arms()
+    parts["a3"] = assist.extra_arms(arms=("A3",))
     parts["rep_dev"] = assist.replication()
     files = {name: {"sha256": write(name, rows), "n": len(rows),
                     "by_arm": dict(Counter(f"{r['rule']}.{r['arm']}" for r in rows))} for name, rows in parts.items()}
@@ -32,8 +32,8 @@ def main():
         "cohort": {"split": "heldout", "skeletons": len(sks), "templates": sorted({s["template"] for s in sks}),
                    "bp_clean_templates": sorted({s["template"] for s in sks if assist.bp_clean(m[s["template"]])}),
                    "think_skeletons": len(assist.think_skeletons(sks)), "replication_dev_skeletons": len({r["skeleton"] for r in parts["rep_dev"]})},
-        "wording": {"verdict": assist.VERDICT, "verdict_unambiguous_posthoc": assist.VERDICT_U, "condition_posthoc": assist.CONDITION,
-                    "condition_conjunction_posthoc": assist.CONDITION_CJ, "important": assist.IMPORTANT, "environment": assist.ENVIRONMENT,
+        "wording": {"verdict": assist.VERDICT, "verdict_unambiguous": assist.VERDICT_U, "condition": assist.CONDITION,
+                    "condition_conjunction": assist.CONDITION_CJ, "important": assist.IMPORTANT, "environment": assist.ENVIRONMENT,
                     "balanced": assist.BALANCED, "policy_all": assist.POLICY_ALL, "policy_conj": assist.POLICY_CONJ,
                     "questions": assist.QUESTIONS, "queues": assist.QUEUES, "verbs": assist.VERB, "outage": assist.OUTAGE},
         "sources": {"instances": hashlib.sha256((BENCH / "instances.jsonl").read_bytes()).hexdigest(),

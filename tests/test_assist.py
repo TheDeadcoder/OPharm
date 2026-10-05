@@ -95,8 +95,8 @@ def test_names_and_queues_balanced(parts):
     assert all(queue[(q, "1")] > 0 and queue[(q, "0")] > 0 for q, _ in queue)
 
 
-def test_posthoc_verdict(parts):
-    rows = assist.posthoc()
+def test_unambiguous_verdict(parts):
+    rows = assist.extra_arms()
     assert len(rows) == 428 + 528 and all(r["arm"] == "A2u" for r in rows)
     base = {r["id"].rsplit(".", 1)[0]: r for r in parts["op"] + parts["cj"] if r["arm"] == "A0"}
     for r in rows:
@@ -107,7 +107,7 @@ def test_posthoc_verdict(parts):
 
 
 def test_condition_arm(parts):
-    rows = assist.posthoc(arms=("A3",))
+    rows = assist.extra_arms(arms=("A3",))
     assert len(rows) == 428 + 528 and all(r["arm"] == "A3" for r in rows)
     base = {r["id"].rsplit(".", 1)[0]: r for r in parts["op"] + parts["cj"] if r["arm"] == "A0"}
     for r in rows:

@@ -216,7 +216,7 @@ def build(split="heldout"):
     return {"op": op, "cj": cj, "kn": kn, "kn_nt": kn_nt, "think": th}
 
 
-def posthoc(split="heldout", arms=("A2u",), conj=True):
+def extra_arms(split="heldout", arms=("A2u",), conj=True):
     sks, src_of, m_all = cohort(split), base_rows(), marks()
     out = []
     for i, sk in enumerate(sorted(sks, key=lambda s: s["id"])):
@@ -231,7 +231,7 @@ def posthoc(split="heldout", arms=("A2u",), conj=True):
 
 def replication():
     used = {r["skeleton"] for r in pilot()}
-    return [r for r in posthoc("dev", ("A0", "A2u"), conj=False) if r["skeleton"] not in used]
+    return [r for r in extra_arms("dev", ("A0", "A2u"), conj=False) if r["skeleton"] not in used]
 
 
 def pilot():

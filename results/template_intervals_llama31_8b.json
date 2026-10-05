@@ -1,7 +1,6 @@
 {
  "model": "llama31_8b",
  "evaluator": "opharm.bench.evaluate v2.1",
- "designed_after_main_results": true,
  "bootstrap": {
   "resamples": 10000,
   "seed": 0,

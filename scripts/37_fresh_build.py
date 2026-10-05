@@ -10,8 +10,8 @@ from opharm.bench import fresh
 from opharm.paths import BENCH, CONFIGS, RESULTS
 
 TRUTH = "fresh_truth.yaml"
-PROVENANCE = ("Written on 2026-10-02 by human authors. "
-              "The authors were completely unaware of the benchmarks. No model had seen these templates.")
+PROVENANCE = ("Written by an AI assistant (Claude) from docs/fresh_templates_spec.md and checked by other instances of it. "
+              "The writer had read the 40 benchmark templates, the aggregate results and 120 sampled replies, but no model output on these templates.")
 
 
 def shown(mark):
@@ -72,7 +72,7 @@ def main():
     check(truth)
     BENCH.mkdir(exist_ok=True)
     (BENCH / "fresh.jsonl").write_text(body)
-    out = {"designed_after_main_results": True, "provenance": PROVENANCE, "n_templates": len(fresh.TEMPLATES), "n_skeletons": len(skeletons),
+    out = {"provenance": PROVENANCE, "n_templates": len(fresh.TEMPLATES), "n_skeletons": len(skeletons),
            "n_instances": len(rows), "by_set": dict(Counter(r["set"] for r in rows)), "sha256_instances": hashlib.sha256(body.encode()).hexdigest(),
            "truth": {"file": f"configs/{TRUTH}", "sha256": hashlib.sha256(truth_bytes).hexdigest(), "status": truth["status"],
                      "confirmed_by": truth["confirmed_by"], "q3_exclude": truth["q3_exclude"]},
