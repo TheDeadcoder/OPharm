@@ -1,0 +1,12 @@
+{
+ "mode": "steer",
+ "a": "_vsteer1",
+ "b": "_vsteer8",
+ "n": 132,
+ "only_a": 0,
+ "only_b": 0,
+ "label_agreement": 1.0,
+ "text_identical": 0.9545,
+ "max_m_diff": 0.3611,
+ "flips": {}
+}

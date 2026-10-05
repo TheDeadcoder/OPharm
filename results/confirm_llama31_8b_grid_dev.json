@@ -1,0 +1,124 @@
+{
+ "model": "llama31_8b",
+ "tag": "grid",
+ "eval_split": "dev",
+ "settings": {
+  "L_harm": 15,
+  "L_ref": 13,
+  "L_steer": 16,
+  "steer_coef": 1.0,
+  "blast": {
+   "registered": [
+    "t_post",
+    6
+   ],
+   "dev_best": [
+    "t_post",
+    5
+   ]
+  }
+ },
+ "bootstrap_resamples": 10000,
+ "family": [
+  "H1",
+  "H2",
+  "H3",
+  "H5"
+ ],
+ "alpha": 0.05,
+ "hypotheses": {
+  "H1": {
+   "estimate": 0.5523494172979284,
+   "ci95": [
+    0.5311566709368317,
+    0.5742926906656336
+   ],
+   "n_skeletons": 216,
+   "test": "Delta_policy - Delta_blast > 0",
+   "p": 9.999000099990002e-05,
+   "delta_policy": [
+    0.5445572137832642,
+    [
+     0.5250158435768552,
+     0.5644311959544818
+    ]
+   ],
+   "delta_blast": [
+    -0.007792203514664261,
+    [
+     -0.014918154091746719,
+     -0.0005616483313065989
+    ]
+   ],
+   "p_holm": 0.00039996000399960006,
+   "reject_null": true
+  },
+  "H2": {
+   "estimate": 0.014123238623142242,
+   "ci95": [
+    0.011379057914018631,
+    0.016806648531928658
+   ],
+   "n_skeletons": 216,
+   "test": "equivalence within +/-0.2 (TOST)",
+   "p": 9.999000099990002e-05,
+   "p_holm": 0.00039996000399960006,
+   "reject_null": true
+  },
+  "H3": {
+   "estimate": 0.20089056069958844,
+   "ci95": [
+    0.1400282118055556,
+    0.26748328189300397
+   ],
+   "n_skeletons": 54,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 9.999000099990002e-05,
+   "probe_auroc": 0.7170942644032922,
+   "ngram_auroc": {
+    "naive_bayes": 0.5162037037037037,
+    "logistic": 0.5054655349794239
+   },
+   "C": 1.0,
+   "position": "t_post",
+   "layer": 6,
+   "n_test": 864,
+   "p_holm": 0.00039996000399960006,
+   "reject_null": true
+  },
+  "H4": null,
+  "H5": {
+   "estimate": 0.046438977122306824,
+   "ci95": [
+    0.03888753047212958,
+    0.05395872704684734
+   ],
+   "n_skeletons": 157,
+   "test": "Delta_ref > 0",
+   "p": 9.999000099990002e-05,
+   "p_holm": 0.00039996000399960006,
+   "reject_null": true
+  }
+ },
+ "secondary": {
+  "H3_dev_best": {
+   "estimate": 0.2131344307270232,
+   "ci95": [
+    0.16187039180384094,
+    0.2705563057270233
+   ],
+   "n_skeletons": 54,
+   "test": "AUROC(probe) - AUROC(best n-gram) > 0",
+   "p": 9.999000099990002e-05,
+   "probe_auroc": 0.7293381344307269,
+   "ngram_auroc": {
+    "naive_bayes": 0.5162037037037037,
+    "logistic": 0.5054655349794239
+   },
+   "C": 1.0,
+   "position": "t_post",
+   "layer": 5,
+   "n_test": 864
+  }
+ }
+}

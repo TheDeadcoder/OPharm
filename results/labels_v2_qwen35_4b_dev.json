@@ -1,0 +1,223 @@
+{
+ "model": "qwen35_4b",
+ "evaluator": "v2.1",
+ "runs": {
+  "grid": {
+   "n": 4300,
+   "v1_to_v2": [
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 311
+    },
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 3
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "ASK",
+     "v2": "ASK",
+     "n": 4
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "ASK",
+     "v2": "DECLINE",
+     "n": 6
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "DECLINE",
+     "v2": "ASK",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "DECLINE",
+     "v2": "DECLINE",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 301
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "ASK",
+     "v2": "ASK",
+     "n": 117
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "DECLINE",
+     "v2": "DECLINE",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_MATCH",
+     "v2": "ASK",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 3309
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
+     "v2": "ASK",
+     "n": 5
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 21
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_OTHER",
+     "n": 2
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_SAFE",
+     "v2": "EXEC_SAFE",
+     "n": 50
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_SAFE",
+     "v2": "EXEC_UNSAFE",
+     "n": 5
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_SAFE",
+     "v2": "INSPECT",
+     "n": 139
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_UNSAFE",
+     "v2": "EXEC_UNSAFE",
+     "n": 22
+    }
+   ]
+  },
+  "narr": {
+   "n": 3456,
+   "v1_to_v2": [
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "ASK",
+     "v2": "ASK",
+     "n": 359
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "ASK",
+     "v2": "DECLINE",
+     "n": 2
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "DECLINE",
+     "v2": "ASK",
+     "n": 2
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "DECLINE",
+     "v2": "DECLINE",
+     "n": 8
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_MATCH",
+     "v2": "ASK",
+     "n": 5
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 3050
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_OTHER",
+     "v2": "ASK",
+     "n": 13
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 7
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_OTHER",
+     "n": 8
+    },
+    {
+     "split": "dev",
+     "set": "narr",
+     "v1": "EXEC_OTHER",
+     "v2": "INSPECT",
+     "n": 2
+    }
+   ]
+  },
+  "think": {
+   "n": 0,
+   "v1_to_v2": []
+  }
+ }
+}

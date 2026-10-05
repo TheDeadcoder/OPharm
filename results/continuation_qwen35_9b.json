@@ -1,0 +1,517 @@
+{
+ "model": "qwen35_9b",
+ "budget": 256,
+ "max_more": 512,
+ "continued": 445,
+ "still_capped": 92,
+ "rates": {
+  "dev_BPC": {
+   "n": 432,
+   "before_EXEC_MATCH": 0.662,
+   "before_ASK": 0.2037,
+   "before_INCOMPLETE": 0.1134,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.7199,
+   "after_ASK": 0.2477,
+   "after_INCOMPLETE": 0.0231,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.7014,
+   "budget_512_ASK": 0.2338,
+   "budget_512_INCOMPLETE": 0.0463,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_BPN": {
+   "n": 432,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_BSC": {
+   "n": 432,
+   "before_EXEC_MATCH": 0.7963,
+   "before_ASK": 0.088,
+   "before_INCOMPLETE": 0.0903,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.8495,
+   "after_ASK": 0.1204,
+   "after_INCOMPLETE": 0.0231,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.8426,
+   "budget_512_ASK": 0.1134,
+   "budget_512_INCOMPLETE": 0.0301,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_BSN": {
+   "n": 432,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_DPC": {
+   "n": 432,
+   "before_EXEC_MATCH": 0.5116,
+   "before_ASK": 0.2824,
+   "before_INCOMPLETE": 0.1759,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.5995,
+   "after_ASK": 0.3449,
+   "after_INCOMPLETE": 0.0486,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.5718,
+   "budget_512_ASK": 0.3241,
+   "budget_512_INCOMPLETE": 0.088,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_DPN": {
+   "n": 432,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_DSC": {
+   "n": 432,
+   "before_EXEC_MATCH": 0.6227,
+   "before_ASK": 0.1505,
+   "before_INCOMPLETE": 0.1898,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.7292,
+   "after_ASK": 0.2153,
+   "after_INCOMPLETE": 0.0486,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.713,
+   "budget_512_ASK": 0.2014,
+   "budget_512_INCOMPLETE": 0.0671,
+   "budget_512_DECLINE": 0.0
+  },
+  "dev_DSN": {
+   "n": 432,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_BPC": {
+   "n": 208,
+   "before_EXEC_MATCH": 0.6202,
+   "before_ASK": 0.1971,
+   "before_INCOMPLETE": 0.1587,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.6971,
+   "after_ASK": 0.25,
+   "after_INCOMPLETE": 0.0433,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.6827,
+   "budget_512_ASK": 0.226,
+   "budget_512_INCOMPLETE": 0.0865,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_BPN": {
+   "n": 208,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_BSC": {
+   "n": 208,
+   "before_EXEC_MATCH": 0.7212,
+   "before_ASK": 0.1346,
+   "before_INCOMPLETE": 0.1154,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.8173,
+   "after_ASK": 0.1635,
+   "after_INCOMPLETE": 0.0144,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.8077,
+   "budget_512_ASK": 0.1587,
+   "budget_512_INCOMPLETE": 0.024,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_BSN": {
+   "n": 208,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_DPC": {
+   "n": 208,
+   "before_EXEC_MATCH": 0.5048,
+   "before_ASK": 0.274,
+   "before_INCOMPLETE": 0.1923,
+   "before_DECLINE": 0.0048,
+   "after_EXEC_MATCH": 0.6154,
+   "after_ASK": 0.3413,
+   "after_INCOMPLETE": 0.0385,
+   "after_DECLINE": 0.0048,
+   "budget_512_EXEC_MATCH": 0.5865,
+   "budget_512_ASK": 0.3221,
+   "budget_512_INCOMPLETE": 0.0769,
+   "budget_512_DECLINE": 0.0048
+  },
+  "heldout_DPN": {
+   "n": 208,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_DSC": {
+   "n": 208,
+   "before_EXEC_MATCH": 0.601,
+   "before_ASK": 0.1635,
+   "before_INCOMPLETE": 0.1875,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 0.7404,
+   "after_ASK": 0.2115,
+   "after_INCOMPLETE": 0.0385,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 0.6923,
+   "budget_512_ASK": 0.2019,
+   "budget_512_INCOMPLETE": 0.0913,
+   "budget_512_DECLINE": 0.0
+  },
+  "heldout_DSN": {
+   "n": 208,
+   "before_EXEC_MATCH": 1.0,
+   "before_ASK": 0.0,
+   "before_INCOMPLETE": 0.0,
+   "before_DECLINE": 0.0,
+   "after_EXEC_MATCH": 1.0,
+   "after_ASK": 0.0,
+   "after_INCOMPLETE": 0.0,
+   "after_DECLINE": 0.0,
+   "budget_512_EXEC_MATCH": 1.0,
+   "budget_512_ASK": 0.0,
+   "budget_512_INCOMPLETE": 0.0,
+   "budget_512_DECLINE": 0.0
+  }
+ },
+ "transitions": [
+  {
+   "split": "dev",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 19
+  },
+  {
+   "split": "dev",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 19
+  },
+  {
+   "split": "dev",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 10
+  },
+  {
+   "split": "dev",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "MALFORMED",
+   "n": 1
+  },
+  {
+   "split": "dev",
+   "cell": "BPC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 6
+  },
+  {
+   "split": "dev",
+   "cell": "BSC",
+   "before": "EXEC_MATCH",
+   "after": "EXEC_MATCH",
+   "n": 1
+  },
+  {
+   "split": "dev",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 14
+  },
+  {
+   "split": "dev",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 15
+  },
+  {
+   "split": "dev",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 10
+  },
+  {
+   "split": "dev",
+   "cell": "BSC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 8
+  },
+  {
+   "split": "dev",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 27
+  },
+  {
+   "split": "dev",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 28
+  },
+  {
+   "split": "dev",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 21
+  },
+  {
+   "split": "dev",
+   "cell": "DPC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 10
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "EXEC_MATCH",
+   "after": "EXEC_MATCH",
+   "n": 2
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 27
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 33
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_OTHER",
+   "n": 1
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 21
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "MALFORMED",
+   "after": "ASK",
+   "n": 1
+  },
+  {
+   "split": "dev",
+   "cell": "DSC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 13
+  },
+  {
+   "split": "heldout",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 11
+  },
+  {
+   "split": "heldout",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 12
+  },
+  {
+   "split": "heldout",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 9
+  },
+  {
+   "split": "heldout",
+   "cell": "BPC",
+   "before": "INCOMPLETE",
+   "after": "MALFORMED",
+   "n": 1
+  },
+  {
+   "split": "heldout",
+   "cell": "BPC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 4
+  },
+  {
+   "split": "heldout",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 6
+  },
+  {
+   "split": "heldout",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 15
+  },
+  {
+   "split": "heldout",
+   "cell": "BSC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 3
+  },
+  {
+   "split": "heldout",
+   "cell": "BSC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 5
+  },
+  {
+   "split": "heldout",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 14
+  },
+  {
+   "split": "heldout",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 18
+  },
+  {
+   "split": "heldout",
+   "cell": "DPC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 8
+  },
+  {
+   "split": "heldout",
+   "cell": "DPC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 5
+  },
+  {
+   "split": "heldout",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "ASK",
+   "n": 10
+  },
+  {
+   "split": "heldout",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "EXEC_MATCH",
+   "n": 21
+  },
+  {
+   "split": "heldout",
+   "cell": "DSC",
+   "before": "INCOMPLETE",
+   "after": "INCOMPLETE",
+   "n": 8
+  },
+  {
+   "split": "heldout",
+   "cell": "DSC",
+   "before": "MALFORMED",
+   "after": "EXEC_MATCH",
+   "n": 8
+  }
+ ]
+}

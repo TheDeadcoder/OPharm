@@ -1,0 +1,14 @@
+{
+ "mode": "steer",
+ "a": "_vsteer1",
+ "b": "_vsteer8",
+ "n": 132,
+ "only_a": 0,
+ "only_b": 0,
+ "label_agreement": 0.9848,
+ "text_identical": 0.947,
+ "max_m_diff": 0.2951,
+ "flips": {
+  "EXEC_MATCH->MALFORMED": 2
+ }
+}

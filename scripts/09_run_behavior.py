@@ -49,8 +49,12 @@ def done_ids(path):
     return {json.loads(line)["id"] for line in open(path)} if path.exists() else set()
 
 
-def ids_of(tok, row, thinking):
-    return render(tok, row["system"], row["user"], None if row["set"] == "flat" else TOOLS, thinking=thinking).ids
+def tools_for(row, no_tools):
+    return None if no_tools or row["set"] == "flat" else TOOLS
+
+
+def ids_of(tok, row, thinking, no_tools=False, tools_in_user=True):
+    return render(tok, row["system"], row["user"], tools_for(row, no_tools), thinking=thinking, tools_in_user=tools_in_user).ids
 
 
 def main():
@@ -66,16 +70,26 @@ def main():
     ap.add_argument("--chunk", type=int, default=64)
     ap.add_argument("--no-acts", action="store_true")
     ap.add_argument("--thinking", action="store_true")
+    ap.add_argument("--no-tools", action="store_true")
+    ap.add_argument("--exclude-tags", default="")
+    ap.add_argument("--cells", default="")
+    ap.add_argument("--variants", default="")
+    ap.add_argument("--tools-in-system", action="store_true")
     ap.add_argument("--instances", default=str(BENCH / "instances.jsonl"))
     args = ap.parse_args()
     sets, questions = set(args.sets.split(",")), set(args.questions.split(","))
+    cells, variants = set(filter(None, args.cells.split(","))), set(filter(None, args.variants.split(",")))
 
     rows = [json.loads(line) for line in open(args.instances)]
     rows = [r for r in rows if r["set"] in sets and (args.split == "all" or r["split"] == args.split)
-            and (r["set"] != "judge" or r["question"] in questions)]
+            and (r["set"] != "judge" or r["question"] in questions)
+            and (not cells or r["target"] + r["env"] in cells) and (not variants or r.get("variant") in variants)]
     if args.skeletons:
         keep = stratified(rows, args.skeletons)
         rows = [r for r in rows if r["skeleton"] in keep]
+    if args.exclude_tags:
+        ran = {i for t in args.exclude_tags.split(",") for i in json.loads((RUNS / args.model / t / "order.json").read_text())}
+        rows = [r for r in rows if r["id"] not in ran]
     out = RUNS / args.model / args.tag
     out.mkdir(parents=True, exist_ok=True)
     order = [r["id"] for r in rows]
@@ -96,7 +110,7 @@ def main():
         for k, r in enumerate(rows):
             if r["id"] in done:
                 continue
-            rr = render(tok, r["system"], r["user"], None if r["set"] == "flat" else TOOLS, thinking=args.thinking)
+            rr = render(tok, r["system"], r["user"], tools_for(r, args.no_tools), thinking=args.thinking, tools_in_user=not args.tools_in_system)
             m, logits, a = forward_capture(model, rr.ids, [rr.t_inst, rr.t_post], opener)
             if acts is not None:
                 acts[k] = a.numpy()
@@ -128,7 +142,8 @@ def main():
                 part = todo[s:s + args.chunk]
                 if all(r["id"] in done for r in part):
                     continue
-                texts = greedy(model, tok, [ids_of(tok, r, args.thinking) for r in part], max_new, batch, extra_stops=stops)
+                texts = greedy(model, tok, [ids_of(tok, r, args.thinking, args.no_tools, not args.tools_in_system) for r in part], max_new, batch,
+                               extra_stops=stops)
                 for r, text in zip(part, texts):
                     if r["id"] in done:
                         continue
@@ -136,7 +151,7 @@ def main():
                         rec = {"id": r["id"], "text": text, "label": label(text, r["oracle"])}
                     else:
                         word = text.strip().split()[0].strip(".,:!*").lower() if text.strip() else ""
-                        rec = {"id": r["id"], "answer": word if word in ("yes", "no") else "other"}
+                        rec = {"id": r["id"], "answer": word if word in ("yes", "no") else "other", "judge_text": text}
                     f.write(json.dumps(rec) + "\n")
                 f.flush()
 

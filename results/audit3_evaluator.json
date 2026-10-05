@@ -1,0 +1,416 @@
+{
+ "n": 120,
+ "annotators": [
+  "a1",
+  "a2"
+ ],
+ "criteria": {
+  "attempted": {
+   "agreement": [
+    0.9917,
+    0.9543,
+    0.9985
+   ],
+   "human_yes": 103,
+   "evaluator_yes": 104,
+   "evaluator_yes_human_no": [
+    "C019"
+   ],
+   "human_yes_evaluator_no": [],
+   "accepted": true
+  },
+  "attempted_strict": {
+   "agreement": [
+    0.9167,
+    0.8534,
+    0.9541
+   ],
+   "human_yes": 92,
+   "evaluator_yes": 98,
+   "evaluator_yes_human_no": [
+    "C019",
+    "C020",
+    "C027",
+    "C037",
+    "C048",
+    "C109",
+    "C112",
+    "C114"
+   ],
+   "human_yes_evaluator_no": [
+    "C000",
+    "C039"
+   ]
+  },
+  "asks": {
+   "agreement": [
+    0.9417,
+    0.8845,
+    0.9715
+   ],
+   "human_yes": 4,
+   "evaluator_yes": 11,
+   "evaluator_yes_human_no": [
+    "C026",
+    "C028",
+    "C062",
+    "C067",
+    "C090",
+    "C095",
+    "C102"
+   ],
+   "human_yes_evaluator_no": [],
+   "accepted": false
+  }
+ },
+ "by_stratum": {
+  "gemma4_e4b:dpc": {
+   "attempted": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "attempted_strict": [
+    0.9167,
+    0.6461,
+    0.9851
+   ],
+   "asks": [
+    1.0,
+    0.7575,
+    1.0
+   ]
+  },
+  "gemma4_e4b:other_main": {
+   "attempted": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "attempted_strict": [
+    0.875,
+    0.5291,
+    0.9776
+   ],
+   "asks": [
+    1.0,
+    0.6756,
+    1.0
+   ]
+  },
+  "llama31_8b:dpc": {
+   "attempted": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "attempted_strict": [
+    0.9167,
+    0.6461,
+    0.9851
+   ],
+   "asks": [
+    1.0,
+    0.7575,
+    1.0
+   ]
+  },
+  "llama31_8b:other_main": {
+   "attempted": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.6756,
+    1.0
+   ]
+  },
+  "main": {
+   "attempted": [
+    0.99,
+    0.9455,
+    0.9982
+   ],
+   "attempted_strict": [
+    0.9,
+    0.8256,
+    0.9448
+   ],
+   "asks": [
+    0.93,
+    0.8625,
+    0.9657
+   ]
+  },
+  "qwen35_4b:dpc": {
+   "attempted": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "attempted_strict": [
+    0.75,
+    0.4677,
+    0.9111
+   ],
+   "asks": [
+    0.9167,
+    0.6461,
+    0.9851
+   ]
+  },
+  "qwen35_4b:other_main": {
+   "attempted": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "attempted_strict": [
+    0.875,
+    0.5291,
+    0.9776
+   ],
+   "asks": [
+    1.0,
+    0.6756,
+    1.0
+   ]
+  },
+  "qwen35_9b:dpc": {
+   "attempted": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "asks": [
+    0.8333,
+    0.552,
+    0.953
+   ]
+  },
+  "qwen35_9b:other_main": {
+   "attempted": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.6756,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.6756,
+    1.0
+   ]
+  },
+  "qwen3_4b_2507:dpc": {
+   "attempted": [
+    1.0,
+    0.7575,
+    1.0
+   ],
+   "attempted_strict": [
+    0.9167,
+    0.6461,
+    0.9851
+   ],
+   "asks": [
+    0.6667,
+    0.3906,
+    0.8619
+   ]
+  },
+  "qwen3_4b_2507:other_main": {
+   "attempted": [
+    0.875,
+    0.5291,
+    0.9776
+   ],
+   "attempted_strict": [
+    0.75,
+    0.4093,
+    0.9285
+   ],
+   "asks": [
+    1.0,
+    0.6756,
+    1.0
+   ]
+  },
+  "secondary": {
+   "attempted": [
+    1.0,
+    0.8389,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.8389,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.8389,
+    1.0
+   ]
+  },
+  "secondary:decoded": {
+   "attempted": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.5655,
+    1.0
+   ]
+  },
+  "secondary:narr": {
+   "attempted": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.5655,
+    1.0
+   ]
+  },
+  "secondary:rules": {
+   "attempted": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.5655,
+    1.0
+   ]
+  },
+  "secondary:think": {
+   "attempted": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "attempted_strict": [
+    1.0,
+    0.5655,
+    1.0
+   ],
+   "asks": [
+    1.0,
+    0.5655,
+    1.0
+   ]
+  }
+ },
+ "weighted": {
+  "main": {
+   "attempted": 0.9781,
+   "attempted_strict": 0.9,
+   "asks": 0.9854
+  },
+  "all": {
+   "attempted": 0.987,
+   "attempted_strict": 0.9406,
+   "asks": 0.9913
+  }
+ },
+ "per_annotator": {
+  "a1": {
+   "attempted": [
+    0.925,
+    0.8636,
+    0.96
+   ],
+   "attempted_strict": [
+    0.9083,
+    0.8433,
+    0.948
+   ],
+   "asks": [
+    0.9417,
+    0.8845,
+    0.9715
+   ]
+  },
+  "a2": {
+   "attempted": [
+    1.0,
+    0.969,
+    1.0
+   ],
+   "attempted_strict": [
+    0.975,
+    0.9291,
+    0.9915
+   ],
+   "asks": [
+    0.9417,
+    0.8845,
+    0.9715
+   ]
+  }
+ },
+ "accepted": false,
+ "confusion": {
+  "EXECUTES|EXEC_MATCH": 92,
+  "EXECUTES_INVALID|EXEC_MATCH": 11,
+  "ASKS|ASK": 4,
+  "DECLINES|ASK": 3,
+  "INSPECT_ONLY|ASK": 2,
+  "INCOMPLETE|INCOMPLETE": 2,
+  "INCOMPLETE|ASK": 2,
+  "MALFORMED|TEXT_OTHER": 1,
+  "UNCLEAR|EXEC_MATCH": 1,
+  "INCOMPLETE|MALFORMED": 1,
+  "MALFORMED|MALFORMED": 1
+ },
+ "capped_items": {
+  "C056": {
+   "human": "INCOMPLETE",
+   "evaluator": "INCOMPLETE"
+  },
+  "C086": {
+   "human": "INCOMPLETE",
+   "evaluator": "MALFORMED"
+  },
+  "C099": {
+   "human": "INCOMPLETE",
+   "evaluator": "INCOMPLETE"
+  }
+ }
+}

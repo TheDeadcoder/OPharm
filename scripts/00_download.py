@@ -13,12 +13,13 @@ from huggingface_hub import HfApi, snapshot_download
 from huggingface_hub.errors import GatedRepoError, RepositoryNotFoundError
 
 MODELS = {
-    "qwen35_08b": ("Qwen/Qwen3.5-0.8B", "harness"),
-    "qwen35_4b": ("Qwen/Qwen3.5-4B", "dev"),
-    "qwen3_4b_2507": ("Qwen/Qwen3-4B-Instruct-2507", "comparator"),
-    "qwen35_9b": ("Qwen/Qwen3.5-9B", "confirmatory"),
-    "llama31_8b": ("meta-llama/Llama-3.1-8B-Instruct", "comparator_2"),
-    "gemma4_e4b": ("google/gemma-4-E4B-it", "comparator_3"),
+    "qwen35_08b": "Qwen/Qwen3.5-0.8B",
+    "qwen35_4b": "Qwen/Qwen3.5-4B",
+    "qwen3_4b_2507": "Qwen/Qwen3-4B-Instruct-2507",
+    "qwen35_9b": "Qwen/Qwen3.5-9B",
+    "llama31_8b": "meta-llama/Llama-3.1-8B-Instruct",
+    "gemma4_e4b": "google/gemma-4-E4B-it",
+    "qwen35_2b": "Qwen/Qwen3.5-2B",
 }
 DEFAULT = ["qwen35_08b", "qwen35_4b", "qwen3_4b_2507", "qwen35_9b"]
 SMALL = ["*.json", "*.jinja", "*.txt", "LICENSE*", "README.md"]
@@ -30,10 +31,10 @@ def pin(api, keys):
     for key in keys:
         if key in pins:
             continue
-        repo, role = MODELS[key]
+        repo = MODELS[key]
         info = api.model_info(repo, files_metadata=True)
         size = sum(s.size or 0 for s in info.siblings if s.rfilename.endswith(".safetensors"))
-        pins[key] = {"repo": repo, "revision": info.sha, "role": role, "safetensors_bytes": size}
+        pins[key] = {"repo": repo, "revision": info.sha, "safetensors_bytes": size}
     CONFIGS.mkdir(exist_ok=True)
     PINS.write_text(yaml.safe_dump(pins, sort_keys=False))
     return pins

@@ -1,0 +1,12 @@
+gemini38_flash:
+  provider: gemini
+  model: gemini-3.8-flash
+  location: global
+  usd_per_m_input: 0.75
+  usd_per_m_output: 3.75
+gemini31_pro:
+  provider: gemini
+  model: gemini-3.1-pro-preview
+  location: global
+  usd_per_m_input: 2.00
+  usd_per_m_output: 12.00

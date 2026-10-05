@@ -23,6 +23,16 @@ def cluster_ratio_ci(num, den, strata, n=10000, seed=0, level=0.95):
     return float(num.mean() / den.mean()), float(lo), float(hi)
 
 
+def template_ci(values, templates, n=10000, seed=0, level=0.95):
+    values = np.asarray(values, dtype=float)
+    keys = sorted(set(templates))
+    pos = {k: i for i, k in enumerate(keys)}
+    idx = np.array([pos[t] for t in templates])
+    num = np.bincount(idx, weights=values, minlength=len(keys))
+    den = np.bincount(idx, minlength=len(keys)).astype(float)
+    return cluster_ratio_ci(num, den, ["all"] * len(keys), n, seed, level)
+
+
 def p_beyond(draws, null, side):
     bad = np.asarray(draws) <= null if side == "greater" else np.asarray(draws) >= null
     return float((bad.sum() + 1) / (len(bad) + 1))

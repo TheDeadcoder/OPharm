@@ -33,3 +33,11 @@ def content_centroids(model):
     harm = ext & np.array([it["kind"] == "harmful" and it["refused"] for it in items])
     ok = ext & np.array([it["kind"] == "benign" and not it["refused"] for it in items])
     return {"harm": acts[harm].mean(0), "benign": acts[ok].mean(0)}
+
+
+def outlier_keep(model, ratio=30.0):
+    run = RUNS / model / "refsets"
+    items = [json.loads(line) for line in open(run / "items.jsonl")]
+    ext = np.array([it["split"] == "extract" for it in items])
+    a = np.abs(np.asarray(np.load(run / "acts.npy", mmap_mode="r")[ext], dtype=np.float32)).mean(0)
+    return ~(a / np.median(a, axis=-1, keepdims=True) > ratio).any(0)

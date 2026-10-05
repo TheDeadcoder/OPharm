@@ -1,0 +1,3634 @@
+{
+ "model": "gemma4_e4b",
+ "margin": 0.1,
+ "op": {
+  "A0": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 2.487,
+    "DS": 3.214,
+    "BS": 3.957,
+    "BP": 2.843
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "Airr": {
+   "ask_DP": {
+    "estimate": 0.0833,
+    "ci": [
+     0.0082,
+     0.1742
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0152,
+    "ci": [
+     0.0,
+     0.0373
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 0.9167,
+    "ci": [
+     0.8258,
+     0.9918
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 0.9848,
+    "ci": [
+     0.9627,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 1.612,
+    "DS": 2.268,
+    "BS": 2.962,
+    "BP": 2.059
+   },
+   "success": {
+    "estimate": 0.0682,
+    "ci": [
+     0.0082,
+     0.1385
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0312,
+    "ci": [
+     0.0,
+     0.0938
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "A1": {
+   "ask_DP": {
+    "estimate": 0.0455,
+    "ci": [
+     0.0,
+     0.1406
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0303,
+    "ci": [
+     0.0,
+     0.0938
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 0.9545,
+    "ci": [
+     0.8594,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 0.9697,
+    "ci": [
+     0.9062,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 0.386,
+    "DS": 1.702,
+    "BS": 3.808,
+    "BP": 1.395
+   },
+   "success": {
+    "estimate": 0.0152,
+    "ci": [
+     0.0,
+     0.0469
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "A2": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.3485,
+    "ci": [
+     0.1825,
+     0.529
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.2197,
+    "ci": [
+     0.0896,
+     0.3692
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.625,
+    "ci": [
+     0.2308,
+     0.9412
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 0.6515,
+    "ci": [
+     0.471,
+     0.8175
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 0.7803,
+    "ci": [
+     0.6308,
+     0.9104
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 0.375,
+    "ci": [
+     0.0588,
+     0.7692
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 3.8,
+    "DS": -0.231,
+    "BS": 0.043,
+    "BP": -0.482
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "Iask": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 3.053,
+    "DS": 3.363,
+    "BS": 3.519,
+    "BP": 3.243
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "Ibal": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 2.326,
+    "DS": 3.004,
+    "BS": 3.65,
+    "BP": 2.585
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "Iaskbal": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 3.179,
+    "DS": 3.448,
+    "BS": 3.657,
+    "BP": 3.052
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "A2u": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 1.601,
+    "DS": 5.438,
+    "BS": 6.122,
+    "BP": 5.623
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  },
+  "A3": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "ask_BP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "exec_DP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_DS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BS": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "exec_BP": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 32,
+    "templates": 6
+   },
+   "m_mean": {
+    "DP": 1.592,
+    "DS": 4.989,
+    "BS": 5.671,
+    "BP": 4.817
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25
+   },
+   "success_with_bp": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 32,
+    "templates": 6
+   }
+  }
+ },
+ "cj": {
+  "A0": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "Airr": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "A1": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0152,
+     "ci": [
+      0.0,
+      0.0484
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.9697,
+     "ci": [
+      0.9231,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9516,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.0051,
+     "ci": [
+      -0.0161,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0152,
+     "ci": [
+      0.0,
+      0.0484
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9516,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.9697,
+     "ci": [
+      0.9231,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9516,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.0051,
+     "ci": [
+      -0.0161,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "A2": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.1364,
+     "ci": [
+      0.0597,
+      0.2239
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.2121,
+     "ci": [
+      0.1231,
+      0.303
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.1061,
+     "ci": [
+      0.0448,
+      0.1746
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.8636,
+     "ci": [
+      0.7761,
+      0.9403
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.7879,
+     "ci": [
+      0.697,
+      0.8769
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 0.8939,
+     "ci": [
+      0.8254,
+      0.9552
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.1515,
+     "ci": [
+      -0.2059,
+      -0.101
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.197,
+     "ci": [
+      0.1176,
+      0.2817
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.3485,
+     "ci": [
+      0.25,
+      0.4429
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.2121,
+     "ci": [
+      0.1077,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.803,
+     "ci": [
+      0.7183,
+      0.8824
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.6515,
+     "ci": [
+      0.5571,
+      0.75
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 0.7879,
+     "ci": [
+      0.6818,
+      0.8923
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.2525,
+     "ci": [
+      -0.3231,
+      -0.1799
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "Ibal": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "A2u": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1364,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 0.7576,
+     "ci": [
+      0.6618,
+      0.8485
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1364,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1364,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1449,
+      0.3134
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 0.7273,
+     "ci": [
+      0.6338,
+      0.8182
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1449,
+      0.3134
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1449,
+      0.3134
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  },
+  "A3": {
+   "BS": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0152,
+     "ci": [
+      0.0,
+      0.0462
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0152,
+     "ci": [
+      0.0,
+      0.0462
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.0101,
+     "ci": [
+      -0.0249,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   },
+   "DP": {
+    "ask_11": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_10": {
+     "estimate": 0.0303,
+     "ci": [
+      0.0,
+      0.0746
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_01": {
+     "estimate": 0.0152,
+     "ci": [
+      0.0,
+      0.0462
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "ask_00": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_11": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9516,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_10": {
+     "estimate": 0.9697,
+     "ci": [
+      0.9254,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_01": {
+     "estimate": 0.9848,
+     "ci": [
+      0.9538,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "exec_00": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    },
+    "selectivity": {
+     "estimate": -0.0152,
+     "ci": [
+      -0.0317,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25
+    }
+   }
+  }
+ },
+ "able": false,
+ "able_balanced": false,
+ "contrasts": {
+  "Airr_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0833,
+    "ci": [
+     0.0082,
+     0.1742
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   },
+   "ask_DS": {
+    "estimate": 0.0152,
+    "ci": [
+     0.0,
+     0.0373
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0682,
+    "ci": [
+     0.0082,
+     0.1385
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   }
+  },
+  "A1_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0455,
+    "ci": [
+     0.0,
+     0.1406
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "inconclusive"
+   },
+   "ask_DS": {
+    "estimate": 0.0303,
+    "ci": [
+     0.0,
+     0.0938
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0152,
+    "ci": [
+     0.0,
+     0.0469
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A2_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.3485,
+    "ci": [
+     0.1825,
+     0.529
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   },
+   "ask_BS": {
+    "estimate": 0.2197,
+    "ci": [
+     0.0896,
+     0.3692
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A2_vs_A1": {
+   "ask_DP": {
+    "estimate": -0.0455,
+    "ci": [
+     -0.1406,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "inconclusive"
+   },
+   "ask_DS": {
+    "estimate": 0.3182,
+    "ci": [
+     0.162,
+     0.4861
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   },
+   "ask_BS": {
+    "estimate": 0.2197,
+    "ci": [
+     0.0896,
+     0.3692
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "increase"
+   },
+   "success": {
+    "estimate": -0.0152,
+    "ci": [
+     -0.0469,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "Ibal_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "Iaskbal_vs_Iask": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A2self_vs_A0": null,
+  "A2self_vs_A2": null,
+  "A1_vs_Airr": {
+   "ask_DP": {
+    "estimate": -0.0379,
+    "ci": [
+     -0.1143,
+     0.029
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "inconclusive"
+   },
+   "ask_DS": {
+    "estimate": 0.0152,
+    "ci": [
+     -0.0221,
+     0.0682
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": -0.053,
+    "ci": [
+     -0.1103,
+     -0.0077
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "decrease"
+   }
+  },
+  "A2u_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A2u_vs_A1": {
+   "ask_DP": {
+    "estimate": -0.0455,
+    "ci": [
+     -0.1406,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "inconclusive"
+   },
+   "ask_DS": {
+    "estimate": -0.0303,
+    "ci": [
+     -0.0938,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": -0.0152,
+    "ci": [
+     -0.0469,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A2u_vs_Airr": {
+   "ask_DP": {
+    "estimate": -0.0833,
+    "ci": [
+     -0.1742,
+     -0.0082
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "decrease"
+   },
+   "ask_DS": {
+    "estimate": -0.0152,
+    "ci": [
+     -0.0373,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": -0.0682,
+    "ci": [
+     -0.1385,
+     -0.0082
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "decrease"
+   }
+  },
+  "A2u_vs_A2": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": -0.3485,
+    "ci": [
+     -0.529,
+     -0.1825
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "decrease"
+   },
+   "ask_BS": {
+    "estimate": -0.2197,
+    "ci": [
+     -0.3692,
+     -0.0896
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "decrease"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A3_vs_A0": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A3_vs_A1": {
+   "ask_DP": {
+    "estimate": -0.0455,
+    "ci": [
+     -0.1406,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "inconclusive"
+   },
+   "ask_DS": {
+    "estimate": -0.0303,
+    "ci": [
+     -0.0938,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": -0.0152,
+    "ci": [
+     -0.0469,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  },
+  "A3_vs_A2u": {
+   "ask_DP": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_DS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "ask_BS": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   },
+   "success": {
+    "estimate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 132,
+    "templates": 25,
+    "reading": "no meaningful change"
+   }
+  }
+ },
+ "cj_contrasts": {
+  "Airr_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "A1_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "A2_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "A2_vs_A1": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "Ibal_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "A2self_vs_A0": null,
+  "A2self_vs_A2": null,
+  "A2u_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1364,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "increase"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1449,
+      0.3134
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "increase"
+    }
+   }
+  },
+  "A2u_vs_A1": {
+   "BS": {
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1364,
+      0.3182
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "increase"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.2273,
+     "ci": [
+      0.1449,
+      0.3134
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "increase"
+    }
+   }
+  },
+  "A3_vs_A0": {
+   "BS": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "no meaningful change"
+    }
+   }
+  },
+  "A3_vs_A2u": {
+   "BS": {
+    "success": {
+     "estimate": -0.2273,
+     "ci": [
+      -0.3182,
+      -0.1364
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "decrease"
+    }
+   },
+   "DP": {
+    "success": {
+     "estimate": -0.2273,
+     "ci": [
+      -0.3134,
+      -0.1449
+     ],
+     "n": 66,
+     "templates": 25,
+     "reading": "decrease"
+    }
+   }
+  }
+ },
+ "knowledge_tools": {
+  "op.q1": {
+   "accuracy": {
+    "estimate": 0.729,
+    "ci": [
+     0.6531,
+     0.7995
+    ],
+    "n": 428,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 428,
+    "templates": 25
+   }
+  },
+  "op.q2": {
+   "accuracy": {
+    "estimate": 0.9065,
+    "ci": [
+     0.8585,
+     0.9507
+    ],
+    "n": 428,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 428,
+    "templates": 25
+   }
+  },
+  "op.q3": {
+   "accuracy": {
+    "estimate": 0.6098,
+    "ci": [
+     0.5575,
+     0.6658
+    ],
+    "n": 428,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 428,
+    "templates": 25
+   }
+  },
+  "op.qapp": {
+   "accuracy": {
+    "estimate": 0.3481,
+    "ci": [
+     0.31,
+     0.3977
+    ],
+    "n": 428,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 428,
+    "templates": 25
+   }
+  },
+  "cj.qapp": {
+   "accuracy": {
+    "estimate": 0.6667,
+    "ci": [
+     0.6516,
+     0.682
+    ],
+    "n": 528,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   }
+  },
+  "cj.qqueue": {
+   "accuracy": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   }
+  },
+  "cj.qreq": {
+   "accuracy": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   }
+  }
+ },
+ "knowledge_no_tools": {
+  "op.qapp": {
+   "accuracy": {
+    "estimate": 0.3388,
+    "ci": [
+     0.3047,
+     0.3866
+    ],
+    "n": 428,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 428,
+    "templates": 25
+   }
+  },
+  "cj.qapp": {
+   "accuracy": {
+    "estimate": 0.7348,
+    "ci": [
+     0.7207,
+     0.7462
+    ],
+    "n": 528,
+    "templates": 25
+   },
+   "answered": {
+    "estimate": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 528,
+    "templates": 25
+   }
+  }
+ },
+ "thinking": {
+  "op": {
+   "A0": {
+    "ask_DP": {
+     "estimate": 0.9756,
+     "ci": [
+      0.9375,
+      1.0
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_DS": {
+     "estimate": 0.9268,
+     "ci": [
+      0.8409,
+      0.9884
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_BS": {
+     "estimate": 0.8659,
+     "ci": [
+      0.7179,
+      0.9869
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_BP": {
+     "estimate": 0.85,
+     "ci": [
+      0.6429,
+      1.0
+     ],
+     "n": 20,
+     "templates": 6
+    },
+    "exec_DP": {
+     "estimate": 0.0244,
+     "ci": [
+      0.0,
+      0.0625
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_DS": {
+     "estimate": 0.0732,
+     "ci": [
+      0.0116,
+      0.1591
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_BS": {
+     "estimate": 0.1341,
+     "ci": [
+      0.0131,
+      0.2821
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_BP": {
+     "estimate": 0.15,
+     "ci": [
+      0.0,
+      0.3571
+     ],
+     "n": 20,
+     "templates": 6
+    },
+    "m_mean": {
+     "DP": -7.348,
+     "DS": -6.895,
+     "BS": -6.332,
+     "BP": -7.163
+    },
+    "success": {
+     "estimate": 0.0244,
+     "ci": [
+      0.0,
+      0.075
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "success_with_bp": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 20,
+     "templates": 6
+    }
+   },
+   "A1": {
+    "ask_DP": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_DS": {
+     "estimate": 0.8537,
+     "ci": [
+      0.7262,
+      0.9571
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_BS": {
+     "estimate": 0.1585,
+     "ci": [
+      0.0581,
+      0.2791
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "ask_BP": {
+     "estimate": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 20,
+     "templates": 6
+    },
+    "exec_DP": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_DS": {
+     "estimate": 0.1463,
+     "ci": [
+      0.0429,
+      0.2738
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_BS": {
+     "estimate": 0.8415,
+     "ci": [
+      0.7209,
+      0.9419
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "exec_BP": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 20,
+     "templates": 6
+    },
+    "m_mean": {
+     "DP": -8.912,
+     "DS": -7.778,
+     "BS": -6.215,
+     "BP": -8.0
+    },
+    "success": {
+     "estimate": 0.1341,
+     "ci": [
+      0.0341,
+      0.2609
+     ],
+     "n": 82,
+     "templates": 25
+    },
+    "success_with_bp": {
+     "estimate": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 20,
+     "templates": 6
+    }
+   }
+  },
+  "cj": {
+   "A0": {
+    "BS": {
+     "ask_11": {
+      "estimate": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_10": {
+      "estimate": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_01": {
+      "estimate": 0.0244,
+      "ci": [
+       0.0,
+       0.0769
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_00": {
+      "estimate": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_11": {
+      "estimate": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_10": {
+      "estimate": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_01": {
+      "estimate": 0.9756,
+      "ci": [
+       0.9231,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_00": {
+      "estimate": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "success": {
+      "estimate": 0.9756,
+      "ci": [
+       0.9231,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "selectivity": {
+      "estimate": 0.9919,
+      "ci": [
+       0.9744,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     }
+    },
+    "DP": {
+     "ask_11": {
+      "estimate": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_10": {
+      "estimate": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_01": {
+      "estimate": 0.0732,
+      "ci": [
+       0.0,
+       0.1538
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "ask_00": {
+      "estimate": 0.0244,
+      "ci": [
+       0.0,
+       0.075
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_11": {
+      "estimate": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_10": {
+      "estimate": 1.0,
+      "ci": [
+       1.0,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_01": {
+      "estimate": 0.9268,
+      "ci": [
+       0.8462,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "exec_00": {
+      "estimate": 0.9756,
+      "ci": [
+       0.925,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "success": {
+      "estimate": 0.9268,
+      "ci": [
+       0.8462,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     },
+     "selectivity": {
+      "estimate": 0.9675,
+      "ci": [
+       0.9286,
+       1.0
+      ],
+      "n": 41,
+      "templates": 25
+     }
+    }
+   }
+  }
+ },
+ "parity_A0_vs_mps": {
+  "pairs": 428,
+  "agree": 1.0,
+  "disagreements": []
+ },
+ "predictions": {
+  "1_iask_ask_DP": 0.0,
+  "2_iaskbal_minus_iask_DP": 0.0,
+  "3_airr_vs_a0_DP_reading": "increase",
+  "4_cj_a0_selectivity_BS": 0.0,
+  "phase2_rule_met": false,
+  "5_7_a3_vs_a0_success": {
+   "estimate": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "n": 132,
+   "templates": 25,
+   "reading": "no meaningful change"
+  },
+  "6_a3_vs_a2u_success": {
+   "estimate": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "n": 132,
+   "templates": 25,
+   "reading": "no meaningful change"
+  },
+  "8_rep_a2u_vs_a0_success": null,
+  "8_rep_a2u_ask_DS_BS": null,
+  "11_success_A2u_A3": [
+   0.0,
+   0.0
+  ]
+ }
+}

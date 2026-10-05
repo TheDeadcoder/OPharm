@@ -1,0 +1,130 @@
+{
+ "model": "gemma4_e4b",
+ "evaluator": "v2.1",
+ "runs": {
+  "grid": {
+   "n": 4300,
+   "v1_to_v2": [
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 300
+    },
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 6
+    },
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_OTHER",
+     "n": 7
+    },
+    {
+     "split": "dev",
+     "set": "cue",
+     "v1": "MALFORMED",
+     "v2": "MALFORMED",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 300
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 4
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_OTHER",
+     "n": 9
+    },
+    {
+     "split": "dev",
+     "set": "ladder",
+     "v1": "MALFORMED",
+     "v2": "MALFORMED",
+     "n": 1
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "ASK",
+     "v2": "ASK",
+     "n": 8
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_MATCH",
+     "v2": "EXEC_MATCH",
+     "n": 3357
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_MATCH",
+     "n": 31
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "EXEC_OTHER",
+     "v2": "EXEC_OTHER",
+     "n": 54
+    },
+    {
+     "split": "dev",
+     "set": "main",
+     "v1": "MALFORMED",
+     "v2": "MALFORMED",
+     "n": 6
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_SAFE",
+     "v2": "EXEC_SAFE",
+     "n": 170
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_SAFE",
+     "v2": "INSPECT",
+     "n": 40
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "EXEC_UNSAFE",
+     "v2": "EXEC_UNSAFE",
+     "n": 5
+    },
+    {
+     "split": "dev",
+     "set": "shortcut",
+     "v1": "TEXT_OTHER",
+     "v2": "TEXT_OTHER",
+     "n": 1
+    }
+   ]
+  }
+ }
+}

@@ -8,13 +8,14 @@ import numpy as np
 import torch
 
 from opharm.analysis import POS, blast_partition, code, eval_split, load_rows, settings
+from opharm.bench.labels import final_label
 from opharm.bench.tools import TOOLS
 from opharm.chat import load_tokenizer, render
 from opharm.interp import hooks
 from opharm.interp.directions import unit, unmatched
 from opharm.interp.probes import fit_probe
 from opharm.models import load_model
-from opharm.paths import RUNS
+from opharm.paths import RESULTS, RUNS
 from opharm.run.decision import action_logodds, opener_ids
 
 
@@ -24,6 +25,8 @@ class Ctx:
         self.main = [r for r in rows if r["set"] == "main" and r["split"] == eval_split(confirm)]
         self.by_code = {(r["skeleton"], code(r)): r for r in self.main}
         self.tok, self.model = load_tokenizer(model_key), load_model(model_key)
+        self.key, self.tag = model_key, tag
+        self.inputs, self.limit = hooks.has_layer_inputs(self.model), hooks.last_patchable_layer(self.model)
         self.opener = opener_ids(self.tok)
         st = settings(model_key, tag, confirm)
         self.blast, self.l_steer = {k: tuple(v) for k, v in st["blast"].items()}, st["L_steer"]
@@ -59,11 +62,23 @@ class Ctx:
             self.model(input_ids=torch.tensor([ids], device=self.model.device), use_cache=False, logits_to_keep=1)
         return {layer: store[layer][0] for layer in layers}
 
+    def capture_inputs(self, ids):
+        if not self.inputs:
+            return None
+        store = {}
+        with torch.inference_mode(), hooks.hooked(hooks.capture_layer_inputs(self.model, store)):
+            self.model(input_ids=torch.tensor([ids], device=self.model.device), use_cache=False, logits_to_keep=1)
+        return store
 
-def sample_pairs(ctx, n, seed, first, second, pos):
+    def patch_edits(self, layer, positions, values, inputs):
+        edits = [hooks.patch(self.model, layer, positions, values)]
+        return edits + ([hooks.patch_layer_inputs(self.model, layer, positions, inputs)] if inputs is not None else [])
+
+
+def sample_pairs(ctx, n, seed, first, second, pos, policy=""):
     rng = random.Random(seed)
     cands = [(r, ctx.by_code[(r["skeleton"], code(r)[:pos] + second + code(r)[pos + 1:])])
-             for r in ctx.main if code(r)[pos] == first]
+             for r in ctx.main if code(r)[pos] == first and (not policy or r["policy"] == policy)]
     rng.shuffle(cands)
     return cands[:n]
 
@@ -78,11 +93,28 @@ def patch_panel(ctx, pairs, span, layers, complement=False):
                 positions = [i for i in range(len(rt.ids)) if i not in set(positions)]
             m0, p0 = ctx.run(rt.ids, at=[rt.t_inst, rt.t_post])
             ms, ps = ctx.run(rs.ids, at=[rs.t_inst, rs.t_post])
-            vals = ctx.capture_span(rs.ids, layers, positions)
+            vals, inputs = ctx.capture_span(rs.ids, layers, positions), ctx.capture_inputs(rs.ids)
             for layer in layers:
-                m, p = ctx.run(rt.ids, [hooks.patch(ctx.model, layer, positions, vals[layer])], at=[rt.t_inst, rt.t_post])
+                m, p = ctx.run(rt.ids, ctx.patch_edits(layer, positions, vals[layer], inputs), at=[rt.t_inst, rt.t_post])
                 out.append({"target": tgt["id"], "source": src["id"], "layer": layer, "m_clean": m0, "m_source": ms, "m_patched": m,
                             "probe": {k: {"clean": p0[k], "source": ps[k], "patched": p[k]} for k in p0}})
+    return out
+
+
+def decomposition(ctx, layers):
+    rows = ctx.dev_main
+    x = np.asarray(ctx.acts[[r["row"] for r in rows], POS["t_post"]], dtype=np.float32)
+    skel = np.array([r["skeleton"] for r in rows])
+    masks = [np.array([f(r) for r in rows]) for f in (lambda r: r["target"] == "D", lambda r: r["rollback"] == "N", lambda r: r["policy"] == "C")]
+    factors = [unmatched(x, m, ~m, skel) for m in masks]
+    out = {"r_blast_shared": {}, "r_blast_unique": {}, "pc1": {}}
+    for l in layers:
+        span = torch.linalg.qr(torch.tensor(np.stack([f[l] / np.linalg.norm(f[l]) for f in factors], 1), dtype=torch.float32))[0]
+        u = torch.tensor(unit(ctx.r_blast["t_post"][l]), dtype=torch.float32)
+        out["r_blast_shared"][l] = span @ (span.T @ u)
+        out["r_blast_unique"][l] = u - out["r_blast_shared"][l]
+        h = x[:, l].astype(np.float64)
+        out["pc1"][l] = torch.tensor(np.linalg.svd(h - h.mean(0), full_matrices=False)[2][0], dtype=torch.float32)
     return out
 
 
@@ -90,6 +122,8 @@ def swap_panel(ctx, pairs, layers, names):
     dirs = {"r_blast": {l: torch.tensor(ctx.r_blast["t_inst"][l]) for l in layers},
             "r_blast_post": {l: torch.tensor(ctx.r_blast["t_post"][l]) for l in layers}}
     dirs["random"] = {l: random_like(dirs["r_blast"][l], 3000 + l) for l in layers}
+    if {"r_blast_shared", "r_blast_unique", "pc1"} & set(names):
+        dirs.update(decomposition(ctx, layers))
     dirs = {k: dirs[k] for k in names}
     out = []
     for a, b in pairs:
@@ -133,6 +167,25 @@ def gain_panel(ctx, rows, layers, gains, seeds):
                 m, _ = ctx.run(rr.ids, [hooks.gain(ctx.model, layer, v, center, g, pos)])
                 out.append({"id": r["id"], "cell": code(r), "position": p_name, "layer": layer, "direction": name,
                             "gain": g, "m_clean": m0, "m": m})
+    return out
+
+
+def patch_check(ctx, pairs, layers):
+    out = {"layers": layers, "pairs": len(pairs), "per_layer": {}}
+    for layer in layers:
+        ident, trans, resid_only = [], [], []
+        for a, b in pairs:
+            ra, rb = ctx.render(a), ctx.render(b)
+            every = list(range(len(ra.ids)))
+            ma, _ = ctx.run(ra.ids)
+            mb, _ = ctx.run(rb.ids)
+            own, src = ctx.capture_span(ra.ids, [layer], every), ctx.capture_span(rb.ids, [layer], every)
+            own_in, src_in = ctx.capture_inputs(ra.ids), ctx.capture_inputs(rb.ids)
+            ident.append(abs(ctx.run(ra.ids, ctx.patch_edits(layer, every, own[layer], own_in))[0] - ma))
+            trans.append(abs(ctx.run(ra.ids, ctx.patch_edits(layer, every, src[layer], src_in))[0] - mb))
+            resid_only.append(abs(ctx.run(ra.ids, ctx.patch_edits(layer, every, src[layer], None))[0] - mb))
+        out["per_layer"][layer] = {"identity_max": max(ident), "transplant_max": max(trans), "residual_only_transplant_max": max(resid_only)}
+    out["valid"] = all(v["identity_max"] < 1e-3 and v["transplant_max"] < 1e-2 for v in out["per_layer"].values())
     return out
 
 
@@ -180,7 +233,7 @@ def ablate_panel(ctx, rows, seeds):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("test", choices=["c1", "c2", "c3", "c4", "c6", "c7", "c8"])
+    ap.add_argument("test", choices=["c1", "c2", "c3", "c4", "c6", "c7", "c8", "check"])
     ap.add_argument("model")
     ap.add_argument("--tag", default="grid")
     ap.add_argument("--n", type=int, default=60)
@@ -192,13 +245,22 @@ def main():
     ap.add_argument("--gains", default="3,10,30")
     ap.add_argument("--confirm", action="store_true")
     ap.add_argument("--suffix", default="")
+    ap.add_argument("--policy", default="", choices=["", "C", "N"])
     args = ap.parse_args()
     t0 = time.time()
     ctx = Ctx(args.model, args.tag, args.confirm)
     n_layers = len(hooks.layers(ctx.model))
     layers = [int(v) for v in args.layers.split(",")] if args.layers else sorted({round(1 + i * (n_layers - 3) / 7) for i in range(8)})
+    if args.test in ("c1", "c4", "c6", "c7", "check") and ctx.limit is not None and max(layers) > ctx.limit:
+        raise ValueError(f"{args.model} shares key/value states after layer {ctx.limit}; patch layers {layers} go past it")
+    if args.test == "check":
+        res = patch_check(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1, args.policy), layers)
+        RESULTS.mkdir(exist_ok=True)
+        (RESULTS / f"patchcheck_{args.model}.json").write_text(json.dumps(res, indent=1))
+        print(json.dumps(res))
+        return
     if args.test == "c1":
-        out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers)
+        out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1, args.policy), "env", layers)
     elif args.test == "c8":
         rng = random.Random(3)
         rows = []
@@ -208,9 +270,9 @@ def main():
         late = [int(v) for v in args.layers.split(",")] if args.layers else sorted({round(f * n_layers) for f in (0.7, 0.82, 0.94)})
         out = gain_panel(ctx, rows, late, [float(g) for g in args.gains.split(",")], args.seeds)
     elif args.test == "c7":
-        out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), "env", layers, complement=True)
+        out = patch_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1, args.policy), "env", layers, complement=True)
     elif args.test == "c6":
-        out = swap_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1), layers, args.dirs.split(","))
+        out = swap_panel(ctx, sample_pairs(ctx, args.n, 0, "P", "S", 1, args.policy), layers, args.dirs.split(","))
     elif args.test == "c4":
         out = patch_panel(ctx, sample_pairs(ctx, args.n, 1, "C", "N", 3), "policy", layers)
     elif args.test == "c3":
@@ -221,7 +283,7 @@ def main():
             rows += rng.sample(cand, min(args.n, len(cand)))
         out = steer_panel(ctx, rows, [float(c) for c in args.coefs.split(",")], args.seeds)
     else:
-        rows = [r for r in ctx.main if code(r)[:2] == "DP" and r["policy"] == "C" and r["label"] == "ASK"]
+        rows = [r for r in ctx.main if code(r)[:2] == "DP" and r["policy"] == "C" and final_label(r, args.model, args.tag)["label"] == "ASK"]
         out = ablate_panel(ctx, rows[: args.n], args.seeds)
     name = f"causal_{args.test}_{args.model}_{args.tag}{'_confirm' if args.confirm else ''}{'_' + args.suffix if args.suffix else ''}"
     (RUNS / args.model / args.tag / f"{name}.jsonl").write_text("".join(json.dumps(o) + "\n" for o in out))

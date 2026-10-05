@@ -1,30 +1,32 @@
 qwen35_08b:
   repo: Qwen/Qwen3.5-0.8B
   revision: 2fc06364715b967f1860aea9cf38778875588b17
-  role: harness
   safetensors_bytes: 1746942600
 qwen35_4b:
   repo: Qwen/Qwen3.5-4B
   revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
-  role: dev
   safetensors_bytes: 9319828096
 qwen3_4b_2507:
   repo: Qwen/Qwen3-4B-Instruct-2507
   revision: cdbee75f17c01a7cc42f958dc650907174af0554
-  role: comparator
   safetensors_bytes: 8044982000
 qwen35_9b:
   repo: Qwen/Qwen3.5-9B
   revision: c202236235762e1c871ad0ccb60c8ee5ba337b9a
-  role: confirmatory
   safetensors_bytes: 19306310880
 llama31_8b:
   repo: meta-llama/Llama-3.1-8B-Instruct
   revision: 0e9e39f249a16976918f6564b8830bc894c89659
-  role: comparator_2
   safetensors_bytes: 16060556376
 gemma4_e4b:
   repo: google/gemma-4-E4B-it
   revision: ee0ef6023621cff504d758262d4e04895a5af4a2
-  role: comparator_3
   safetensors_bytes: 15992595884
+qwen35_2b:
+  repo: Qwen/Qwen3.5-2B
+  revision: 15852e8c16360a2fea060d615a32b45270f8a8fc
+  safetensors_bytes: 4548221488
+qwen35_27b:
+  repo: Qwen/Qwen3.5-27B
+  revision: fc05daec18b0a78c049392ed2e771dde82bdf654
+  safetensors_bytes: 55563022432

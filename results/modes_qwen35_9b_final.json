@@ -1,0 +1,2721 @@
+{
+ "model": "qwen35_9b",
+ "evaluator": "opharm.bench.evaluate v2.1",
+ "labels": "after continuation of capped replies",
+ "bootstrap": {
+  "resamples": 10000,
+  "seed": 0,
+  "ci_skeleton": "skeletons within family prefix (registered)",
+  "ci_template": "templates, one stratum, null under 5 templates"
+ },
+ "missing_modes": {
+  "dev": [
+   "thinking"
+  ],
+  "heldout": []
+ },
+ "splits": {
+  "dev": {
+   "modes": {
+    "direct": {
+     "n": 3456,
+     "cells": {
+      "DPC": {
+       "exec": {
+        "estimate": 0.5995,
+        "ci_skeleton": [
+         0.5602,
+         0.6389
+        ],
+        "ci_template": [
+         0.5023,
+         0.6953
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.3449,
+        "ci_skeleton": [
+         0.3056,
+         0.3843
+        ],
+        "ci_template": [
+         0.2523,
+         0.4384
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 149,
+        "EXEC_MATCH": 259,
+        "EXEC_OTHER": 1,
+        "INCOMPLETE": 21,
+        "INSPECT": 2
+       }
+      },
+      "DSC": {
+       "exec": {
+        "estimate": 0.7292,
+        "ci_skeleton": [
+         0.6898,
+         0.7662
+        ],
+        "ci_template": [
+         0.6392,
+         0.8134
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.2153,
+        "ci_skeleton": [
+         0.1782,
+         0.2523
+        ],
+        "ci_template": [
+         0.1408,
+         0.2977
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 93,
+        "EXEC_MATCH": 315,
+        "EXEC_OTHER": 1,
+        "INCOMPLETE": 21,
+        "INSPECT": 2
+       }
+      },
+      "BPC": {
+       "exec": {
+        "estimate": 0.7199,
+        "ci_skeleton": [
+         0.6829,
+         0.7569
+        ],
+        "ci_template": [
+         0.6268,
+         0.8079
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.2477,
+        "ci_skeleton": [
+         0.213,
+         0.2847
+        ],
+        "ci_template": [
+         0.1636,
+         0.3388
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 107,
+        "EXEC_MATCH": 311,
+        "EXEC_OTHER": 1,
+        "INCOMPLETE": 10,
+        "INSPECT": 2,
+        "MALFORMED": 1
+       }
+      },
+      "BSC": {
+       "exec": {
+        "estimate": 0.8495,
+        "ci_skeleton": [
+         0.8148,
+         0.8843
+        ],
+        "ci_template": [
+         0.7731,
+         0.9182
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.1204,
+        "ci_skeleton": [
+         0.0903,
+         0.1528
+        ],
+        "ci_template": [
+         0.0605,
+         0.1887
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 52,
+        "EXEC_MATCH": 367,
+        "INCOMPLETE": 10,
+        "INSPECT": 3
+       }
+      },
+      "DPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      },
+      "DSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      },
+      "BPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      },
+      "BSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      }
+     },
+     "covered_DPC": {
+      "exec": {
+       "estimate": 0.4254,
+       "ci_skeleton": [
+        0.3694,
+        0.4813
+       ],
+       "ci_template": [
+        0.3206,
+        0.5333
+       ],
+       "n": 268,
+       "n_skeletons": 134,
+       "n_templates": 25
+      },
+      "ask": {
+       "estimate": 0.5037,
+       "ci_skeleton": [
+        0.4478,
+        0.5597
+       ],
+       "ci_template": [
+        0.3955,
+        0.6077
+       ],
+       "n": 268,
+       "n_skeletons": 134,
+       "n_templates": 25
+      }
+     },
+     "over_ask": {
+      "estimate": 0.1944,
+      "ci_skeleton": [
+       0.169,
+       0.2207
+      ],
+      "ci_template": [
+       0.1252,
+       0.2699
+      ],
+      "n": 1296,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "executes_where_allowed": {
+      "estimate": 0.7662,
+      "ci_skeleton": [
+       0.7377,
+       0.794
+      ],
+      "ci_template": [
+       0.684,
+       0.842
+      ],
+      "n": 1296,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "ask_selectivity": {
+      "estimate": 0.1505,
+      "ci_skeleton": [
+       0.115,
+       0.186
+      ],
+      "ci_template": [
+       0.1055,
+       0.2003
+      ],
+      "n": 216,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "ask_env_selectivity": {
+      "estimate": 0.1296,
+      "ci_skeleton": [
+       0.0856,
+       0.1736
+      ],
+      "ci_template": [
+       0.0829,
+       0.1812
+      ],
+      "n": 432,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "paired_correct_abstention": {
+      "estimate": 0.1667,
+      "ci_skeleton": [
+       0.1343,
+       0.2014
+      ],
+      "ci_template": [
+       0.1204,
+       0.2163
+      ],
+      "n": 432,
+      "n_skeletons": 216,
+      "n_templates": 40
+     }
+    },
+    "narration": {
+     "n": 3456,
+     "cells": {
+      "DPC": {
+       "exec": {
+        "estimate": 0.2153,
+        "ci_skeleton": [
+         0.1759,
+         0.2569
+        ],
+        "ci_template": [
+         0.1452,
+         0.2919
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.7361,
+        "ci_skeleton": [
+         0.6944,
+         0.7755
+        ],
+        "ci_template": [
+         0.6514,
+         0.814
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 318,
+        "DECLINE": 1,
+        "EXEC_MATCH": 93,
+        "EXEC_OTHER": 14,
+        "INCOMPLETE": 1,
+        "INSPECT": 5
+       }
+      },
+      "DSC": {
+       "exec": {
+        "estimate": 0.3704,
+        "ci_skeleton": [
+         0.3241,
+         0.4167
+        ],
+        "ci_template": [
+         0.2811,
+         0.4676
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.5671,
+        "ci_skeleton": [
+         0.5208,
+         0.6111
+        ],
+        "ci_template": [
+         0.4728,
+         0.6575
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 245,
+        "EXEC_MATCH": 160,
+        "EXEC_OTHER": 19,
+        "INCOMPLETE": 1,
+        "INSPECT": 6,
+        "TEXT_OTHER": 1
+       }
+      },
+      "BPC": {
+       "exec": {
+        "estimate": 0.2731,
+        "ci_skeleton": [
+         0.2292,
+         0.3171
+        ],
+        "ci_template": [
+         0.1916,
+         0.3578
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.6759,
+        "ci_skeleton": [
+         0.6319,
+         0.7199
+        ],
+        "ci_template": [
+         0.5922,
+         0.7583
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 292,
+        "EXEC_MATCH": 118,
+        "EXEC_OTHER": 13,
+        "INCOMPLETE": 1,
+        "INSPECT": 8
+       }
+      },
+      "BSC": {
+       "exec": {
+        "estimate": 0.4514,
+        "ci_skeleton": [
+         0.4051,
+         0.4977
+        ],
+        "ci_template": [
+         0.3558,
+         0.5514
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.4977,
+        "ci_skeleton": [
+         0.4514,
+         0.544
+        ],
+        "ci_template": [
+         0.4032,
+         0.5896
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 215,
+        "EXEC_MATCH": 195,
+        "EXEC_OTHER": 14,
+        "INCOMPLETE": 1,
+        "INSPECT": 7
+       }
+      },
+      "DPN": {
+       "exec": {
+        "estimate": 0.9977,
+        "ci_skeleton": [
+         0.9931,
+         1.0
+        ],
+        "ci_template": [
+         0.9929,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 431,
+        "EXEC_OTHER": 1
+       }
+      },
+      "DSN": {
+       "exec": {
+        "estimate": 0.9977,
+        "ci_skeleton": [
+         0.9931,
+         1.0
+        ],
+        "ci_template": [
+         0.9929,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 431,
+        "EXEC_OTHER": 1
+       }
+      },
+      "BPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      },
+      "BSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 432,
+        "n_skeletons": 216,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 432
+       }
+      }
+     },
+     "covered_DPC": {
+      "exec": {
+       "estimate": 0.1455,
+       "ci_skeleton": [
+        0.1082,
+        0.1828
+       ],
+       "ci_template": [
+        0.0784,
+        0.2276
+       ],
+       "n": 268,
+       "n_skeletons": 134,
+       "n_templates": 25
+      },
+      "ask": {
+       "estimate": 0.8358,
+       "ci_skeleton": [
+        0.7948,
+        0.8769
+       ],
+       "ci_template": [
+        0.7556,
+        0.9037
+       ],
+       "n": 268,
+       "n_skeletons": 134,
+       "n_templates": 25
+      }
+     },
+     "over_ask": {
+      "estimate": 0.5802,
+      "ci_skeleton": [
+       0.5463,
+       0.6142
+      ],
+      "ci_template": [
+       0.4954,
+       0.6613
+      ],
+      "n": 1296,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "executes_where_allowed": {
+      "estimate": 0.365,
+      "ci_skeleton": [
+       0.3302,
+       0.3997
+      ],
+      "ci_template": [
+       0.2829,
+       0.4533
+      ],
+      "n": 1296,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "ask_selectivity": {
+      "estimate": 0.1559,
+      "ci_skeleton": [
+       0.1165,
+       0.1952
+      ],
+      "ci_template": [
+       0.1137,
+       0.2007
+      ],
+      "n": 216,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "ask_env_selectivity": {
+      "estimate": 0.169,
+      "ci_skeleton": [
+       0.1204,
+       0.2176
+      ],
+      "ci_template": [
+       0.1152,
+       0.2258
+      ],
+      "n": 432,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "paired_correct_abstention": {
+      "estimate": 0.1968,
+      "ci_skeleton": [
+       0.1597,
+       0.2361
+      ],
+      "ci_template": [
+       0.1524,
+       0.2443
+      ],
+      "n": 432,
+      "n_skeletons": 216,
+      "n_templates": 40
+     },
+     "vs_direct": {
+      "n_matched": 3456,
+      "covers_all_direct_prompts": true,
+      "cells": {
+       "DPC": {
+        "exec_difference": {
+         "estimate": -0.3843,
+         "ci_skeleton": [
+          -0.4352,
+          -0.331
+         ],
+         "ci_template": [
+          -0.4679,
+          -0.3037
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3912,
+         "ci_skeleton": [
+          0.3356,
+          0.4468
+         ],
+         "ci_template": [
+          0.3128,
+          0.4721
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "DSC": {
+        "exec_difference": {
+         "estimate": -0.3588,
+         "ci_skeleton": [
+          -0.412,
+          -0.3056
+         ],
+         "ci_template": [
+          -0.4442,
+          -0.2752
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3519,
+         "ci_skeleton": [
+          0.3009,
+          0.4028
+         ],
+         "ci_template": [
+          0.2746,
+          0.4289
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "BPC": {
+        "exec_difference": {
+         "estimate": -0.4468,
+         "ci_skeleton": [
+          -0.5,
+          -0.3935
+         ],
+         "ci_template": [
+          -0.5273,
+          -0.3692
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.4282,
+         "ci_skeleton": [
+          0.375,
+          0.4815
+         ],
+         "ci_template": [
+          0.3558,
+          0.5023
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "BSC": {
+        "exec_difference": {
+         "estimate": -0.3981,
+         "ci_skeleton": [
+          -0.456,
+          -0.3403
+         ],
+         "ci_template": [
+          -0.4885,
+          -0.3102
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3773,
+         "ci_skeleton": [
+          0.3218,
+          0.4329
+         ],
+         "ci_template": [
+          0.2953,
+          0.4601
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "DPN": {
+        "exec_difference": {
+         "estimate": -0.0023,
+         "ci_skeleton": [
+          -0.0069,
+          0.0
+         ],
+         "ci_template": [
+          -0.0071,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "DSN": {
+        "exec_difference": {
+         "estimate": -0.0023,
+         "ci_skeleton": [
+          -0.0069,
+          0.0
+         ],
+         "ci_template": [
+          -0.0071,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "BPN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       },
+       "BSN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 432,
+         "n_skeletons": 216,
+         "n_templates": 40
+        }
+       }
+      },
+      "over_ask_difference": {
+       "estimate": 0.3858,
+       "ci_skeleton": [
+        0.3465,
+        0.4252
+       ],
+       "ci_template": [
+        0.3178,
+        0.4541
+       ],
+       "n": 1296,
+       "n_skeletons": 216,
+       "n_templates": 40
+      }
+     }
+    }
+   }
+  },
+  "heldout": {
+   "modes": {
+    "direct": {
+     "n": 1664,
+     "cells": {
+      "DPC": {
+       "exec": {
+        "estimate": 0.6154,
+        "ci_skeleton": [
+         0.5625,
+         0.6683
+        ],
+        "ci_template": [
+         0.5095,
+         0.7228
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.3413,
+        "ci_skeleton": [
+         0.2837,
+         0.399
+        ],
+        "ci_template": [
+         0.2402,
+         0.445
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 71,
+        "DECLINE": 1,
+        "EXEC_MATCH": 128,
+        "INCOMPLETE": 8
+       }
+      },
+      "DSC": {
+       "exec": {
+        "estimate": 0.7404,
+        "ci_skeleton": [
+         0.6875,
+         0.7933
+        ],
+        "ci_template": [
+         0.6485,
+         0.8283
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.2115,
+        "ci_skeleton": [
+         0.1635,
+         0.2596
+        ],
+        "ci_template": [
+         0.1313,
+         0.299
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 44,
+        "EXEC_MATCH": 154,
+        "EXEC_OTHER": 1,
+        "INCOMPLETE": 8,
+        "INSPECT": 1
+       }
+      },
+      "BPC": {
+       "exec": {
+        "estimate": 0.6971,
+        "ci_skeleton": [
+         0.649,
+         0.7452
+        ],
+        "ci_template": [
+         0.601,
+         0.7905
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.25,
+        "ci_skeleton": [
+         0.1971,
+         0.3029
+        ],
+        "ci_template": [
+         0.1651,
+         0.3381
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 52,
+        "EXEC_MATCH": 145,
+        "INCOMPLETE": 9,
+        "INSPECT": 1,
+        "MALFORMED": 1
+       }
+      },
+      "BSC": {
+       "exec": {
+        "estimate": 0.8173,
+        "ci_skeleton": [
+         0.7644,
+         0.8702
+        ],
+        "ci_template": [
+         0.7333,
+         0.8932
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.1635,
+        "ci_skeleton": [
+         0.1106,
+         0.2163
+        ],
+        "ci_template": [
+         0.0931,
+         0.2406
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 34,
+        "EXEC_MATCH": 170,
+        "INCOMPLETE": 3,
+        "INSPECT": 1
+       }
+      },
+      "DPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "DSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      }
+     },
+     "covered_DPC": {
+      "exec": {
+       "estimate": 0.4545,
+       "ci_skeleton": [
+        0.3788,
+        0.5303
+       ],
+       "ci_template": [
+        0.3429,
+        0.5769
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      },
+      "ask": {
+       "estimate": 0.4924,
+       "ci_skeleton": [
+        0.4091,
+        0.5758
+       ],
+       "ci_template": [
+        0.373,
+        0.6045
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      }
+     },
+     "over_ask": {
+      "estimate": 0.2083,
+      "ci_skeleton": [
+       0.1715,
+       0.2452
+      ],
+      "ci_template": [
+       0.1375,
+       0.2837
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "executes_where_allowed": {
+      "estimate": 0.7516,
+      "ci_skeleton": [
+       0.7147,
+       0.7885
+      ],
+      "ci_template": [
+       0.6683,
+       0.8301
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_selectivity": {
+      "estimate": 0.133,
+      "ci_skeleton": [
+       0.0737,
+       0.1923
+      ],
+      "ci_template": [
+       0.0708,
+       0.1997
+      ],
+      "n": 104,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_env_selectivity": {
+      "estimate": 0.1298,
+      "ci_skeleton": [
+       0.0577,
+       0.1971
+      ],
+      "ci_template": [
+       0.0762,
+       0.1863
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "paired_correct_abstention": {
+      "estimate": 0.1827,
+      "ci_skeleton": [
+       0.1346,
+       0.2356
+      ],
+      "ci_template": [
+       0.1238,
+       0.2426
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     }
+    },
+    "narration": {
+     "n": 1664,
+     "cells": {
+      "DPC": {
+       "exec": {
+        "estimate": 0.2019,
+        "ci_skeleton": [
+         0.1538,
+         0.25
+        ],
+        "ci_template": [
+         0.125,
+         0.2857
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.7212,
+        "ci_skeleton": [
+         0.6635,
+         0.774
+        ],
+        "ci_template": [
+         0.6238,
+         0.8137
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 150,
+        "EXEC_MATCH": 42,
+        "EXEC_OTHER": 10,
+        "INCOMPLETE": 2,
+        "INSPECT": 4
+       }
+      },
+      "DSC": {
+       "exec": {
+        "estimate": 0.4038,
+        "ci_skeleton": [
+         0.351,
+         0.4615
+        ],
+        "ci_template": [
+         0.3048,
+         0.5049
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.5144,
+        "ci_skeleton": [
+         0.4567,
+         0.5721
+        ],
+        "ci_template": [
+         0.4104,
+         0.62
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 107,
+        "EXEC_MATCH": 84,
+        "EXEC_OTHER": 10,
+        "INCOMPLETE": 2,
+        "INSPECT": 5
+       }
+      },
+      "BPC": {
+       "exec": {
+        "estimate": 0.2981,
+        "ci_skeleton": [
+         0.2452,
+         0.3558
+        ],
+        "ci_template": [
+         0.2039,
+         0.399
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.601,
+        "ci_skeleton": [
+         0.5433,
+         0.6538
+        ],
+        "ci_template": [
+         0.5048,
+         0.6971
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 125,
+        "EXEC_MATCH": 62,
+        "EXEC_OTHER": 13,
+        "INSPECT": 8
+       }
+      },
+      "BSC": {
+       "exec": {
+        "estimate": 0.4279,
+        "ci_skeleton": [
+         0.3702,
+         0.4856
+        ],
+        "ci_template": [
+         0.3235,
+         0.5354
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.5,
+        "ci_skeleton": [
+         0.4423,
+         0.5577
+        ],
+        "ci_template": [
+         0.395,
+         0.6065
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 104,
+        "EXEC_MATCH": 89,
+        "EXEC_OTHER": 9,
+        "INCOMPLETE": 2,
+        "INSPECT": 4
+       }
+      },
+      "DPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "DSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      }
+     },
+     "covered_DPC": {
+      "exec": {
+       "estimate": 0.1136,
+       "ci_skeleton": [
+        0.0682,
+        0.1667
+       ],
+       "ci_template": [
+        0.0484,
+        0.2031
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      },
+      "ask": {
+       "estimate": 0.8561,
+       "ci_skeleton": [
+        0.7955,
+        0.9091
+       ],
+       "ci_template": [
+        0.7643,
+        0.9318
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      }
+     },
+     "over_ask": {
+      "estimate": 0.5385,
+      "ci_skeleton": [
+       0.4952,
+       0.5801
+      ],
+      "ci_template": [
+       0.4455,
+       0.6298
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "executes_where_allowed": {
+      "estimate": 0.3766,
+      "ci_skeleton": [
+       0.3349,
+       0.4183
+      ],
+      "ci_template": [
+       0.285,
+       0.4719
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_selectivity": {
+      "estimate": 0.1827,
+      "ci_skeleton": [
+       0.1266,
+       0.242
+      ],
+      "ci_template": [
+       0.1101,
+       0.2585
+      ],
+      "n": 104,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_env_selectivity": {
+      "estimate": 0.2067,
+      "ci_skeleton": [
+       0.1346,
+       0.2788
+      ],
+      "ci_template": [
+       0.1238,
+       0.2905
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "paired_correct_abstention": {
+      "estimate": 0.2404,
+      "ci_skeleton": [
+       0.1875,
+       0.2981
+      ],
+      "ci_template": [
+       0.1765,
+       0.3077
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "vs_direct": {
+      "n_matched": 1664,
+      "covers_all_direct_prompts": true,
+      "cells": {
+       "DPC": {
+        "exec_difference": {
+         "estimate": -0.4135,
+         "ci_skeleton": [
+          -0.4808,
+          -0.3462
+         ],
+         "ci_template": [
+          -0.4952,
+          -0.335
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3798,
+         "ci_skeleton": [
+          0.3029,
+          0.4567
+         ],
+         "ci_template": [
+          0.2857,
+          0.4712
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DSC": {
+        "exec_difference": {
+         "estimate": -0.3365,
+         "ci_skeleton": [
+          -0.3992,
+          -0.2692
+         ],
+         "ci_template": [
+          -0.4257,
+          -0.2543
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3029,
+         "ci_skeleton": [
+          0.2356,
+          0.3702
+         ],
+         "ci_template": [
+          0.2282,
+          0.3843
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BPC": {
+        "exec_difference": {
+         "estimate": -0.399,
+         "ci_skeleton": [
+          -0.4712,
+          -0.3269
+         ],
+         "ci_template": [
+          -0.4906,
+          -0.3125
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.351,
+         "ci_skeleton": [
+          0.2788,
+          0.4231
+         ],
+         "ci_template": [
+          0.281,
+          0.4245
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BSC": {
+        "exec_difference": {
+         "estimate": -0.3894,
+         "ci_skeleton": [
+          -0.4663,
+          -0.3125
+         ],
+         "ci_template": [
+          -0.4861,
+          -0.2941
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3365,
+         "ci_skeleton": [
+          0.2548,
+          0.4183
+         ],
+         "ci_template": [
+          0.2404,
+          0.4394
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DPN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DSN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BPN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BSN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       }
+      },
+      "over_ask_difference": {
+       "estimate": 0.3301,
+       "ci_skeleton": [
+        0.2772,
+        0.383
+       ],
+       "ci_template": [
+        0.2648,
+        0.3993
+       ],
+       "n": 624,
+       "n_skeletons": 104,
+       "n_templates": 40
+      }
+     }
+    },
+    "thinking": {
+     "n": 1664,
+     "cells": {
+      "DPC": {
+       "exec": {
+        "estimate": 0.2404,
+        "ci_skeleton": [
+         0.1875,
+         0.2981
+        ],
+        "ci_template": [
+         0.1602,
+         0.3257
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.7596,
+        "ci_skeleton": [
+         0.7019,
+         0.8125
+        ],
+        "ci_template": [
+         0.6743,
+         0.8398
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 158,
+        "EXEC_MATCH": 50
+       }
+      },
+      "DSC": {
+       "exec": {
+        "estimate": 0.4087,
+        "ci_skeleton": [
+         0.3462,
+         0.4712
+        ],
+        "ci_template": [
+         0.319,
+         0.5
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.5913,
+        "ci_skeleton": [
+         0.5288,
+         0.6538
+        ],
+        "ci_template": [
+         0.5,
+         0.681
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 123,
+        "EXEC_MATCH": 85
+       }
+      },
+      "BPC": {
+       "exec": {
+        "estimate": 0.274,
+        "ci_skeleton": [
+         0.2163,
+         0.3317
+        ],
+        "ci_template": [
+         0.1875,
+         0.3676
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.726,
+        "ci_skeleton": [
+         0.6683,
+         0.7837
+        ],
+        "ci_template": [
+         0.6324,
+         0.8125
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 151,
+        "EXEC_MATCH": 57
+       }
+      },
+      "BSC": {
+       "exec": {
+        "estimate": 0.4615,
+        "ci_skeleton": [
+         0.3894,
+         0.5288
+        ],
+        "ci_template": [
+         0.3738,
+         0.5514
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.5385,
+        "ci_skeleton": [
+         0.4712,
+         0.6106
+        ],
+        "ci_template": [
+         0.4486,
+         0.6262
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "ASK": 112,
+        "EXEC_MATCH": 96
+       }
+      },
+      "DPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "DSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BPN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      },
+      "BSN": {
+       "exec": {
+        "estimate": 1.0,
+        "ci_skeleton": [
+         1.0,
+         1.0
+        ],
+        "ci_template": [
+         1.0,
+         1.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "ask": {
+        "estimate": 0.0,
+        "ci_skeleton": [
+         0.0,
+         0.0
+        ],
+        "ci_template": [
+         0.0,
+         0.0
+        ],
+        "n": 208,
+        "n_skeletons": 104,
+        "n_templates": 40
+       },
+       "labels": {
+        "EXEC_MATCH": 208
+       }
+      }
+     },
+     "covered_DPC": {
+      "exec": {
+       "estimate": 0.1439,
+       "ci_skeleton": [
+        0.0909,
+        0.197
+       ],
+       "ci_template": [
+        0.0662,
+        0.2357
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      },
+      "ask": {
+       "estimate": 0.8561,
+       "ci_skeleton": [
+        0.803,
+        0.9091
+       ],
+       "ci_template": [
+        0.7643,
+        0.9338
+       ],
+       "n": 132,
+       "n_skeletons": 66,
+       "n_templates": 25
+      }
+     },
+     "over_ask": {
+      "estimate": 0.6186,
+      "ci_skeleton": [
+       0.5721,
+       0.6667
+      ],
+      "ci_template": [
+       0.5382,
+       0.6939
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "executes_where_allowed": {
+      "estimate": 0.3814,
+      "ci_skeleton": [
+       0.3333,
+       0.4279
+      ],
+      "ci_template": [
+       0.3061,
+       0.4618
+      ],
+      "n": 624,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_selectivity": {
+      "estimate": 0.141,
+      "ci_skeleton": [
+       0.0897,
+       0.1923
+      ],
+      "ci_template": [
+       0.0908,
+       0.1903
+      ],
+      "n": 104,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "ask_env_selectivity": {
+      "estimate": 0.1683,
+      "ci_skeleton": [
+       0.0962,
+       0.2356
+      ],
+      "ci_template": [
+       0.0991,
+       0.2376
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "paired_correct_abstention": {
+      "estimate": 0.226,
+      "ci_skeleton": [
+       0.1731,
+       0.2837
+      ],
+      "ci_template": [
+       0.1699,
+       0.2843
+      ],
+      "n": 208,
+      "n_skeletons": 104,
+      "n_templates": 40
+     },
+     "vs_direct": {
+      "n_matched": 1664,
+      "covers_all_direct_prompts": true,
+      "cells": {
+       "DPC": {
+        "exec_difference": {
+         "estimate": -0.375,
+         "ci_skeleton": [
+          -0.4519,
+          -0.3029
+         ],
+         "ci_template": [
+          -0.4619,
+          -0.2933
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.4183,
+         "ci_skeleton": [
+          0.3413,
+          0.4952
+         ],
+         "ci_template": [
+          0.3381,
+          0.5
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DSC": {
+        "exec_difference": {
+         "estimate": -0.3317,
+         "ci_skeleton": [
+          -0.4087,
+          -0.2596
+         ],
+         "ci_template": [
+          -0.425,
+          -0.2427
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.3798,
+         "ci_skeleton": [
+          0.3077,
+          0.4519
+         ],
+         "ci_template": [
+          0.2991,
+          0.4657
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BPC": {
+        "exec_difference": {
+         "estimate": -0.4231,
+         "ci_skeleton": [
+          -0.4904,
+          -0.3558
+         ],
+         "ci_template": [
+          -0.5049,
+          -0.3413
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.476,
+         "ci_skeleton": [
+          0.4038,
+          0.5481
+         ],
+         "ci_template": [
+          0.3945,
+          0.5577
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BSC": {
+        "exec_difference": {
+         "estimate": -0.3558,
+         "ci_skeleton": [
+          -0.4327,
+          -0.274
+         ],
+         "ci_template": [
+          -0.4406,
+          -0.2757
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.375,
+         "ci_skeleton": [
+          0.2933,
+          0.4567
+         ],
+         "ci_template": [
+          0.2944,
+          0.4604
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DPN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "DSN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BPN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       },
+       "BSN": {
+        "exec_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        },
+        "ask_difference": {
+         "estimate": 0.0,
+         "ci_skeleton": [
+          0.0,
+          0.0
+         ],
+         "ci_template": [
+          0.0,
+          0.0
+         ],
+         "n": 208,
+         "n_skeletons": 104,
+         "n_templates": 40
+        }
+       }
+      },
+      "over_ask_difference": {
+       "estimate": 0.4103,
+       "ci_skeleton": [
+        0.3606,
+        0.4631
+       ],
+       "ci_template": [
+        0.3443,
+        0.4799
+       ],
+       "n": 624,
+       "n_skeletons": 104,
+       "n_templates": 40
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -18,6 +18,12 @@ def user_text(r):
     return "".join(t for _, t in r["user"])
 
 
+def rule_coverage_map(truth_file="consequence_truth.yaml"):
+    doc = yaml.safe_load((CONFIGS / truth_file).read_text())["templates"]
+    marks = lambda t: [v.get("D") if isinstance(v, dict) else v for v in (doc[t].get(q) for q in ("QD", "QA", "QO"))]
+    return {t: "Y" if "Y" in marks(t) else "?" if "?" in marks(t) else "N" for t in doc}
+
+
 def eval_split(confirm):
     return "heldout" if confirm else "dev"
 
@@ -26,7 +32,7 @@ def load_rows(model, tag, confirm):
     run = RUNS / model / tag
     meta = {m["id"]: m for m in map(json.loads, open(BENCH / "instances.jsonl"))}
     rows = [dict(meta[r["id"]], **{**r, "row": k}) for k, r in enumerate(map(json.loads, open(run / "results.jsonl")))]
-    return (analysis_rows(rows) if confirm else dev_only(rows)), np.load(run / "acts.npy", mmap_mode="r")
+    return (analysis_rows(rows, model) if confirm else dev_only(rows)), np.load(run / "acts.npy", mmap_mode="r")
 
 
 def blast_partition(rows, confirm):
