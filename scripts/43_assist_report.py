@@ -15,6 +15,11 @@ TAGS = {"assist_op": "op", "assist_cj0": "cj", "assist_cj": "cj", "assist_kn": "
 OP_ARMS = ("A0", "Airr", "A1", "A2", "Iask", "Ibal", "Iaskbal", "A2self", "A2u", "A3")
 CJ_ARMS = ("A0", "Airr", "A1", "A2", "Ibal", "A2self", "A2u", "A3")
 STATES = ("11", "10", "01", "00")
+OP_PAIRS = (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("Iaskbal", "Iask"), ("A2self", "A0"),
+            ("A2self", "A2"), ("A1", "Airr"), ("A2u", "A0"), ("A2u", "A1"), ("A2u", "Airr"), ("A2u", "A2"),
+            ("A3", "A0"), ("A3", "A1"), ("A3", "A2u"))
+CJ_PAIRS = (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("A2self", "A0"), ("A2self", "A2"),
+            ("A2u", "A0"), ("A2u", "A1"), ("A3", "A0"), ("A3", "A2u"))
 
 
 def load(model, tag, file):
@@ -187,26 +192,18 @@ def predictions(res):
     return out
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("model")
-    args = ap.parse_args()
-    data = {tag: load(args.model, tag, f) for tag, f in TAGS.items()}
-    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + data["assist_a2u"] + data["assist_a3"] + load(args.model, "assist_self", "op") + load(args.model, "assist_self_cj", "cj")
-    res = {"model": args.model, "margin": MARGIN,
+def analyze(model):
+    data = {tag: load(model, tag, f) for tag, f in TAGS.items()}
+    direct = data["assist_op"] + data["assist_cj0"] + data["assist_cj"] + data["assist_a2u"] + data["assist_a3"] + load(model, "assist_self", "op") + load(model, "assist_self_cj", "cj")
+    res = {"model": model, "margin": MARGIN,
            "op": {a: op_measures(direct, a) for a in OP_ARMS if any(r["rule"] == "op" and r["arm"] == a for r in direct)},
            "cj": {a: cj_measures(direct, a) for a in CJ_ARMS if any(r["rule"] == "cj" and r["arm"] == a for r in direct)}}
     able = lambda arm: bool(res["op"].get(arm)) and all((res["op"][arm].get(f"ask_{c}") or {"estimate": 1})["estimate"] >= 0.8
                                                          for c in ("DP", "DS", "BS", "BP"))
     res["able"], res["able_balanced"] = able("Iask"), able("Iaskbal")
-    res["contrasts"] = {f"{a}_vs_{b}": op_contrast(direct, a, b) for a, b in
-                        (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("Iaskbal", "Iask"), ("A2self", "A0"),
-                         ("A2self", "A2"), ("A1", "Airr"), ("A2u", "A0"), ("A2u", "A1"), ("A2u", "Airr"), ("A2u", "A2"),
-                         ("A3", "A0"), ("A3", "A1"), ("A3", "A2u"))}
-    res["cj_contrasts"] = {f"{a}_vs_{b}": cj_contrast(direct, a, b) for a, b in
-                           (("Airr", "A0"), ("A1", "A0"), ("A2", "A0"), ("A2", "A1"), ("Ibal", "A0"), ("A2self", "A0"), ("A2self", "A2"),
-                            ("A2u", "A0"), ("A2u", "A1"), ("A3", "A0"), ("A3", "A2u"))}
-    rep = load(args.model, "assist_rep_dev", "rep_dev")
+    res["contrasts"] = {f"{a}_vs_{b}": op_contrast(direct, a, b) for a, b in OP_PAIRS}
+    res["cj_contrasts"] = {f"{a}_vs_{b}": cj_contrast(direct, a, b) for a, b in CJ_PAIRS}
+    rep = load(model, "assist_rep_dev", "rep_dev")
     if rep:
         res["replication_dev"] = {"A0": op_measures(rep, "A0"), "A2u": op_measures(rep, "A2u"), "A2u_vs_A0": op_contrast(rep, "A2u", "A0")}
     res["knowledge_tools"] = knowledge(data["assist_kn"])
@@ -214,9 +211,17 @@ def main():
     think = data["assist_think"]
     res["thinking"] = {"op": {a: op_measures(think, a) for a in ("A0", "A1") if any(r["rule"] == "op" and r["arm"] == a for r in think)},
                        "cj": {"A0": cj_measures(think, "A0")} if any(r["rule"] == "cj" for r in think) else {}}
-    has_main = (RUNS / args.model / "grid" / "results.jsonl").exists()
-    res["parity_A0_vs_mps"] = parity(args.model, data["assist_op"]) if data["assist_op"] and has_main else None
+    has_main = (RUNS / model / "grid" / "results.jsonl").exists()
+    res["parity_A0_vs_mps"] = parity(model, data["assist_op"]) if data["assist_op"] and has_main else None
     res["predictions"] = predictions(res)
+    return res
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("model")
+    args = ap.parse_args()
+    res = analyze(args.model)
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"assist_{args.model}.json").write_text(json.dumps(res, indent=1))
     print(json.dumps({"able": res["able"], "predictions": res["predictions"],
