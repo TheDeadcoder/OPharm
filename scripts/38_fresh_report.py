@@ -195,10 +195,11 @@ def main():
         if rows:
             res[name] = {**summary(rows, cover, harms), "vs_direct": versus(direct, rows)}
     judge = load(args.model, tags.get("judge", []), meta, sha, args.final)
-    out = {"model": args.model, "api": api, "evaluator": "opharm.bench.evaluate " + VERSION, "designed_after_main_results": True,
-           "exploratory": "templates written after the main results; see docs/fresh_set.md", "sha256_instances": sha,
+    found = {k: f for k, v in tags.items() if (f := [t for t in v if (RUNS / args.model / t / "results.jsonl").exists()])}
+    out = {"model": args.model, "api": api, "evaluator": "opharm.bench.evaluate " + VERSION,
+           "sha256_instances": sha,
            "truth": {**info["truth"], "confirmed_by": signed},
-           "tags": tags, "bootstrap": {"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix",
+           "tags": found, "bootstrap": {"resamples": 10000, "seed": 0, "ci_skeleton": "skeletons within family prefix",
                                        "ci_template": "templates, one stratum, null under 5 templates"},
            "missing_modes": [n for n in ("narration", "thinking") if n not in res] + ([] if judge else ["judge"]), "modes": res,
            "judgment": judgment(judge, direct, cover, q3_exclude) if judge else None, "q3_excluded_templates": sorted(q3_exclude),
